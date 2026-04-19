@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { DriverProfileCard } from '../components/DriverProfileCard'
+import { Modal } from '../components/Modal'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 
 async function notifyApplicationEmail(session, payload) {
@@ -30,6 +31,7 @@ export function OwnerApplications() {
   const [err, setErr] = useState(null)
   const [flash, setFlash] = useState(null)
   const [busyId, setBusyId] = useState(null)
+  const [reassignModal, setReassignModal] = useState(null)
 
   const load = useCallback(async () => {
     if (!user?.id) return
@@ -45,6 +47,7 @@ export function OwnerApplications() {
         driver_message,
         driver_name,
         driver_phone,
+        driver_id,
         car_id,
         car:cars ( plate_number, model, year ),
         driver:profiles!driver_id (
@@ -86,23 +89,67 @@ export function OwnerApplications() {
     return [...m.values()]
   }, [rows])
 
-  async function accept(app) {
-    if (!session?.access_token) return
+  async function runAcceptApplication(app) {
+    if (!session?.access_token) return false
+    console.log('[accept] start', app.id, { driver_id: app.driver_id, car_id: app.car_id })
     setBusyId(app.id)
     setFlash(null)
-    const { data: carId, error } = await supabase.rpc('accept_driver_application', { p_application_id: app.id })
-    setBusyId(null)
-    if (error) {
-      setFlash({ type: 'err', text: error.message })
-      return
+    try {
+      const { data: carId, error } = await supabase.rpc('accept_driver_application', { p_application_id: app.id })
+      if (error) {
+        console.error('[accept] rpc error', error)
+        setFlash({ type: 'err', text: error.message })
+        return false
+      }
+      console.log('[accept] rpc ok', carId)
+      try {
+        await notifyApplicationEmail(session, { event: 'accepted', application_id: app.id })
+      } catch (e) {
+        console.warn('[accept] notify email', e)
+      }
+      setFlash({ type: 'ok', text: t('ownerApplications.acceptSuccess') })
+      await load()
+      await refreshPending()
+      const cid = typeof carId === 'string' ? carId : carId != null ? String(carId) : String(app.car_id ?? '')
+      if (cid) {
+        window.setTimeout(() => navigate(`/flota/${cid}`), 900)
+      }
+      return true
+    } catch (e) {
+      console.error('[accept] unexpected', e)
+      setFlash({ type: 'err', text: e?.message ?? String(e) })
+      return false
+    } finally {
+      setBusyId(null)
     }
-    await notifyApplicationEmail(session, { event: 'accepted', application_id: app.id })
-    setFlash({ type: 'ok', text: t('ownerApplications.acceptedFlash') })
-    await load()
-    await refreshPending()
-    const cid = typeof carId === 'string' ? carId : carId != null ? String(carId) : String(app.car_id ?? '')
-    if (cid) {
-      window.setTimeout(() => navigate(`/flota/${cid}`), 900)
+  }
+
+  async function beginAccept(app) {
+    if (!session?.access_token) return
+    setFlash(null)
+    try {
+      console.log('[beginAccept] check assignment', app.id)
+      const { data, error } = await supabase.rpc('get_driver_current_assignment_for_application', {
+        p_application_id: app.id,
+      })
+      if (error) {
+        console.error('[beginAccept] peek rpc', error)
+        setFlash({ type: 'err', text: error.message })
+        return
+      }
+      const rows = Array.isArray(data) ? data : data != null ? [data] : []
+      const row = rows[0]
+      const plate = row?.plate != null ? String(row.plate) : ''
+      const existingCarId = row?.current_car_id != null ? String(row.current_car_id) : ''
+      const targetCarId = String(app.car_id ?? '')
+      if (plate && existingCarId && existingCarId !== targetCarId) {
+        setReassignModal({ app, plate })
+        return
+      }
+      await runAcceptApplication(app)
+    } catch (e) {
+      console.error('[beginAccept] unexpected', e)
+      setFlash({ type: 'err', text: e?.message ?? String(e) })
     }
   }
 
@@ -188,7 +235,7 @@ export function OwnerApplications() {
                           type="button"
                           className="btn btn-huge primary owner-app-accept"
                           disabled={busyId === app.id}
-                          onClick={() => void accept(app)}
+                          onClick={() => void beginAccept(app)}
                         >
                           {t('ownerApplications.accept')}
                         </button>
@@ -209,6 +256,38 @@ export function OwnerApplications() {
           )
         })}
       </div>
+
+      <Modal
+        open={Boolean(reassignModal)}
+        title={t('ownerApplications.reassignTitle')}
+        onClose={() => {
+          if (!busyId) setReassignModal(null)
+        }}
+        footer={
+          <div className="modal-actions">
+            <button type="button" className="btn btn-huge ghost" disabled={Boolean(busyId)} onClick={() => setReassignModal(null)}>
+              {t('ownerApplications.cancelReassign')}
+            </button>
+            <button
+              type="button"
+              className="btn btn-huge primary"
+              disabled={Boolean(busyId)}
+              onClick={() => {
+                const a = reassignModal?.app
+                if (!a) return
+                void (async () => {
+                  const ok = await runAcceptApplication(a)
+                  if (ok) setReassignModal(null)
+                })()
+              }}
+            >
+              {t('ownerApplications.confirmReassign')}
+            </button>
+          </div>
+        }
+      >
+        {reassignModal ? <p>{t('ownerApplications.reassignBody', { plate: reassignModal.plate })}</p> : null}
+      </Modal>
     </div>
   )
 }

@@ -4417,3 +4417,61 @@ tr.tier-row-none td:first-child {
 .mvp-gallery-thumb--on {
   border-color: var(--accent-strong);
 }
+
+/* Driver current employment (/profil, /moje-wnioski) */
+.driver-employment-card {
+  margin: 1rem 0 1.25rem;
+  border-width: 1px;
+  border-style: solid;
+}
+.driver-employment-card--loading {
+  border-color: var(--border);
+  opacity: 0.85;
+}
+.driver-employment-card--active {
+  border-color: rgba(34, 197, 94, 0.55);
+  background: rgba(34, 197, 94, 0.08);
+}
+.driver-employment-card--idle {
+  border-color: var(--border);
+  background: rgba(148, 163, 184, 0.08);
+}
+.driver-employment-kicker {
+  font-weight: 800;
+  margin: 0 0 0.65rem;
+  font-size: 1.05rem;
+}
+.driver-employment-line {
+  margin: 0.35rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+.driver-employment-idle-hint {
+  margin: 0.35rem 0 0.5rem;
+}
+.driver-employment-cta {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-weight: 700;
+}
+
+.driver-app-employment-badge {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  margin: 0.75rem 0 0.25rem;
+}
+.driver-app-employment-badge--on {
+  border-color: rgba(34, 197, 94, 0.55);
+  background: rgba(34, 197, 94, 0.12);
+  color: #bbf7d0;
+}
+.driver-app-employment-badge--off {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--muted);
+}

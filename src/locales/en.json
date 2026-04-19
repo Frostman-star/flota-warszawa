@@ -638,6 +638,18 @@
     "previewHint": "After saving, your data will update in applications.",
     "docVerifiedTitle": "Document photo uploaded"
   },
+  "driverEmployment": {
+    "currentlyWorking": "Currently working",
+    "noCarAssigned": "No car assigned",
+    "workingBadge": "Working:",
+    "lookingBadge": "Looking for a car",
+    "browseHint": "Browse available cars",
+    "goMarketplace": "Go to Marketplace →",
+    "partner": "Partner",
+    "weeklyRent": "{{amount}} PLN / week",
+    "registration": "Registration",
+    "owner": "Owner"
+  },
   "driverApplications": {
     "title": "My applications",
     "lead": "Status of your marketplace applications.",
@@ -654,6 +666,11 @@
     "reject": "❌ Reject",
     "expBadge": "{{n}} yrs experience",
     "acceptedFlash": "Driver assigned! You can now start the vehicle handover checklist.",
+    "acceptSuccess": "✅ Driver assigned!",
+    "reassignTitle": "Reassign driver",
+    "reassignBody": "This driver is already assigned to another vehicle: {{plate}}. Are you sure you want to move them here?",
+    "confirmReassign": "Yes, reassign",
+    "cancelReassign": "Cancel",
     "rejectedFlash": "Application rejected."
   },
   "noteModal": {

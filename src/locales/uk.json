@@ -638,6 +638,18 @@
     "previewHint": "Після збереження профілю дані оновляться у заявках.",
     "docVerifiedTitle": "Додано фото документа"
   },
+  "driverEmployment": {
+    "currentlyWorking": "Зараз працюєш",
+    "noCarAssigned": "Немає призначеного авто",
+    "workingBadge": "Працюєш:",
+    "lookingBadge": "Шукаєш авто",
+    "browseHint": "Переглянь доступні авто",
+    "goMarketplace": "Перейти до Marketplace →",
+    "partner": "Партнер",
+    "weeklyRent": "{{amount}} zł / тиждень",
+    "registration": "Реєстрація",
+    "owner": "Власник"
+  },
   "driverApplications": {
     "title": "Мої заявки",
     "lead": "Статус заявок на авто з маркетплейсу.",
@@ -654,6 +666,11 @@
     "reject": "❌ Відхилити",
     "expBadge": "{{n}} років стажу",
     "acceptedFlash": "Водія призначено! Можна розпочати протокол передачі авто.",
+    "acceptSuccess": "✅ Водія призначено!",
+    "reassignTitle": "Перепризначення водія",
+    "reassignBody": "Цей водій уже призначений до іншого авто: {{plate}}. Перепризначити сюди?",
+    "confirmReassign": "Так, перепризначити",
+    "cancelReassign": "Скасувати",
     "rejectedFlash": "Заявку відхилено."
   },
   "noteModal": {

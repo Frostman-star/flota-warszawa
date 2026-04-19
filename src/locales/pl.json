@@ -638,6 +638,18 @@
     "previewHint": "Po zapisaniu profilu dane zostaną zaktualizowane we wnioskach.",
     "docVerifiedTitle": "Dodano zdjęcie dokumentu"
   },
+  "driverEmployment": {
+    "currentlyWorking": "Aktualnie pracujesz",
+    "noCarAssigned": "Nie masz przypisanego auta",
+    "workingBadge": "Pracujesz:",
+    "lookingBadge": "Szukasz auta",
+    "browseHint": "Przeglądaj dostępne auta",
+    "goMarketplace": "Przejdź do Marketplace →",
+    "partner": "Partner",
+    "weeklyRent": "{{amount}} zł / tydzień",
+    "registration": "Rejestracja",
+    "owner": "Właściciel"
+  },
   "driverApplications": {
     "title": "Moje wnioski",
     "lead": "Status zgłoszeń na auta z marketplace.",
@@ -654,6 +666,11 @@
     "reject": "❌ Odrzuć",
     "expBadge": "{{n}} lat stażu",
     "acceptedFlash": "Kierowca przypisany! Możesz teraz zrobić protokół zdania auta.",
+    "acceptSuccess": "✅ Kierowca przypisany!",
+    "reassignTitle": "Przepisanie kierowcy",
+    "reassignBody": "Ten kierowca jest już przypisany do innego auta: {{plate}}. Czy na pewno chcesz go przepisać?",
+    "confirmReassign": "Tak, przepisz",
+    "cancelReassign": "Anuluj",
     "rejectedFlash": "Wniosek odrzucony."
   },
   "noteModal": {

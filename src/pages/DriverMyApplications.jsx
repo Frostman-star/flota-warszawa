@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { useDriverAssignedCar } from '../hooks/useDriverAssignedCar'
 
 function statusMeta(t, status) {
   const s = String(status || '')
@@ -15,6 +16,7 @@ function statusMeta(t, status) {
 export function DriverMyApplications() {
   const { t } = useTranslation()
   const { user } = useAuth()
+  const { assignment, loading: carLoading } = useDriverAssignedCar(user?.id, Boolean(user?.id))
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState(null)
@@ -58,6 +60,15 @@ export function DriverMyApplications() {
       </p>
       <h1>{t('driverApplications.title')}</h1>
       <p className="muted">{t('driverApplications.lead')}</p>
+
+      {!carLoading ? (
+        <p
+          className={`driver-app-employment-badge${assignment ? ' driver-app-employment-badge--on' : ' driver-app-employment-badge--off'}`}
+          role="status"
+        >
+          {assignment ? `${t('driverEmployment.workingBadge')} ${assignment.plate}` : t('driverEmployment.lookingBadge')}
+        </p>
+      ) : null}
 
       {loading ? <LoadingSpinner /> : null}
       {err ? <p className="form-error">{err}</p> : null}

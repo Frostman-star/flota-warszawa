@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { DriverProfileCard } from '../components/DriverProfileCard'
+import { useDriverAssignedCar } from '../hooks/useDriverAssignedCar'
 import {
   driverAgeYears,
   driverProfileProgressPercent,
@@ -14,6 +15,7 @@ import {
 export function DriverProfile() {
   const { t } = useTranslation()
   const { user, refreshProfile, profile } = useAuth()
+  const { assignment, loading: assignmentLoading } = useDriverAssignedCar(user?.id, Boolean(user?.id))
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [experienceYears, setExperienceYears] = useState('0')
@@ -81,6 +83,15 @@ export function DriverProfile() {
   const progress = driverProfileProgressPercent(draftProfile)
   const applyReady = isDriverProfileCompleteForApply(draftProfile)
   const agePreview = driverAgeYears(birthYear ? Number(birthYear) : null)
+
+  const modelLine = assignment
+    ? [assignment.model, assignment.year].filter((x) => x != null && String(x).trim() !== '').join(' ')
+    : ''
+  const partnerLine = assignment?.partnerNames?.length
+    ? assignment.partnerNames.map((x) => String(x).trim()).filter(Boolean).join(', ')
+    : '—'
+  const rentNum = assignment?.weeklyRentPln != null ? Number(assignment.weeklyRentPln) : NaN
+  const rentLine = Number.isFinite(rentNum) ? t('driverEmployment.weeklyRent', { amount: rentNum }) : '—'
 
   const uploadAvatar = useCallback(
     async (file) => {
@@ -173,6 +184,38 @@ export function DriverProfile() {
       </p>
       <h1>{t('driverProfile.title')}</h1>
       <p className="muted">{t('driverProfile.lead')}</p>
+
+      {assignmentLoading ? (
+        <div className="driver-employment-card driver-employment-card--loading card pad-lg muted small" aria-busy="true">
+          {t('app.loading')}
+        </div>
+      ) : assignment ? (
+        <section className="driver-employment-card driver-employment-card--active card pad-lg" aria-label={t('driverEmployment.currentlyWorking')}>
+          <p className="driver-employment-kicker">✅ {t('driverEmployment.currentlyWorking')}</p>
+          <p className="driver-employment-line">
+            🚗 {assignment.plate}
+            {modelLine ? ` — ${modelLine}` : ''}
+          </p>
+          <p className="driver-employment-line">
+            🏢 {t('driverEmployment.partner')}: {partnerLine}
+          </p>
+          <p className="driver-employment-line">💰 {rentLine}</p>
+          <p className="driver-employment-line">
+            📍 {t('driverEmployment.registration')}: {assignment.registrationCity || '—'}
+          </p>
+          <p className="driver-employment-line">
+            {t('driverEmployment.owner')}: {assignment.ownerName}
+          </p>
+        </section>
+      ) : (
+        <section className="driver-employment-card driver-employment-card--idle card pad-lg" aria-label={t('driverEmployment.noCarAssigned')}>
+          <p className="driver-employment-kicker">⏳ {t('driverEmployment.noCarAssigned')}</p>
+          <p className="muted small driver-employment-idle-hint">{t('driverEmployment.browseHint')}</p>
+          <Link to="/marketplace" className="link-strong driver-employment-cta">
+            {t('driverEmployment.goMarketplace')}
+          </Link>
+        </section>
+      )}
 
       {!applyReady ? (
         <div className="profile-banner warn" role="status">
