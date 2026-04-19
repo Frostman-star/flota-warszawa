@@ -9,22 +9,6 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { useDrivers } from '../hooks/useDrivers'
 import { useAuth } from '../context/AuthContext'
 import { localeTag } from '../utils/localeTag'
-import { tierForExpiry, tierForServiceDot } from '../utils/documents'
-import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
-import { AppPlatformPills } from '../components/AppPlatformPills'
-
-function isAllOk(car) {
-  const parts = []
-  const ins = effectiveInsuranceExpiryIso(car)
-  const ti = tierForExpiry(typeof ins === 'string' ? ins : null)
-  if (ti) parts.push(ti)
-  const tp = tierForExpiry(typeof car.przeglad_expiry === 'string' ? car.przeglad_expiry : null)
-  if (tp) parts.push(tp)
-  const st = tierForServiceDot(typeof car.last_service_date === 'string' ? car.last_service_date : null)
-  if (st) parts.push(st)
-  if (!parts.length) return false
-  return parts.every((t) => t === 'green')
-}
 
 export function Fleet() {
   const { t, i18n } = useTranslation()
@@ -64,7 +48,6 @@ export function Fleet() {
       <input className="input input-xl fleet-search-simple" type="search" placeholder={t('fleet.search')} value={q} onChange={(e) => setQ(e.target.value)} aria-label={t('app.search')} />
       <div className="car-card-grid">
         {list.map((car) => {
-          const ok = isAllOk(car)
           return (
             <article key={car.id} className="car-tile">
               <Link to={carPath(String(car.id), true)} className="car-tile-link">
@@ -73,9 +56,7 @@ export function Fleet() {
                   <p className="car-tile-rent">{Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}<span className="car-tile-rent-suffix"> {t('fleet.rentSuffix')}</span></p>
                 </div>
                 <p className="car-mobile-meta">{car.model || '—'} · {car.driver_name ?? '—'}</p>
-                <AppPlatformPills apps={car.apps_available} className="car-tile-app-pills" />
                 <FleetDocDots car={car} />
-                <div className={`car-tile-badge ${ok ? 'ok' : 'warn'}`}>{ok ? t('fleet.ok') : t('fleet.check')}</div>
               </Link>
               <div className="car-tile-actions">
                 <button type="button" className="btn btn-tile ghost" onClick={() => { setEditing(car); setModalOpen(true) }}>{t('fleet.edit')}</button>

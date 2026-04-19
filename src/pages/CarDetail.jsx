@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
@@ -20,6 +20,8 @@ import { localeTag } from '../utils/localeTag'
 import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
 import { MarketplaceVehiclePhotos } from '../components/MarketplaceVehiclePhotos'
 import { MarketplaceCarPhotoGallery } from '../components/MarketplaceCarPhotoGallery'
+import { AppPlatformPills } from '../components/AppPlatformPills'
+import { fuelIcon, transmissionIcon, normalizeMarketplaceFeatures } from '../utils/marketplaceDisplay'
 
 export function CarDetail() {
   const { id } = useParams()
@@ -33,7 +35,12 @@ export function CarDetail() {
     userId: isAdmin ? null : user?.id,
     ownerId: isAdmin ? user?.id ?? null : null,
   })
-  const { entries, loading: histLoading, refresh: refreshHist } = useCarHistory(car?.id ?? null)
+
+  const isOwner = Boolean(isAdmin && user?.id && car && String(car.owner_id) === String(user.id))
+
+  const { entries, loading: histLoading, refresh: refreshHist } = useCarHistory(car?.id ?? null, { enabled: isOwner })
+
+  const photosSectionRef = useRef(null)
 
   const [mileageVal, setMileageVal] = useState('')
   const [mileBusy, setMileBusy] = useState(false)
@@ -42,6 +49,7 @@ export function CarDetail() {
   const [formErr, setFormErr] = useState(null)
   const [listingForm, setListingForm] = useState(null)
   const [listingBusy, setListingBusy] = useState(false)
+  const [deleteBusy, setDeleteBusy] = useState(false)
 
   useEffect(() => {
     if (!car) {
@@ -100,6 +108,7 @@ export function CarDetail() {
   }
 
   async function saveMileage() {
+    if (!isOwner) return
     const next = Number(mileageVal)
     if (!Number.isFinite(next) || next < 0) {
       setFormErr(t('carDetail.mileageInvalid'))
@@ -133,6 +142,7 @@ export function CarDetail() {
   }
 
   async function saveNote(text) {
+    if (!isOwner) return
     const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
     const stamp = new Date().toLocaleString(lc)
     const next = `${car.notes ? `${car.notes.trim()}\n\n` : ''}[${stamp}] ${text.trim()}`
@@ -185,6 +195,22 @@ export function CarDetail() {
     }
   }
 
+  async function handleDeleteCar() {
+    if (!user?.id) return
+    if (!window.confirm(t('fleet.confirmDelete', { plate: car.plate_number }))) return
+    setDeleteBusy(true)
+    setFormErr(null)
+    try {
+      const { error: delErr } = await supabase.from('cars').delete().eq('id', car.id).eq('owner_id', user.id)
+      if (delErr) throw delErr
+      navigate('/flota')
+    } catch (e) {
+      setFormErr(e.message ?? t('errors.generic'))
+    } finally {
+      setDeleteBusy(false)
+    }
+  }
+
   const hasDriver = Boolean(car.driver_id)
   const listed = Boolean(car.marketplace_listed)
   const canTurnListingOn = !hasDriver
@@ -192,9 +218,13 @@ export function CarDetail() {
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const partnersLine = formatPartnerNamesFromCar(car)
   const partnerContact = String(car.partner_contact ?? '').trim()
+  const feats = normalizeMarketplaceFeatures(car)
+  const partnerChips = (Array.isArray(car.partner_names) ? car.partner_names : []).map((x) => String(x).trim()).filter(Boolean)
+
+  const weekly = Number(car.weekly_rent_pln ?? 0)
 
   return (
-    <div className="page-simple car-detail-simple">
+    <div className="page-simple car-detail-page">
       <p className="muted small">
         {isAdmin ? (
           <Link to="/flota" className="link">
@@ -203,111 +233,96 @@ export function CarDetail() {
         ) : null}
       </p>
 
-      <header className="detail-header-simple">
-        <h1>{car.plate_number}</h1>
-        <p className="muted lead">{car.model || '—'}</p>
-        <p className="detail-line">
-          <strong>{t('carDetail.driver')}</strong> {car.driver_name ?? '—'}
-        </p>
-        <p className="detail-line">
-          <strong>{t('carDetail.rent')}</strong>{' '}
-          {Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}{' '}
-          <span className="muted">{t('carDetail.perWeek')}</span>
-        </p>
-        <CarStatusBadge car={car} />
-      </header>
+      {formErr ? <p className="form-error">{formErr}</p> : null}
 
-      {!isAdmin ? (
+      <section className="car-detail-section car-detail-section--public card pad-lg">
+        <h2 className="car-detail-section-title">{t('carDetail.sectionPublicTitle')}</h2>
+        <p className="muted small car-detail-section-note">{t('carDetail.sectionPublicNote')}</p>
+
         <MarketplaceCarPhotoGallery
           carId={String(car.id)}
           primaryFallback={String(car.primary_photo_url || car.marketplace_photo_url || '')}
         />
-      ) : null}
 
-      <section className="detail-block">
-        <h2>{t('carDetail.legalPartnerTitle')}</h2>
-        <p className="detail-line legal-partner-line">
-          {partnersLine || partnerContact ? (
-            <>
-              {partnersLine ? (
-                <>
-                  <strong>{t('carDetail.legalPartnerPartnersPrefix')}</strong> {partnersLine}
-                </>
-              ) : null}
-              {partnersLine && partnerContact ? <span className="legal-partner-sep"> | </span> : null}
-              {partnerContact ? (
-                <>
-                  <strong>{t('carDetail.legalPartnerContactPrefix')}</strong> {partnerContact}
-                </>
-              ) : null}
-            </>
-          ) : (
-            <span className="muted">—</span>
-          )}
-        </p>
-        <p className="detail-line">
-          <strong>{t('carDetail.legalPartnerAppsPrefix')}</strong>{' '}
-          {formatAppsReadable(car.apps_available, t) || <span className="muted">—</span>}
-        </p>
-        <p className="detail-line">
-          <strong>{t('carDetail.legalPartnerRegistrationPrefix')}</strong>{' '}
-          {String(car.registration_city ?? 'Warszawa')}
-        </p>
-      </section>
+        <header className="car-detail-public-head">
+          <p className="car-detail-plate">{car.plate_number}</p>
+          <p className="car-detail-model muted">
+            {[car.model, car.year].filter(Boolean).join(' · ') || '—'}
+          </p>
+          <p className="car-detail-rent-public">
+            {weekly.toLocaleString(lc, { style: 'currency', currency: 'PLN' })}
+            <span className="car-detail-rent-unit"> {t('carDetail.perWeek')}</span>
+          </p>
+          <CarStatusBadge car={car} />
+        </header>
 
-      <section className="detail-block">
-        <h2>{t('carDetail.documents')}</h2>
-        <ul className="doc-simple-list">
-          {docRows.map(({ key, label, date, service }) => {
-            const st = service
-              ? serviceStatusLabel(typeof date === 'string' ? date : null)
-              : expiryStatusLabel(typeof date === 'string' ? date : null)
-            return (
-              <li key={key} className="doc-simple-row">
-                <div>
-                  <p className="doc-simple-name">{label}</p>
-                  <p className="muted">{date ? String(date) : '—'}</p>
-                </div>
-                <span className={`status-pill tone-${st.tone}`}>{st.text}</span>
+        {partnerChips.length ? (
+          <div className="car-detail-chip-row" aria-label={t('carDetail.legalPartnerTitle')}>
+            {partnerChips.map((name) => (
+              <span key={name} className="car-detail-chip car-detail-chip--partner">
+                {name}
+              </span>
+            ))}
+          </div>
+        ) : partnersLine ? (
+          <p className="detail-line">
+            <strong>{t('carDetail.legalPartnerPartnersPrefix')}</strong> {partnersLine}
+          </p>
+        ) : null}
+
+        {partnerContact ? (
+          <p className="detail-line">
+            <strong>{t('carDetail.legalPartnerContactPrefix')}</strong> {partnerContact}
+          </p>
+        ) : null}
+
+        <div className="car-detail-apps-row">
+          <span className="field-label-lg">{t('carDetail.legalPartnerAppsPrefix')}</span>
+          <AppPlatformPills apps={car.apps_available} className="car-detail-app-pills" />
+        </div>
+
+        <p className="detail-line">
+          <strong>{t('carDetail.legalPartnerRegistrationPrefix')}</strong> {String(car.registration_city ?? 'Warszawa')}
+        </p>
+
+        <div className="car-detail-icons-row" aria-label={t('marketplace.iconsAria')}>
+          <span title={String(car.fuel_type ?? '')}>{fuelIcon(car.fuel_type)}</span>
+          <span title={String(car.transmission ?? '')}>{transmissionIcon(car.transmission)}</span>
+          <span title={t('marketplace.seatsTitle')}>🪑 {car.seats ?? '—'}</span>
+        </div>
+
+        {feats.length > 0 ? (
+          <ul className="car-detail-features">
+            {feats.map((key) => (
+              <li key={key}>
+                <span className="market-check" aria-hidden>
+                  ✓
+                </span>
+                {t(`marketplace.feature.${key}`, { defaultValue: String(key) })}
               </li>
-            )
-          })}
-        </ul>
+            ))}
+          </ul>
+        ) : null}
+
+        <div className="car-detail-reqs">
+          <p className="market-req-line">
+            <strong>{t('marketplace.reqAge')}</strong> {car.min_driver_age ?? '—'}
+          </p>
+          <p className="market-req-line">
+            <strong>{t('marketplace.reqExp')}</strong> {car.min_experience_years ?? '—'} {t('marketplace.reqExpUnit')}
+          </p>
+          <p className="market-req-line">
+            <strong>{t('marketplace.reqRent')}</strong> {car.min_rental_months ?? '—'} {t('marketplace.reqRentUnit')}
+          </p>
+        </div>
       </section>
 
-      {isAdmin ? (
+      {isOwner ? (
         <>
-          <section className="detail-block">
-            <h2>{t('carDetail.mileage')}</h2>
-            <p className="big-reading">{Number(car.mileage_km ?? 0).toLocaleString(lc)} km</p>
-            {formErr ? <p className="form-error">{formErr}</p> : null}
-            <div className="mile-inline">
-              <input
-                className="input input-xl"
-                type="number"
-                min={0}
-                placeholder={t('carDetail.mileagePlaceholder')}
-                value={mileageVal}
-                onChange={(e) => setMileageVal(e.target.value)}
-              />
-              <button type="button" className="btn btn-huge primary" disabled={mileBusy} onClick={saveMileage}>
-                {t('carDetail.save')}
-              </button>
-            </div>
-          </section>
-
-          <section className="detail-block actions-stack">
-            <button type="button" className="btn btn-huge secondary" onClick={() => setNoteOpen(true)}>
-              {t('carDetail.addNote')}
-            </button>
-            <button type="button" className="btn btn-huge secondary" onClick={() => setEditOpen(true)}>
-              {t('carDetail.editCar')}
-            </button>
-          </section>
-
-          <section className="detail-block">
-            <h2>{t('carDetail.marketplace')}</h2>
-            {user?.id ? <MarketplaceVehiclePhotos car={car} userId={user.id} onUpdated={() => refresh()} /> : null}
+          <section ref={photosSectionRef} id="car-photos-marketplace" className="car-detail-section car-detail-section--photos card pad-lg">
+            <h2 className="car-detail-section-title">{t('carDetail.sectionPhotosTitle')}</h2>
+            <p className="muted small car-detail-section-lead">{t('carDetail.sectionPhotosLead')}</p>
+            {user?.id ? <MarketplaceVehiclePhotos car={car} userId={user.id} embed onUpdated={() => refresh()} /> : null}
             {hasDriver ? <p className="muted small">{t('carDetail.marketplaceDriverHint')}</p> : null}
             <label className="toggle-switch toggle-switch--block">
               <input
@@ -325,7 +340,7 @@ export function CarDetail() {
               <span className="toggle-switch-text">{t('carDetail.listedToggle')}</span>
             </label>
             {listed && canTurnListingOn && listingForm ? (
-              <div className="stack-gap" style={{ marginTop: '1rem' }} key={`mk-${car.id}-${listed}`}>
+              <div className="stack-gap car-detail-listing-fields" key={`mk-${car.id}-${listed}`}>
                 <MarketplaceListingFields form={listingForm} setForm={setListingForm} />
                 <button type="button" className="btn btn-huge primary" disabled={listingBusy} onClick={saveListingBlock}>
                   {listingBusy ? t('carDetail.savingListing') : t('carDetail.saveListing')}
@@ -334,27 +349,126 @@ export function CarDetail() {
             ) : null}
           </section>
 
-          {user?.id ? <HandoverSection car={car} user={user} /> : null}
+          <section className="car-detail-section car-detail-section--private card pad-lg">
+            <h2 className="car-detail-section-title car-detail-section-title--private">
+              🔒 {t('carDetail.sectionPrivateTitle')}
+            </h2>
+            <p className="muted small car-detail-section-lead">{t('carDetail.sectionPrivateLead')}</p>
+
+            <h3 className="car-detail-subhead">{t('carDetail.documents')}</h3>
+            <ul className="doc-simple-list">
+              {docRows.map(({ key, label, date, service }) => {
+                const st = service
+                  ? serviceStatusLabel(typeof date === 'string' ? date : null)
+                  : expiryStatusLabel(typeof date === 'string' ? date : null)
+                return (
+                  <li key={key} className="doc-simple-row">
+                    <div>
+                      <p className="doc-simple-name">{label}</p>
+                      <p className="muted">{date ? String(date) : '—'}</p>
+                    </div>
+                    <span className={`status-pill tone-${st.tone}`}>{st.text}</span>
+                  </li>
+                )
+              })}
+            </ul>
+
+            <h3 className="car-detail-subhead">{t('carDetail.mileage')}</h3>
+            <p className="big-reading">{Number(car.mileage_km ?? 0).toLocaleString(lc)} km</p>
+            <div className="mile-inline">
+              <input
+                className="input input-xl"
+                type="number"
+                min={0}
+                placeholder={t('carDetail.mileagePlaceholder')}
+                value={mileageVal}
+                onChange={(e) => setMileageVal(e.target.value)}
+              />
+              <button type="button" className="btn btn-huge primary" disabled={mileBusy} onClick={saveMileage}>
+                {t('carDetail.save')}
+              </button>
+            </div>
+
+            <h3 className="car-detail-subhead">{t('carDetail.monthlyCostsTitle')}</h3>
+            <ul className="car-detail-costs muted small">
+              <li>
+                <strong>{t('carDetail.costInsurance')}</strong>{' '}
+                {Number(car.insurance_cost ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}
+              </li>
+              <li>
+                <strong>{t('carDetail.costService')}</strong>{' '}
+                {Number(car.service_cost ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}
+              </li>
+              <li>
+                <strong>{t('carDetail.costOther')}</strong>{' '}
+                {Number(car.other_costs ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}
+              </li>
+              <li>
+                <strong>{t('carDetail.costFines')}</strong> {Number(car.fines_count ?? 0)}
+              </li>
+            </ul>
+
+            <p className="detail-line">
+              <strong>{t('carDetail.driver')}</strong> {car.driver_name ?? '—'}
+            </p>
+
+            {car.notes ? (
+              <div className="car-detail-notes">
+                <h3 className="car-detail-subhead">{t('carDetail.notesHeading')}</h3>
+                <pre className="car-detail-notes-pre muted small">{String(car.notes)}</pre>
+              </div>
+            ) : null}
+
+            <h3 className="car-detail-subhead">{t('carDetail.history')}</h3>
+            {histLoading ? (
+              <LoadingSpinner />
+            ) : (
+              <ul className="mini-hist">
+                {entries.slice(0, 8).map((e) => (
+                  <li key={e.id} className="muted small">
+                    {new Date(e.created_at).toLocaleDateString(lc)} — {e.detail}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {user?.id ? <HandoverSection car={car} user={user} /> : null}
+          </section>
+
+          <div className="car-detail-actions card pad-lg">
+            <div className="car-detail-actions-row">
+              <button type="button" className="btn btn-huge secondary" onClick={() => setEditOpen(true)}>
+                {t('carDetail.editDataCta')}
+              </button>
+              <button
+                type="button"
+                className="btn btn-huge secondary"
+                onClick={() => photosSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              >
+                {t('carDetail.managePhotosCta')}
+              </button>
+            </div>
+            <div className="car-detail-actions-row">
+              <button
+                type="button"
+                className="btn btn-huge primary"
+                onClick={() => document.getElementById('car-handover')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              >
+                {t('carDetail.newHandoverCta')}
+              </button>
+              <button type="button" className="btn btn-huge danger" disabled={deleteBusy} onClick={() => void handleDeleteCar()}>
+                {deleteBusy ? t('app.loading') : t('carDetail.deleteCarCta')}
+              </button>
+            </div>
+            <button type="button" className="btn btn-huge ghost car-detail-note-btn" onClick={() => setNoteOpen(true)}>
+              {t('carDetail.addNote')}
+            </button>
+          </div>
         </>
       ) : null}
 
-      <section className="detail-block">
-        <h2>{t('carDetail.history')}</h2>
-        {histLoading ? (
-          <LoadingSpinner />
-        ) : (
-          <ul className="mini-hist">
-            {entries.slice(0, 5).map((e) => (
-              <li key={e.id} className="muted small">
-                {new Date(e.created_at).toLocaleDateString(lc)} — {e.detail}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <NoteModal open={noteOpen} onClose={() => setNoteOpen(false)} onSave={saveNote} />
-      <CarFormModal open={editOpen} onClose={() => setEditOpen(false)} car={car} drivers={drivers} onSaved={() => refresh()} />
+      {isOwner ? <NoteModal open={noteOpen} onClose={() => setNoteOpen(false)} onSave={saveNote} /> : null}
+      {isOwner ? <CarFormModal open={editOpen} onClose={() => setEditOpen(false)} car={car} drivers={drivers} onSaved={() => refresh()} /> : null}
     </div>
   )
 }

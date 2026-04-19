@@ -56,6 +56,75 @@ const CAR_SELECT_NEW = `
         ${CAR_EMBED}
       `
 
+/** Columns safe for non-owners (marketplace / assigned driver read-only). No costs, mileage, notes, or internal doc dates. */
+const CAR_SELECT_PUBLIC = `
+        id,
+        plate_number,
+        model,
+        year,
+        weekly_rent_pln,
+        marketplace_photo_url,
+        primary_photo_url,
+        marketplace_description,
+        marketplace_location,
+        marketplace_status,
+        marketplace_listed,
+        show_in_marketplace,
+        deposit_amount,
+        fuel_type,
+        transmission,
+        seats,
+        consumption,
+        marketplace_features,
+        min_driver_age,
+        min_experience_years,
+        min_rental_months,
+        owner_phone,
+        owner_telegram,
+        partner_names,
+        partner_name,
+        partner_contact,
+        apps_available,
+        registration_city,
+        driver_id,
+        driver_label,
+        ${CAR_EMBED}
+      `
+
+const CAR_SELECT_PUBLIC_LEGACY = `
+        id,
+        plate_number,
+        model,
+        year,
+        weekly_rent_pln,
+        marketplace_photo_url,
+        primary_photo_url,
+        marketplace_description,
+        marketplace_location,
+        marketplace_status,
+        marketplace_listed,
+        show_in_marketplace,
+        deposit_amount,
+        fuel_type,
+        transmission,
+        seats,
+        consumption,
+        marketplace_features,
+        min_driver_age,
+        min_experience_years,
+        min_rental_months,
+        owner_phone,
+        owner_telegram,
+        partner_names,
+        partner_name,
+        partner_contact,
+        apps_available,
+        registration_city,
+        assigned_driver_id,
+        driver_label,
+        ${CAR_EMBED}
+      `
+
 const CAR_SELECT_LEGACY = `
         id,
         plate_number,
@@ -158,6 +227,7 @@ export function useCars(opts = {}) {
  */
 export function useCar(carId, opts = {}) {
   const { userId, ownerId } = opts
+  const usePublicSelect = Boolean(userId && !ownerId)
   const [car, setCar] = useState(null)
   const [loading, setLoading] = useState(!!carId)
   const [error, setError] = useState(null)
@@ -178,10 +248,13 @@ export function useCar(carId, opts = {}) {
       return q.maybeSingle()
     }
 
-    let { data, error: qErr } = await fetchOne(CAR_SELECT_NEW, 'driver_id')
+    const selectNew = usePublicSelect ? CAR_SELECT_PUBLIC : CAR_SELECT_NEW
+    const selectLegacy = usePublicSelect ? CAR_SELECT_PUBLIC_LEGACY : CAR_SELECT_LEGACY
+
+    let { data, error: qErr } = await fetchOne(selectNew, 'driver_id')
 
     if (qErr && shouldUseLegacyAssignedDriverColumn(qErr)) {
-      const r2 = await fetchOne(CAR_SELECT_LEGACY, 'assigned_driver_id')
+      const r2 = await fetchOne(selectLegacy, 'assigned_driver_id')
       data = r2.data
       qErr = r2.error
     }
@@ -197,7 +270,7 @@ export function useCar(carId, opts = {}) {
       setError(null)
     }
     setLoading(false)
-  }, [carId, userId, ownerId])
+  }, [carId, userId, ownerId, usePublicSelect])
 
   useEffect(() => {
     refresh()

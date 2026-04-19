@@ -6,22 +6,25 @@ import {
   VEHICLE_PHOTO_LABELS_DB,
   VEHICLE_PHOTO_OPTIONAL,
   VEHICLE_PHOTO_REQUIRED,
-  VEHICLE_REQUIRED_KEYS,
 } from '../utils/vehiclePhotoAngles'
 import { useVehiclePhotos } from '../hooks/useVehiclePhotos'
+import { PhotoFullscreenViewer } from './PhotoFullscreenViewer'
 
 /**
  * @param {{
  *   car: Record<string, unknown>,
  *   userId: string,
  *   onUpdated?: () => void,
+ *   embed?: boolean,
  * }} props
  */
-export function MarketplaceVehiclePhotos({ car, userId, onUpdated }) {
+export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false }) {
   const { t } = useTranslation()
   const { photos, refresh } = useVehiclePhotos(car?.id)
   const [busyAngle, setBusyAngle] = useState(null)
   const [optOpen, setOptOpen] = useState(false)
+  const [fsOpen, setFsOpen] = useState(false)
+  const [fsIdx, setFsIdx] = useState(0)
   const inputRef = useRef(null)
   const pendingAngleRef = useRef(null)
 
@@ -32,6 +35,33 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated }) {
     }
     return m
   }, [photos])
+
+  const FS_ORDER = [
+    'front_left',
+    'rear_right',
+    'interior_front',
+    'interior_rear',
+    'dashboard',
+    'trunk',
+    'wheels',
+    'sunroof',
+    'detail',
+  ]
+
+  const fsSlides = useMemo(() => {
+    const out = []
+    for (const k of FS_ORDER) {
+      const row = byAngle.get(k)
+      if (row?.photo_url) {
+        out.push({
+          id: String(row.id ?? ''),
+          url: String(row.photo_url),
+          angleKey: k,
+        })
+      }
+    }
+    return out
+  }, [byAngle])
 
   const requiredDone = useMemo(() => {
     let n = 0
@@ -110,6 +140,13 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated }) {
     [car?.id, car?.owner_id, userId, refresh, onUpdated]
   )
 
+  function openFsFromAngle(angleKey) {
+    const i = fsSlides.findIndex((s) => s.angleKey === angleKey)
+    if (i < 0) return
+    setFsIdx(i)
+    setFsOpen(true)
+  }
+
   function slotIcon(angleKey) {
     switch (angleKey) {
       case 'front_left':
@@ -136,37 +173,40 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated }) {
       <div key={def.key} className={`mvp-slot${has ? ' mvp-slot--done' : ''}`}>
         <p className="mvp-slot-label">{t(`marketplacePhotos.angle.${def.key}`)}</p>
         <div className="mvp-slot-icon muted small">{slotIcon(def.key)}</div>
-        <button
-          type="button"
-          className="mvp-slot-body"
-          disabled={Boolean(busy)}
-          onClick={() => onPickAngle(def.key)}
-        >
-          {has ? (
-            <>
+        {has ? (
+          <div className="mvp-slot-body mvp-slot-body--has">
+            <button
+              type="button"
+              className="mvp-slot-thumb-btn"
+              disabled={Boolean(busy)}
+              onClick={() => openFsFromAngle(def.key)}
+              aria-label={t('photoFullscreen.open')}
+            >
               <img src={String(row.photo_url)} alt="" className="mvp-slot-thumb" />
               <span className="mvp-slot-check" aria-hidden>
                 ✓
               </span>
-              <span className="mvp-slot-cta muted small">{t('marketplacePhotos.change')}</span>
-            </>
-          ) : (
-            <>
-              <span className="mvp-slot-ph" aria-hidden>
-                📷
-              </span>
-              <span className="mvp-slot-cta muted small">{t('marketplacePhotos.addPhoto')}</span>
-            </>
-          )}
-        </button>
+            </button>
+            <button type="button" className="mvp-slot-change-btn" disabled={Boolean(busy)} onClick={() => onPickAngle(def.key)}>
+              {t('marketplacePhotos.change')}
+            </button>
+          </div>
+        ) : (
+          <button type="button" className="mvp-slot-body" disabled={Boolean(busy)} onClick={() => onPickAngle(def.key)}>
+            <span className="mvp-slot-ph" aria-hidden>
+              📷
+            </span>
+            <span className="mvp-slot-cta muted small">{t('marketplacePhotos.addPhoto')}</span>
+          </button>
+        )}
         {busy ? <span className="mvp-slot-busy muted small">{t('app.loading')}</span> : null}
       </div>
     )
   }
 
   return (
-    <section className="detail-block mvp-section">
-      <h2>{t('marketplacePhotos.sectionTitle')}</h2>
+    <section className={embed ? 'mvp-section mvp-section--embed' : 'detail-block mvp-section'}>
+      {embed ? null : <h2>{t('marketplacePhotos.sectionTitle')}</h2>}
 
       <div className="mvp-tip card">
         <p className="mvp-tip-title">💡 {t('marketplacePhotos.tipsTitle')}</p>
@@ -198,6 +238,10 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated }) {
         tabIndex={-1}
         onChange={onFile}
       />
+
+      {fsOpen && fsSlides.length ? (
+        <PhotoFullscreenViewer open={fsOpen} slides={fsSlides} initialIndex={fsIdx} onClose={() => setFsOpen(false)} />
+      ) : null}
     </section>
   )
 }

@@ -460,7 +460,27 @@
     "legalPartnerPartnersPrefix": "Партнери:",
     "legalPartnerContactPrefix": "Контакт:",
     "legalPartnerAppsPrefix": "Додатки:",
-    "legalPartnerRegistrationPrefix": "Реєстрація:"
+    "legalPartnerRegistrationPrefix": "Реєстрація:",
+    "sectionPublicTitle": "Публічна інформація",
+    "sectionPublicNote": "ℹ️ Ця інформація видна всім на маркетплейсі.",
+    "sectionPhotosTitle": "📸 Фото оголошення",
+    "sectionPhotosLead": "📸 Фото оголошення (видно тільки вам і в маркетплейсі). Обов’язкові ракурси та прогрес нижче.",
+    "sectionPrivateTitle": "Приватні дані флоту",
+    "sectionPrivateLead": "Видно тільки вам.",
+    "monthlyCostsTitle": "Місячні витрати (орієнтовно)",
+    "costInsurance": "Страхування (OC/AC):",
+    "costService": "Сервіс:",
+    "costOther": "Інші витрати:",
+    "costFines": "Штрафи (кількість):",
+    "notesHeading": "Нотатки",
+    "editDataCta": "✏️ Редагувати дані",
+    "managePhotosCta": "📸 Керувати фото",
+    "newHandoverCta": "🔄 Новий протокол передачі",
+    "deleteCarCta": "🗑️ Видалити авто"
+  },
+  "photoFullscreen": {
+    "title": "Фото",
+    "open": "На весь екран"
   },
   "handover": {
     "sectionTitle": "Протокол передачі авто",

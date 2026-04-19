@@ -3,17 +3,21 @@ import { supabase } from '../lib/supabase'
 
 /**
  * @param {string | null} carId
+ * @param {{ enabled?: boolean }} [opts]
  */
-export function useCarHistory(carId) {
+export function useCarHistory(carId, opts = {}) {
+  const { enabled = true } = opts
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const carIdRef = useRef(carId)
   carIdRef.current = carId
+  const enabledRef = useRef(enabled)
+  enabledRef.current = enabled
 
   const refresh = useCallback(async () => {
     const id = carIdRef.current
-    if (!id) {
+    if (!enabledRef.current || !id) {
       setEntries([])
       setLoading(false)
       setError(null)
@@ -43,7 +47,7 @@ export function useCarHistory(carId) {
 
   useEffect(() => {
     refresh()
-  }, [carId, refresh])
+  }, [carId, enabled, refresh])
 
   return { entries, loading, error, refresh }
 }

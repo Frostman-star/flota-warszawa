@@ -460,7 +460,27 @@
     "legalPartnerPartnersPrefix": "Партнёры:",
     "legalPartnerContactPrefix": "Контакт:",
     "legalPartnerAppsPrefix": "Приложения:",
-    "legalPartnerRegistrationPrefix": "Регистрация:"
+    "legalPartnerRegistrationPrefix": "Регистрация:",
+    "sectionPublicTitle": "Публичная информация",
+    "sectionPublicNote": "ℹ️ Эта информация видна всем на маркетплейсе.",
+    "sectionPhotosTitle": "📸 Фото объявления",
+    "sectionPhotosLead": "📸 Фото объявления (видны только вам и на маркетплейсе). Обязательные ракурсы и прогресс ниже.",
+    "sectionPrivateTitle": "Частные данные автопарка",
+    "sectionPrivateLead": "Видно только вам.",
+    "monthlyCostsTitle": "Месячные расходы (оценка)",
+    "costInsurance": "Страхование (OC/AC):",
+    "costService": "Сервис:",
+    "costOther": "Прочие расходы:",
+    "costFines": "Штрафы (кол-во):",
+    "notesHeading": "Заметки",
+    "editDataCta": "✏️ Редактировать данные",
+    "managePhotosCta": "📸 Управлять фото",
+    "newHandoverCta": "🔄 Новый протокол передачи",
+    "deleteCarCta": "🗑️ Удалить авто"
+  },
+  "photoFullscreen": {
+    "title": "Фото",
+    "open": "На весь экран"
   },
   "handover": {
     "sectionTitle": "Протокол передачи авто",

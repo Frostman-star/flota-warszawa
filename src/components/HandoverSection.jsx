@@ -18,7 +18,7 @@ export function HandoverSection({ car, user }) {
   const [galleryId, setGalleryId] = useState(/** @type {string | null} */ (null))
 
   return (
-    <section className="detail-block handover-section">
+    <section id="car-handover" className="detail-block handover-section">
       <h2>{t('handover.sectionTitle')}</h2>
       <p className="muted small">{t('handover.sectionLead')}</p>
       <button type="button" className="btn btn-huge primary handover-new-btn" onClick={() => setWizardOpen(true)}>

@@ -460,7 +460,27 @@
     "legalPartnerPartnersPrefix": "Partnerzy:",
     "legalPartnerContactPrefix": "Kontakt:",
     "legalPartnerAppsPrefix": "Aplikacje:",
-    "legalPartnerRegistrationPrefix": "Rejestracja:"
+    "legalPartnerRegistrationPrefix": "Rejestracja:",
+    "sectionPublicTitle": "Informacja publiczna",
+    "sectionPublicNote": "ℹ️ Te dane są widoczne dla wszystkich na marketplace.",
+    "sectionPhotosTitle": "📸 Zdjęcia ogłoszenia",
+    "sectionPhotosLead": "📸 Zdjęcia ogłoszenia (widoczne tylko dla Ciebie i na marketplace). Postęp wymaganych ujęć poniżej.",
+    "sectionPrivateTitle": "Dane prywatne floty",
+    "sectionPrivateLead": "Widoczne tylko dla Ciebie.",
+    "monthlyCostsTitle": "Koszty miesięczne (szacunek)",
+    "costInsurance": "Ubezpieczenie (OC/AC):",
+    "costService": "Serwis:",
+    "costOther": "Inne koszty:",
+    "costFines": "Mandaty (liczba):",
+    "notesHeading": "Notatki",
+    "editDataCta": "✏️ Edytuj dane",
+    "managePhotosCta": "📸 Zarządzaj zdjęciami",
+    "newHandoverCta": "🔄 Nowy protokół przekazania",
+    "deleteCarCta": "🗑️ Usuń auto"
+  },
+  "photoFullscreen": {
+    "title": "Zdjęcie",
+    "open": "Powiększ zdjęcie"
   },
   "handover": {
     "sectionTitle": "Protokół zdania/odbioru",

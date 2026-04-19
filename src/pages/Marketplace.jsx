@@ -6,12 +6,14 @@ import { useAuth } from '../context/AuthContext'
 import { useCars } from '../hooks/useCars'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Modal } from '../components/Modal'
+import { MarketplaceCarPhotoZoom } from '../components/MarketplaceCarPhotoZoom'
 import { localeTag } from '../utils/localeTag'
 import { carPath } from '../lib/carPaths'
 import { isDriverProfileCompleteForApply } from '../utils/driverProfile'
 import { AppPlatformPills } from '../components/AppPlatformPills'
 import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
 import { VEHICLE_REQUIRED_KEYS } from '../utils/vehiclePhotoAngles'
+import { fuelIcon, transmissionIcon, normalizeMarketplaceFeatures } from '../utils/marketplaceDisplay'
 
 const DRIVER_SELECT = `
   id, model, year, weekly_rent_pln, marketplace_photo_url, primary_photo_url, marketplace_description, marketplace_location,
@@ -20,34 +22,6 @@ const DRIVER_SELECT = `
   plate_number, owner_id,
   partner_names, partner_contact, apps_available, registration_city
 `
-
-/** @param {unknown} ft */
-function fuelIcon(ft) {
-  switch (String(ft || '').toLowerCase()) {
-    case 'hybryda':
-      return '🔋'
-    case 'elektryczny':
-      return '⚡'
-    case 'gaz':
-      return '💨'
-    case 'diesel':
-      return '⛽'
-    default:
-      return '⛽'
-  }
-}
-
-/** @param {unknown} tr */
-function transmissionIcon(tr) {
-  return String(tr || '').toLowerCase() === 'manualna' ? '⚙️' : '🅰️'
-}
-
-/** @param {Record<string, unknown>} car */
-function normalizeFeatures(car) {
-  const f = car.marketplace_features
-  if (!Array.isArray(f)) return []
-  return f.map((x) => String(x))
-}
 
 /**
  * @param {Record<string, unknown>} car
@@ -58,7 +32,7 @@ function matchesChip(car, chip) {
   if (chip === 'hybrid') return String(car.fuel_type || '').toLowerCase() === 'hybryda'
   if (chip === 'automat') return String(car.transmission || '').toLowerCase() === 'automat'
   if (chip === 'seats7')
-    return Number(car.seats) >= 7 || normalizeFeatures(car).includes('seats_7')
+    return Number(car.seats) >= 7 || normalizeMarketplaceFeatures(car).includes('seats_7')
   if (chip === 'price600') return Number(car.weekly_rent_pln ?? 0) <= 600
   return true
 }
@@ -85,6 +59,7 @@ export function Marketplace() {
 
   const [chipFilter, setChipFilter] = useState('all')
   const [contactCar, setContactCar] = useState(null)
+  const [catalogPhotoZoom, setCatalogPhotoZoom] = useState(null)
   /** @type {[Record<string, number>, import('react').Dispatch<import('react').SetStateAction<Record<string, number>>>]} */
   const [ownerRequiredPhotoCount, setOwnerRequiredPhotoCount] = useState({})
 
@@ -357,13 +332,20 @@ export function Marketplace() {
                       .trim()
                     const photoCount = Number(car._photoCount ?? 0)
                     const available = String(car.marketplace_status || '') === 'dostepne'
-                    const feats = normalizeFeatures(car)
+                    const feats = normalizeMarketplaceFeatures(car)
                     const dep = Number(car.deposit_amount ?? 0)
                     return (
                       <article key={car.id} className="market-catalog-card">
                         <div className="market-catalog-photo-wrap">
                           {photo ? (
-                            <img src={photo} alt="" className="market-catalog-photo market-catalog-photo--hero" loading="lazy" />
+                            <button
+                              type="button"
+                              className="market-catalog-photo-hit"
+                              onClick={() => setCatalogPhotoZoom({ id: String(car.id), fallback: photo })}
+                              aria-label={t('photoFullscreen.open')}
+                            >
+                              <img src={photo} alt="" className="market-catalog-photo market-catalog-photo--hero" loading="lazy" />
+                            </button>
                           ) : (
                             <div className="market-catalog-photo market-catalog-photo--ph" aria-hidden>
                               <span>🚗</span>
@@ -525,6 +507,14 @@ export function Marketplace() {
             </ul>
           )}
         </section>
+      ) : null}
+
+      {catalogPhotoZoom ? (
+        <MarketplaceCarPhotoZoom
+          carId={catalogPhotoZoom.id}
+          fallbackUrl={catalogPhotoZoom.fallback}
+          onClose={() => setCatalogPhotoZoom(null)}
+        />
       ) : null}
 
       <Modal

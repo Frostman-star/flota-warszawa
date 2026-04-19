@@ -460,7 +460,27 @@
     "legalPartnerPartnersPrefix": "Partners:",
     "legalPartnerContactPrefix": "Contact:",
     "legalPartnerAppsPrefix": "Apps:",
-    "legalPartnerRegistrationPrefix": "Registration:"
+    "legalPartnerRegistrationPrefix": "Registration:",
+    "sectionPublicTitle": "Public information",
+    "sectionPublicNote": "ℹ️ This information is visible to everyone on the marketplace.",
+    "sectionPhotosTitle": "📸 Listing photos",
+    "sectionPhotosLead": "📸 Listing photos (visible to you and on the marketplace). Required angles and progress below.",
+    "sectionPrivateTitle": "Private fleet data",
+    "sectionPrivateLead": "Visible only to you.",
+    "monthlyCostsTitle": "Monthly costs (estimate)",
+    "costInsurance": "Insurance (OC/AC):",
+    "costService": "Service:",
+    "costOther": "Other costs:",
+    "costFines": "Fines (count):",
+    "notesHeading": "Notes",
+    "editDataCta": "✏️ Edit details",
+    "managePhotosCta": "📸 Manage photos",
+    "newHandoverCta": "🔄 New handover protocol",
+    "deleteCarCta": "🗑️ Delete car"
+  },
+  "photoFullscreen": {
+    "title": "Photo",
+    "open": "View fullscreen"
   },
   "handover": {
     "sectionTitle": "Car Handover Protocol",
