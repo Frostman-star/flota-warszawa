@@ -64,7 +64,33 @@
     "selectRoleFirst": "Najpierw wybierz typ konta.",
     "accountCreated": "Konto utworzone.",
     "checkEmail": "Sprawdź skrzynkę e-mail (potwierdzenie).",
-    "loginError": "Błąd logowania"
+    "loginError": "Błąd logowania",
+    "forgotPasswordLink": "Nie pamiętasz hasła? Zresetuj →",
+    "sendResetLink": "Wyślij link",
+    "resetSentSuccess": "✅ Sprawdź swoją skrzynkę email — wysłaliśmy link do resetowania hasła.",
+    "continueGoogle": "Kontynuuj z Google",
+    "continueApple": "Kontynuuj z Apple",
+    "continueFacebook": "Kontynuuj z Facebook",
+    "orDivider": "albo"
+  },
+  "resetPassword": {
+    "title": "Ustaw nowe hasło",
+    "newPassword": "Nowe hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "submit": "Zmień hasło",
+    "passwordTooShort": "Hasło musi mieć co najmniej 6 znaków.",
+    "passwordMismatch": "Hasła nie są takie same.",
+    "changedToast": "✅ Hasło zostało zmienione!",
+    "backToLogin": "← Powrót do logowania"
+  },
+  "authCallback": {
+    "loading": "Logowanie..."
+  },
+  "roleSelection": {
+    "title": "Wybierz typ konta",
+    "lead": "Powiedz kim jesteś, aby dokończyć rejestrację.",
+    "owner": "Jestem właścicielem floty",
+    "driver": "Jestem kierowcą"
   },
   "pageMeta": {
     "brandTitleSuffix": " — Cario",
@@ -113,7 +139,22 @@
     "criticalBody": "{{count}} dokumentów wymaga uwagi w ciągu 7 dni.",
     "newApplicationsCard": "📋 Nowe wnioski: {{count}}",
     "newApplicationsHint": "Kierowcy aplikują na Twoje auta z marketplace.",
-    "newApplicationsBadge": "Nowe"
+    "newApplicationsBadge": "Nowe",
+    "publicProfileTitle": "🌐 Twój profil publiczny:",
+    "publicProfileHint": "Udostępnij ten link w grupach kierowców aby znaleźć pracowników.",
+    "copyLink": "Skopiuj link",
+    "open": "Otwórz"
+  },
+  "publicFleet": {
+    "defaultCompany": "Flota Cario",
+    "share": "Udostępnij profil",
+    "linkCopied": "✅ Link skopiowany!",
+    "locationBadge": "📍 {{city}}",
+    "call": "Zadzwoń",
+    "availableCars": "Dostępne auta ({{count}})",
+    "empty": "Brak dostępnych aut w tym momencie.",
+    "apply": "Złóż wniosek",
+    "totalFleet": "Flota: {{count}} pojazdów łącznie"
   },
   "fleet": {
     "title": "Moje auta",
@@ -386,7 +427,15 @@
     "driverCreated": "Kierowca utworzony.",
     "driverRemoved": "Usunięto.",
     "inviteEdgeError": "Błąd Edge Function (invite-driver)",
-    "removeEdgeError": "Błąd Edge Function (remove-driver)"
+    "removeEdgeError": "Błąd Edge Function (remove-driver)",
+    "companyProfileTitle": "Profil firmy",
+    "companyDescription": "Opis firmy",
+    "companyDescriptionPlaceholder": "Opisz swoją flotę...",
+    "companyLogo": "Logo firmy",
+    "companyLogoHint": "Wgraj logo do publicznego profilu.",
+    "companyLocation": "Lokalizacja firmy",
+    "companyPhone": "Telefon firmy",
+    "publicProfilePreview": "Zobacz swój profil publiczny →"
   },
   "pwaInstall": {
     "banner": {

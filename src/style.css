@@ -4207,6 +4207,63 @@ tr.tier-row-none td:first-child {
   gap: 0.25rem;
 }
 
+.auth-social-stack {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.auth-social {
+  width: 100%;
+  justify-content: center;
+  font-weight: 700;
+}
+.auth-social-google {
+  background: #fff;
+  color: #111;
+  border: 1px solid #ddd;
+}
+.auth-social-apple {
+  background: #111;
+  color: #fff;
+}
+.auth-social-facebook {
+  background: #1877f2;
+  color: #fff;
+}
+.auth-divider {
+  text-align: center;
+  margin: 8px 0 12px;
+  color: var(--muted, #888);
+}
+.auth-forgot-wrap {
+  margin-top: 10px;
+}
+
+.public-fleet-page {
+  position: relative;
+}
+.public-fleet-share {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.public-fleet-header {
+  text-align: center;
+}
+.public-fleet-logo {
+  width: 88px;
+  height: 88px;
+  border-radius: 999px;
+  object-fit: cover;
+  margin: 0 auto 10px;
+}
+.public-fleet-logo--ph {
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  background: #2a2a2a;
+}
+
 .services-star {
   border: none;
   background: transparent;

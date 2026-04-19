@@ -64,7 +64,33 @@
     "selectRoleFirst": "Сначала выберите тип аккаунта.",
     "accountCreated": "Аккаунт создан.",
     "checkEmail": "Проверьте почту для подтверждения.",
-    "loginError": "Ошибка входа"
+    "loginError": "Ошибка входа",
+    "forgotPasswordLink": "Не помните пароль? Сбросить →",
+    "sendResetLink": "Отправить ссылку",
+    "resetSentSuccess": "✅ Проверьте email — мы отправили ссылку для сброса пароля.",
+    "continueGoogle": "Продолжить с Google",
+    "continueApple": "Продолжить с Apple",
+    "continueFacebook": "Продолжить с Facebook",
+    "orDivider": "или"
+  },
+  "resetPassword": {
+    "title": "Установить новый пароль",
+    "newPassword": "Новый пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "submit": "Изменить пароль",
+    "passwordTooShort": "Пароль должен быть не короче 6 символов.",
+    "passwordMismatch": "Пароли не совпадают.",
+    "changedToast": "✅ Пароль изменён!",
+    "backToLogin": "← Назад ко входу"
+  },
+  "authCallback": {
+    "loading": "Выполняем вход..."
+  },
+  "roleSelection": {
+    "title": "Выберите тип аккаунта",
+    "lead": "Укажите, кто вы, чтобы завершить регистрацию.",
+    "owner": "Я владелец автопарка",
+    "driver": "Я водитель"
   },
   "pageMeta": {
     "brandTitleSuffix": " — Cario",
@@ -113,7 +139,22 @@
     "criticalBody": "{{count}} документов требуют внимания в течение 7 дней.",
     "newApplicationsCard": "📋 Новые заявки: {{count}}",
     "newApplicationsHint": "Водители подают заявки на ваши авто с маркетплейса.",
-    "newApplicationsBadge": "Новые"
+    "newApplicationsBadge": "Новые",
+    "publicProfileTitle": "🌐 Ваш публичный профиль:",
+    "publicProfileHint": "Поделитесь этой ссылкой в группах водителей, чтобы найти сотрудников.",
+    "copyLink": "Скопировать ссылку",
+    "open": "Открыть"
+  },
+  "publicFleet": {
+    "defaultCompany": "Флот Cario",
+    "share": "Поделиться профилем",
+    "linkCopied": "✅ Ссылка скопирована!",
+    "locationBadge": "📍 {{city}}",
+    "call": "Позвонить",
+    "availableCars": "Доступные авто ({{count}})",
+    "empty": "Сейчас нет доступных авто.",
+    "apply": "Подать заявку",
+    "totalFleet": "Флот: всего {{count}} авто"
   },
   "fleet": {
     "title": "Мои авто",
@@ -386,7 +427,15 @@
     "driverCreated": "Водитель создан.",
     "driverRemoved": "Удалено.",
     "inviteEdgeError": "Ошибка Edge Function (invite-driver)",
-    "removeEdgeError": "Ошибка Edge Function (remove-driver)"
+    "removeEdgeError": "Ошибка Edge Function (remove-driver)",
+    "companyProfileTitle": "Профиль компании",
+    "companyDescription": "Описание компании",
+    "companyDescriptionPlaceholder": "Опишите свой автопарк...",
+    "companyLogo": "Логотип компании",
+    "companyLogoHint": "Загрузите логотип для публичного профиля.",
+    "companyLocation": "Локация компании",
+    "companyPhone": "Телефон компании",
+    "publicProfilePreview": "Посмотреть публичный профиль →"
   },
   "pwaInstall": {
     "banner": {

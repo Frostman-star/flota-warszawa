@@ -1,8 +1,9 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
-import { Link, Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { normalizeProfileRole } from '../utils/profileRole'
+import { supabase } from '../lib/supabase'
 
 /** @param {string | null | undefined} profileRole */
 function postLoginPath(profileRole, fromState) {
@@ -17,13 +18,16 @@ export function Login() {
   const { session, signIn, signUp, loading, role } = useAuth()
   const { t } = useTranslation()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const target = useMemo(() => postLoginPath(role, location.state?.from), [role, location.state?.from])
 
-  const [mode, setMode] = useState('login')
+  const [mode, setMode] = useState(searchParams.get('mode') === 'register' ? 'register' : 'login')
   const [registerRole, setRegisterRole] = useState(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [fullName, setFullName] = useState('')
+  const [forgotOpen, setForgotOpen] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
   const [info, setInfo] = useState(null)
@@ -31,6 +35,11 @@ export function Login() {
   useEffect(() => {
     if (mode === 'login') setRegisterRole(null)
   }, [mode])
+  useEffect(() => {
+    const roleQ = searchParams.get('role')
+    if (searchParams.get('mode') === 'register') setMode('register')
+    if (roleQ === 'driver' || roleQ === 'owner') setRegisterRole(roleQ)
+  }, [searchParams])
 
   if (!loading && session) return <Navigate to={target} replace />
 
@@ -59,6 +68,36 @@ export function Login() {
   }
 
   const showRegisterForm = mode === 'register' && registerRole
+  const showAuthForm = mode === 'login' || showRegisterForm
+
+  async function handleResetPassword(e) {
+    e.preventDefault()
+    setBusy(true)
+    setError(null)
+    setInfo(null)
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(forgotEmail.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      })
+      if (resetError) throw resetError
+      setInfo(t('login.resetSentSuccess'))
+      setForgotOpen(false)
+    } catch (err) {
+      setError(err.message ?? t('login.loginError'))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function signInSocial(provider) {
+    setError(null)
+    // NOTE: Enable Google, Apple, Facebook OAuth in Supabase Dashboard → Authentication → Providers
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo: `${window.location.origin}/auth/callback` },
+    })
+    if (oauthError) setError(oauthError.message)
+  }
 
   return (
     <div className="auth-page">
@@ -124,7 +163,26 @@ export function Login() {
           </p>
         ) : null}
 
-        {mode === 'login' || showRegisterForm ? (
+        {showAuthForm ? (
+          <>
+            <div className="auth-social-stack">
+              <button type="button" className="btn auth-social auth-social-google" onClick={() => void signInSocial('google')}>
+                G {t('login.continueGoogle')}
+              </button>
+              <button type="button" className="btn auth-social auth-social-apple" onClick={() => void signInSocial('apple')}>
+                🍎 {t('login.continueApple')}
+              </button>
+              <button
+                type="button"
+                className="btn auth-social auth-social-facebook"
+                onClick={() => void signInSocial('facebook')}
+              >
+                f {t('login.continueFacebook')}
+              </button>
+            </div>
+            <p className="auth-divider" aria-hidden>
+              ━━━━ {t('login.orDivider')} ━━━━
+            </p>
           <form className="auth-form" onSubmit={handleSubmit}>
             {mode === 'register' ? (
               <label className="field">
@@ -146,6 +204,33 @@ export function Login() {
               {busy ? t('login.processing') : mode === 'login' ? t('login.submitLogin') : t('login.submitRegister')}
             </button>
           </form>
+          </>
+        ) : null}
+
+        {mode === 'login' ? (
+          <div className="auth-forgot-wrap">
+            <button type="button" className="link link-button small" onClick={() => setForgotOpen((v) => !v)}>
+              {t('login.forgotPasswordLink')}
+            </button>
+            {forgotOpen ? (
+              <form className="auth-form" onSubmit={handleResetPassword}>
+                <label className="field">
+                  <span className="field-label">{t('login.email')}</span>
+                  <input
+                    className="input"
+                    type="email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    autoComplete="email"
+                    required
+                  />
+                </label>
+                <button type="submit" className="btn secondary wide" disabled={busy}>
+                  {busy ? t('login.processing') : t('login.sendResetLink')}
+                </button>
+              </form>
+            ) : null}
+          </div>
         ) : null}
 
         <Link to="/" className="muted small link">{t('login.home')}</Link>

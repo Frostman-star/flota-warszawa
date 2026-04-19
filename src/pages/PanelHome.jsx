@@ -1,4 +1,4 @@
-﻿import { Link, useOutletContext } from 'react-router-dom'
+﻿import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
@@ -24,6 +24,7 @@ export function PanelHome() {
   const { t, i18n } = useTranslation()
   const { cars, loading, error, refresh } = useOutletContext()
   const { user } = useAuth()
+  const location = useLocation()
   const { count: pendingApps } = useOwnerPendingApplicationCount(user?.id, Boolean(user?.id))
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const weekly = computeWeeklyRentTotal(cars)
@@ -55,6 +56,27 @@ export function PanelHome() {
         <div className="hero-stat"><span className="hero-stat-num">{weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł</span><span className="hero-stat-label">{t('panel.weekly')}</span></div>
         <div className="hero-stat"><span className="hero-stat-num">{toCheck}</span><span className="hero-stat-label">{t('panel.toCheck')}</span></div>
       </section>
+      {location.state?.toast ? <p className="form-info">{String(location.state.toast)}</p> : null}
+
+      {user?.id ? (
+        <section className="card pad-lg">
+          <strong>{t('panel.publicProfileTitle')}</strong>
+          <p className="muted small mb-0">{`${window.location.origin}/flota/${user.id}`}</p>
+          <p className="muted small">{t('panel.publicProfileHint')}</p>
+          <div className="btn-row">
+            <button
+              type="button"
+              className="btn secondary small"
+              onClick={() => navigator.clipboard.writeText(`${window.location.origin}/flota/${user.id}`)}
+            >
+              {t('panel.copyLink')}
+            </button>
+            <a className="btn ghost small" href={`/flota/${user.id}`} target="_blank" rel="noreferrer">
+              {t('panel.open')}
+            </a>
+          </div>
+        </section>
+      ) : null}
 
       <Link
         to="/wnioski"

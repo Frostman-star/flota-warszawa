@@ -64,7 +64,33 @@
     "selectRoleFirst": "Спочатку оберіть тип облікового запису.",
     "accountCreated": "Обліковий запис створено.",
     "checkEmail": "Перевірте пошту для підтвердження.",
-    "loginError": "Помилка входу"
+    "loginError": "Помилка входу",
+    "forgotPasswordLink": "Не памʼятаєш пароль? Скинути →",
+    "sendResetLink": "Надіслати посилання",
+    "resetSentSuccess": "✅ Перевірте email — ми надіслали посилання для скидання пароля.",
+    "continueGoogle": "Продовжити з Google",
+    "continueApple": "Продовжити з Apple",
+    "continueFacebook": "Продовжити з Facebook",
+    "orDivider": "або"
+  },
+  "resetPassword": {
+    "title": "Встановити новий пароль",
+    "newPassword": "Новий пароль",
+    "confirmPassword": "Підтвердіть пароль",
+    "submit": "Змінити пароль",
+    "passwordTooShort": "Пароль має містити щонайменше 6 символів.",
+    "passwordMismatch": "Паролі не збігаються.",
+    "changedToast": "✅ Пароль змінено!",
+    "backToLogin": "← Назад до входу"
+  },
+  "authCallback": {
+    "loading": "Виконуємо вхід..."
+  },
+  "roleSelection": {
+    "title": "Оберіть тип акаунта",
+    "lead": "Підкажіть, хто ви, щоб завершити реєстрацію.",
+    "owner": "Я власник автопарку",
+    "driver": "Я водій"
   },
   "pageMeta": {
     "brandTitleSuffix": " — Cario",
@@ -113,7 +139,22 @@
     "criticalBody": "{{count}} документів потребують уваги протягом 7 днів.",
     "newApplicationsCard": "📋 Нові заявки: {{count}}",
     "newApplicationsHint": "Водії подають заявки на ваші авто з маркетплейсу.",
-    "newApplicationsBadge": "Нові"
+    "newApplicationsBadge": "Нові",
+    "publicProfileTitle": "🌐 Ваш публічний профіль:",
+    "publicProfileHint": "Поширюйте це посилання в групах водіїв, щоб знайти працівників.",
+    "copyLink": "Скопіювати посилання",
+    "open": "Відкрити"
+  },
+  "publicFleet": {
+    "defaultCompany": "Флот Cario",
+    "share": "Поділитися профілем",
+    "linkCopied": "✅ Посилання скопійовано!",
+    "locationBadge": "📍 {{city}}",
+    "call": "Зателефонувати",
+    "availableCars": "Доступні авто ({{count}})",
+    "empty": "Зараз немає доступних авто.",
+    "apply": "Подати заявку",
+    "totalFleet": "Флот: {{count}} авто загалом"
   },
   "fleet": {
     "title": "Мої авто",
@@ -386,7 +427,15 @@
     "driverCreated": "Водія створено.",
     "driverRemoved": "Видалено.",
     "inviteEdgeError": "Помилка Edge Function (invite-driver)",
-    "removeEdgeError": "Помилка Edge Function (remove-driver)"
+    "removeEdgeError": "Помилка Edge Function (remove-driver)",
+    "companyProfileTitle": "Профіль компанії",
+    "companyDescription": "Опис компанії",
+    "companyDescriptionPlaceholder": "Опишіть свій автопарк...",
+    "companyLogo": "Логотип компанії",
+    "companyLogoHint": "Завантажте логотип для публічного профілю.",
+    "companyLocation": "Локація компанії",
+    "companyPhone": "Телефон компанії",
+    "publicProfilePreview": "Подивитися публічний профіль →"
   },
   "pwaInstall": {
     "banner": {

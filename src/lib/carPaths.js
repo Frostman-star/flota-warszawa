@@ -3,5 +3,5 @@
  * @param {boolean} isAdmin
  */
 export function carPath(carId, isAdmin) {
-  return isAdmin ? `/flota/${carId}` : `/samochod/${carId}`
+  return isAdmin ? `/pojazd/${carId}` : `/samochod/${carId}`
 }

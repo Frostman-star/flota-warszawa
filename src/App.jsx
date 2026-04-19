@@ -19,6 +19,10 @@ import { NoCar } from './pages/NoCar'
 import { Settings } from './pages/Settings'
 import { Statistics } from './pages/Statistics'
 import { Services } from './pages/Services'
+import { ResetPassword } from './pages/ResetPassword'
+import { AuthCallback } from './pages/AuthCallback'
+import { RoleSelection } from './pages/RoleSelection'
+import { PublicFleetProfile } from './pages/PublicFleetProfile'
 
 export default function App() {
   return (
@@ -26,6 +30,18 @@ export default function App() {
       <DocumentHead />
       <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Login />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route
+        path="/wybierz-role"
+        element={
+          <ProtectedRoute>
+            <RoleSelection />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/flota/:ownerId" element={<PublicFleetProfile />} />
       <Route path="/" element={<HomeRedirect />} />
       <Route
         path="/brak-pojazdu"
@@ -61,7 +77,7 @@ export default function App() {
         <Route path="/serwisy" element={<Services />} />
         <Route path="/ustawienia" element={<Settings />} />
         <Route path="/wnioski" element={<OwnerApplications />} />
-        <Route path="/flota/:id" element={<CarPageShell nestInAdminLayout />}>
+        <Route path="/pojazd/:id" element={<CarPageShell nestInAdminLayout />}>
           <Route index element={<CarDetail />} />
         </Route>
       </Route>

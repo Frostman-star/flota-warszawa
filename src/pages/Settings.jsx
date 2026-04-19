@@ -19,6 +19,11 @@ export function Settings() {
   const [contactEmail, setContactEmail] = useState('')
   const [contactPhone, setContactPhone] = useState('')
   const [contactTelegram, setContactTelegram] = useState('')
+  const [companyDescription, setCompanyDescription] = useState('')
+  const [companyLogoUrl, setCompanyLogoUrl] = useState('')
+  const [companyLocation, setCompanyLocation] = useState('Warszawa')
+  const [companyPhone, setCompanyPhone] = useState('')
+  const [uploadBusy, setUploadBusy] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState(null)
@@ -45,6 +50,18 @@ export function Settings() {
       if (comp?.contact_telegram != null) setContactTelegram(comp.contact_telegram)
 
       if (user?.id) {
+        const { data: ownProfile } = await supabase
+          .from('profiles')
+          .select('company_name, company_logo_url, company_description, company_phone, company_location')
+          .eq('id', user.id)
+          .maybeSingle()
+        if (ownProfile) {
+          if (ownProfile.company_name) setCompanyName(ownProfile.company_name)
+          setCompanyLogoUrl(String(ownProfile.company_logo_url ?? ''))
+          setCompanyDescription(String(ownProfile.company_description ?? ''))
+          setCompanyPhone(String(ownProfile.company_phone ?? ''))
+          setCompanyLocation(String(ownProfile.company_location ?? 'Warszawa'))
+        }
         const { data: prefs } = await supabase
           .from('notification_preferences')
           .select('alert_days, email_enabled')
@@ -86,6 +103,17 @@ export function Settings() {
       if (cErr) throw cErr
 
       if (user?.id) {
+        const { error: profileErr } = await supabase
+          .from('profiles')
+          .update({
+            company_name: companyName.trim() || null,
+            company_description: companyDescription.trim() || null,
+            company_logo_url: companyLogoUrl.trim() || null,
+            company_phone: companyPhone.trim() || null,
+            company_location: companyLocation.trim() || 'Warszawa',
+          })
+          .eq('id', user.id)
+        if (profileErr) throw profileErr
         const { error: pErr } = await supabase.from('notification_preferences').upsert(
           {
             user_id: user.id,
@@ -102,6 +130,27 @@ export function Settings() {
       setErr(e.message ?? t('errors.saveFailed'))
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function uploadCompanyLogo(file) {
+    if (!user?.id || !file) return
+    setUploadBusy(true)
+    setErr(null)
+    try {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase()
+      const path = `${user.id}/company-logo-${Date.now()}.${ext}`
+      const { error: upErr } = await supabase.storage.from('company-logos').upload(path, file, {
+        upsert: true,
+        cacheControl: '3600',
+      })
+      if (upErr) throw upErr
+      const { data } = supabase.storage.from('company-logos').getPublicUrl(path)
+      setCompanyLogoUrl(String(data?.publicUrl ?? ''))
+    } catch (e) {
+      setErr(e.message ?? t('errors.saveFailed'))
+    } finally {
+      setUploadBusy(false)
     }
   }
 
@@ -205,6 +254,44 @@ export function Settings() {
             placeholder={t('settings.contactTelegramPlaceholder')}
           />
         </label>
+        <h2 className="block-title">{t('settings.companyProfileTitle')}</h2>
+        <label className="field">
+          <span className="field-label">{t('settings.companyLocation')}</span>
+          <input className="input" value={companyLocation} onChange={(e) => setCompanyLocation(e.target.value)} />
+        </label>
+        <label className="field">
+          <span className="field-label">{t('settings.companyPhone')}</span>
+          <input className="input" type="tel" value={companyPhone} onChange={(e) => setCompanyPhone(e.target.value)} />
+        </label>
+        <label className="field">
+          <span className="field-label">{t('settings.companyDescription')}</span>
+          <textarea
+            className="input input-textarea"
+            rows={4}
+            value={companyDescription}
+            onChange={(e) => setCompanyDescription(e.target.value)}
+            placeholder={t('settings.companyDescriptionPlaceholder')}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">{t('settings.companyLogo')}</span>
+          {companyLogoUrl ? <img src={companyLogoUrl} alt="" className="driver-avatar-lg" /> : null}
+          <input
+            className="input"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) void uploadCompanyLogo(f)
+            }}
+          />
+          <span className="muted small">{uploadBusy ? t('app.loading') : t('settings.companyLogoHint')}</span>
+        </label>
+        {user?.id ? (
+          <a href={`/flota/${user.id}`} target="_blank" rel="noreferrer" className="link">
+            {t('settings.publicProfilePreview')}
+          </a>
+        ) : null}
 
         <h2 className="block-title">{t('settings.notificationsBlock')}</h2>
         <p className="muted small">{t('settings.notificationsHint')}</p>

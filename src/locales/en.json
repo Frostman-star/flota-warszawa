@@ -64,7 +64,33 @@
     "selectRoleFirst": "Select account type first.",
     "accountCreated": "Account created.",
     "checkEmail": "Check your e-mail inbox for confirmation.",
-    "loginError": "Login error"
+    "loginError": "Login error",
+    "forgotPasswordLink": "Forgot password? Reset →",
+    "sendResetLink": "Send link",
+    "resetSentSuccess": "✅ Check your email inbox — we sent a password reset link.",
+    "continueGoogle": "Continue with Google",
+    "continueApple": "Continue with Apple",
+    "continueFacebook": "Continue with Facebook",
+    "orDivider": "or"
+  },
+  "resetPassword": {
+    "title": "Set new password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "submit": "Change password",
+    "passwordTooShort": "Password must have at least 6 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "changedToast": "✅ Password has been changed!",
+    "backToLogin": "← Back to login"
+  },
+  "authCallback": {
+    "loading": "Signing you in..."
+  },
+  "roleSelection": {
+    "title": "Choose account type",
+    "lead": "Tell us who you are to finish registration.",
+    "owner": "I am a fleet owner",
+    "driver": "I am a driver"
   },
   "pageMeta": {
     "brandTitleSuffix": " — Cario",
@@ -113,7 +139,22 @@
     "criticalBody": "{{count}} document(s) need attention within 7 days.",
     "newApplicationsCard": "📋 New applications: {{count}}",
     "newApplicationsHint": "Drivers are applying to your marketplace cars.",
-    "newApplicationsBadge": "New"
+    "newApplicationsBadge": "New",
+    "publicProfileTitle": "🌐 Your public profile:",
+    "publicProfileHint": "Share this link in driver groups to find workers.",
+    "copyLink": "Copy link",
+    "open": "Open"
+  },
+  "publicFleet": {
+    "defaultCompany": "Cario fleet",
+    "share": "Share profile",
+    "linkCopied": "✅ Link copied!",
+    "locationBadge": "📍 {{city}}",
+    "call": "Call",
+    "availableCars": "Available cars ({{count}})",
+    "empty": "No available cars at the moment.",
+    "apply": "Submit application",
+    "totalFleet": "Fleet: {{count}} vehicles total"
   },
   "fleet": {
     "title": "My cars",
@@ -386,7 +427,15 @@
     "driverCreated": "Driver created.",
     "driverRemoved": "Removed.",
     "inviteEdgeError": "Edge Function error (invite-driver)",
-    "removeEdgeError": "Edge Function error (remove-driver)"
+    "removeEdgeError": "Edge Function error (remove-driver)",
+    "companyProfileTitle": "Company profile",
+    "companyDescription": "Company description",
+    "companyDescriptionPlaceholder": "Describe your fleet...",
+    "companyLogo": "Company logo",
+    "companyLogoHint": "Upload a logo for your public profile.",
+    "companyLocation": "Company location",
+    "companyPhone": "Company phone",
+    "publicProfilePreview": "View your public profile →"
   },
   "pwaInstall": {
     "banner": {
