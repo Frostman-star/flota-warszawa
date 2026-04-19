@@ -61,7 +61,9 @@ export function driverProfileProgressPercent(profile) {
  * } | null | undefined} profile
  */
 export function isDriverProfileCompleteForApply(profile) {
-  return driverProfileProgressPercent(profile) >= 100
+  const hasName = String(profile?.full_name ?? '').trim().length > 0
+  const hasPhone = String(profile?.phone ?? '').trim().length > 0
+  return hasName && hasPhone && driverProfileProgressPercent(profile) >= 50
 }
 
 /**

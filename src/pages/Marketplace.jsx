@@ -73,6 +73,7 @@ export function Marketplace() {
   const [applyMessage, setApplyMessage] = useState('')
   const [applySubmitting, setApplySubmitting] = useState(false)
   const [applyError, setApplyError] = useState(null)
+  const [applyOwnerContact, setApplyOwnerContact] = useState(null)
   /** @type {[Record<string, true>, import('react').Dispatch<import('react').SetStateAction<Record<string, true>>>]} */
   const [blockedApplyCars, setBlockedApplyCars] = useState({})
 
@@ -340,10 +341,43 @@ export function Marketplace() {
       setApplyError(error.message)
       return
     }
+    const fallbackCompany = formatPartnerNamesFromCar(applyCar) || t('publicFleet.defaultCompany')
+    let ownerContact = {
+      company: fallbackCompany,
+      phone: String(applyCar.owner_phone ?? '').trim(),
+      telegram: String(applyCar.owner_telegram ?? '').trim(),
+      email: '',
+    }
+    try {
+      const { data: cs } = await supabase
+        .from('company_settings')
+        .select('company_name, contact_email')
+        .eq('id', 1)
+        .maybeSingle()
+      ownerContact = {
+        ...ownerContact,
+        company: String(cs?.company_name ?? '').trim() || ownerContact.company,
+        email: String(cs?.contact_email ?? '').trim(),
+      }
+    } catch {
+      // fallback to car contact fields only
+    }
+    setApplyOwnerContact(ownerContact)
     if (session?.access_token && ins?.id) {
       try {
         await supabase.functions.invoke('notify-driver-application', {
-          body: { event: 'new_application', application_id: ins.id },
+          body: {
+            event: 'new_application',
+            application_id: ins.id,
+            title: t('marketplace.pushNewApplicationTitle', {
+              plate: String(applyCar.plate_number ?? '').trim() || '—',
+            }),
+            body: `${String(profile.full_name ?? '').trim()} · ${String(profile.phone ?? '').trim()}`,
+            open_url: '/wnioski',
+            driver_name: String(profile.full_name ?? '').trim(),
+            driver_phone: String(profile.phone ?? '').trim(),
+            driver_message: applyMessage.trim() || '',
+          },
           headers: { Authorization: `Bearer ${session.access_token}` },
         })
       } catch {
@@ -353,7 +387,7 @@ export function Marketplace() {
     setApplyStep('success')
     setBlockedApplyCars((prev) => ({ ...prev, [String(applyCar.id)]: true }))
     void loadMyApplications()
-  }, [isDriver, applyCar, user?.id, profile, applyMessage, session?.access_token, loadMyApplications])
+  }, [isDriver, applyCar, user?.id, profile, applyMessage, session?.access_token, loadMyApplications, t])
 
   function formatWeekly(car) {
     const n = Math.round(Number(car.weekly_rent_pln ?? 0))
@@ -389,7 +423,7 @@ export function Marketplace() {
 
           {isDriver && !profileApplyReady ? (
             <div className="profile-banner warn" role="status">
-              {t('marketplace.profileIncompleteBanner')}{' '}
+              {t('marketplace.profileIncompleteApplyBanner')}{' '}
               <Link to="/profil" className="link-strong">
                 {t('marketplace.profileIncompleteCta')}
               </Link>
@@ -734,11 +768,49 @@ export function Marketplace() {
           setApplyCar(null)
           setApplyStep('form')
           setApplyError(null)
+          setApplyOwnerContact(null)
         }}
       >
         {applyStep === 'success' ? (
           <div className="apply-modal-success">
-            <p className="apply-success">{t('marketplace.applySuccess')}</p>
+            <p className="apply-success">{t('marketplace.applySentContactPrompt')}</p>
+            {applyOwnerContact ? (
+              <div className="stack-form">
+                <p>
+                  <strong>{applyOwnerContact.company || '—'}</strong>
+                </p>
+                {applyOwnerContact.phone ? (
+                  <p>
+                    <a className="link-strong" href={`tel:${applyOwnerContact.phone.replace(/\s+/g, '')}`}>
+                      {applyOwnerContact.phone}
+                    </a>
+                  </p>
+                ) : null}
+                {applyOwnerContact.telegram ? (
+                  <p>
+                    {telegramHref(applyOwnerContact.telegram) ? (
+                      <a
+                        className="link-strong"
+                        href={telegramHref(applyOwnerContact.telegram) ?? undefined}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {applyOwnerContact.telegram}
+                      </a>
+                    ) : (
+                      <span className="link-strong">{applyOwnerContact.telegram}</span>
+                    )}
+                  </p>
+                ) : null}
+                {applyOwnerContact.email ? (
+                  <p>
+                    <a className="link-strong" href={`mailto:${applyOwnerContact.email}`}>
+                      {applyOwnerContact.email}
+                    </a>
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
             <button
               type="button"
               className="btn btn-huge primary"
@@ -746,6 +818,7 @@ export function Marketplace() {
                 setApplyOpen(false)
                 setApplyCar(null)
                 setApplyStep('form')
+                setApplyOwnerContact(null)
               }}
             >
               {t('app.ok')}
