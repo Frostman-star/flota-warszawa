@@ -12,6 +12,7 @@ import { MarketplaceListingFields } from '../components/MarketplaceListingFields
 import { CarStatusBadge } from '../components/CarStatusBadge'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { NoteModal } from '../components/NoteModal'
+import { HandoverSection } from '../components/HandoverSection'
 import { useDrivers } from '../hooks/useDrivers'
 import { expiryStatusLabel, serviceStatusLabel } from '../utils/docLabels'
 import { localeTag } from '../utils/localeTag'
@@ -289,6 +290,8 @@ export function CarDetail() {
               </div>
             ) : null}
           </section>
+
+          {user?.id ? <HandoverSection car={car} user={user} /> : null}
         </>
       ) : null}
 
