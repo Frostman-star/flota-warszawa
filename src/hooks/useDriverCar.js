@@ -21,7 +21,7 @@ export function useDriverCar(userId) {
     const { data, error: qErr } = await supabase
       .from('cars')
       .select('id')
-      .eq('assigned_driver_id', userId)
+      .eq('driver_id', userId)
       .order('plate_number', { ascending: true })
       .limit(1)
       .maybeSingle()

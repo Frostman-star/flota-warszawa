@@ -28,7 +28,7 @@ export function useCars(opts = {}) {
         model,
         year,
         color_label,
-        assigned_driver_id,
+        driver_id,
         mileage_km,
         weekly_rent_pln,
         fines_count,
@@ -42,7 +42,7 @@ export function useCars(opts = {}) {
         driver_label,
         show_in_marketplace,
         marketplace_status,
-        driver_profile:profiles!cars_assigned_driver_id_fkey ( full_name )
+        driver_profile:profiles!cars_driver_id_fkey ( full_name )
       `
       )
       .order('plate_number', { ascending: true })
@@ -54,7 +54,7 @@ export function useCars(opts = {}) {
       setCars(
         (data ?? []).map((row) => ({
           ...row,
-          driver_name: row.driver_profile?.full_name || row.driver_label || null,
+          driver_name: row.driver_profile?.full_name || (row.driver_label && String(row.driver_label).trim() ? row.driver_label : null),
         }))
       )
     }
@@ -95,7 +95,7 @@ export function useCar(carId, opts = {}) {
         model,
         year,
         color_label,
-        assigned_driver_id,
+        driver_id,
         mileage_km,
         weekly_rent_pln,
         fines_count,
@@ -109,13 +109,13 @@ export function useCar(carId, opts = {}) {
         driver_label,
         show_in_marketplace,
         marketplace_status,
-        driver_profile:profiles!cars_assigned_driver_id_fkey ( full_name )
+        driver_profile:profiles!cars_driver_id_fkey ( full_name )
       `
       )
       .eq('id', carId)
 
     if (userId) {
-      q = q.eq('assigned_driver_id', userId)
+      q = q.eq('driver_id', userId)
     }
 
     const { data, error: qErr } = await q.maybeSingle()
@@ -129,7 +129,7 @@ export function useCar(carId, opts = {}) {
     } else {
       setCar({
         ...data,
-        driver_name: data.driver_profile?.full_name || data.driver_label || null,
+        driver_name: data.driver_profile?.full_name || (data.driver_label && String(data.driver_label).trim() ? data.driver_label : null),
       })
       setError(null)
     }

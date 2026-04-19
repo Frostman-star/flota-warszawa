@@ -21,7 +21,7 @@ create table public.cars (
   model text not null default '',
   year int,
   color_label text not null default '',
-  assigned_driver_id uuid references public.profiles (id) on delete set null,
+  driver_id uuid references public.profiles (id) on delete set null,
   driver_label text not null default '',
   mileage_km int not null default 0,
   weekly_rent_pln numeric(12,2) not null default 0,
@@ -53,7 +53,8 @@ create table public.car_history (
   created_by uuid references public.profiles (id) on delete set null
 );
 
-create index cars_assigned_driver_id_idx on public.cars (assigned_driver_id);
+create unique index cars_driver_id_unique on public.cars (driver_id) where driver_id is not null;
+create index cars_driver_id_idx on public.cars (driver_id);
 create index car_history_car_id_idx on public.car_history (car_id);
 
 -- Aktualizacja updated_at
@@ -167,7 +168,7 @@ create policy "cars_admin_all"
 
 create policy "cars_driver_select_assigned"
   on public.cars for select
-  using (assigned_driver_id = auth.uid());
+  using (driver_id = auth.uid());
 
 -- car_history
 create policy "car_history_admin_all"
@@ -181,6 +182,6 @@ create policy "car_history_driver_select"
     exists (
       select 1 from public.cars c
       where c.id = car_history.car_id
-        and c.assigned_driver_id = auth.uid()
+        and c.driver_id = auth.uid()
     )
   );

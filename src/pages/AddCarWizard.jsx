@@ -2,11 +2,15 @@ import { useState } from 'react'
 import { Link, useNavigate, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
+import { useDrivers } from '../hooks/useDrivers'
 
 export function AddCarWizard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { refresh } = useOutletContext() ?? {}
+  const { isAdmin } = useAuth()
+  const { drivers } = useDrivers(isAdmin)
   const [step, setStep] = useState(1)
   const [done, setDone] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -14,7 +18,7 @@ export function AddCarWizard() {
 
   const [plate, setPlate] = useState('')
   const [model, setModel] = useState('')
-  const [driverLabel, setDriverLabel] = useState('')
+  const [driverId, setDriverId] = useState('')
   const [rent, setRent] = useState('')
   const [oc, setOc] = useState('')
   const [ac, setAc] = useState('')
@@ -30,8 +34,8 @@ export function AddCarWizard() {
         model: model.trim(),
         year: null,
         color_label: '',
-        driver_label: driverLabel.trim(),
-        assigned_driver_id: null,
+        driver_label: '',
+        driver_id: driverId || null,
         mileage_km: 0,
         weekly_rent_pln: Number(rent) || 0,
         fines_count: 0,
@@ -49,7 +53,12 @@ export function AddCarWizard() {
       }
       setDone(true)
     } catch (e) {
-      setErr(e.message ?? t('errors.saveFailed'))
+      const code = e && typeof e === 'object' && 'code' in e ? String(e.code) : ''
+      if (code === '23505') {
+        setErr(t('carForm.driverTakenError'))
+      } else {
+        setErr(e.message ?? t('errors.saveFailed'))
+      }
     } finally {
       setSaving(false)
     }
@@ -106,7 +115,18 @@ export function AddCarWizard() {
         <div className="wizard-fields">
           <label className="field">
             <span className="field-label-lg">{t('wizard.driverLabel')}</span>
-            <input className="input input-xl" value={driverLabel} onChange={(e) => setDriverLabel(e.target.value)} placeholder={t('wizard.driverPh')} />
+            <select className="input input-xl" value={driverId} onChange={(e) => setDriverId(e.target.value)}>
+              <option value="">{t('carForm.driverNone')}</option>
+              {drivers.map((d) => {
+                const busyElsewhere = Boolean(d.assigned_to_car_id)
+                const label = `${d.full_name || '—'}${d.email ? ` · ${d.email}` : ''}${busyElsewhere ? ` ${t('carForm.driverBusySuffix')}` : ''}`
+                return (
+                  <option key={d.id} value={d.id} disabled={busyElsewhere}>
+                    {label}
+                  </option>
+                )
+              })}
+            </select>
           </label>
           <label className="field">
             <span className="field-label-lg">{t('wizard.rentLabel')}</span>

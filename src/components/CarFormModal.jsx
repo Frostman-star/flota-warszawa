@@ -8,8 +8,7 @@ const emptyForm = {
   model: '',
   year: '',
   color_label: '',
-  assigned_driver_id: '',
-  driver_label: '',
+  driver_id: '',
   mileage_km: '0',
   weekly_rent_pln: '0',
   fines_count: '0',
@@ -23,11 +22,12 @@ const emptyForm = {
 }
 
 /**
- * @param {{ open: boolean, onClose: () => void, car?: Record<string, unknown> | null, drivers: Array<{ id: string, full_name: string, email?: string | null }>, onSaved: () => void }} props
+ * @param {{ open: boolean, onClose: () => void, car?: Record<string, unknown> | null, drivers: Array<{ id: string, full_name: string, email?: string | null, assigned_to_car_id?: string | null }>, onSaved: () => void }} props
  */
 export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
   const { t } = useTranslation()
   const editing = Boolean(car?.id)
+  const editingCarId = car?.id ? String(car.id) : null
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
@@ -41,8 +41,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         model: String(car.model ?? ''),
         year: car.year != null ? String(car.year) : '',
         color_label: String(car.color_label ?? ''),
-        assigned_driver_id: car.assigned_driver_id ? String(car.assigned_driver_id) : '',
-        driver_label: String(car.driver_label ?? ''),
+        driver_id: car.driver_id ? String(car.driver_id) : '',
         mileage_km: String(car.mileage_km ?? '0'),
         weekly_rent_pln: String(car.weekly_rent_pln ?? '0'),
         fines_count: String(car.fines_count ?? '0'),
@@ -100,8 +99,8 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       model: form.model.trim(),
       year: form.year ? Number(form.year) : null,
       color_label: form.color_label.trim(),
-      assigned_driver_id: form.assigned_driver_id || null,
-      driver_label: form.driver_label.trim(),
+      driver_id: form.driver_id || null,
+      driver_label: '',
       mileage_km: Number(form.mileage_km) || 0,
       weekly_rent_pln: Number(form.weekly_rent_pln) || 0,
       fines_count: Number(form.fines_count) || 0,
@@ -131,7 +130,12 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       onSaved()
       onClose()
     } catch (err) {
-      setError(err.message ?? t('carForm.saveFailed'))
+      const code = err && typeof err === 'object' && 'code' in err ? String(err.code) : ''
+      if (code === '23505') {
+        setError(t('carForm.driverTakenError'))
+      } else {
+        setError(err.message ?? t('carForm.saveFailed'))
+      }
     } finally {
       setSaving(false)
     }
@@ -160,26 +164,20 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
           <span className="field-label">{t('carForm.driverSelect')}</span>
           <select
             className="input"
-            value={form.assigned_driver_id}
-            onChange={(e) => setForm((f) => ({ ...f, assigned_driver_id: e.target.value }))}
+            value={form.driver_id}
+            onChange={(e) => setForm((f) => ({ ...f, driver_id: e.target.value }))}
           >
             <option value="">{t('carForm.driverNone')}</option>
-            {drivers.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.full_name}
-                {d.email ? ` (${d.email})` : ''}
-              </option>
-            ))}
+            {drivers.map((d) => {
+              const busyElsewhere = Boolean(d.assigned_to_car_id && d.assigned_to_car_id !== editingCarId)
+              const label = `${d.full_name || '—'}${d.email ? ` · ${d.email}` : ''}${busyElsewhere ? ` ${t('carForm.driverBusySuffix')}` : ''}`
+              return (
+                <option key={d.id} value={d.id} disabled={busyElsewhere}>
+                  {label}
+                </option>
+              )
+            })}
           </select>
-        </label>
-        <label className="field">
-          <span className="field-label">{t('carForm.driverText')}</span>
-          <input
-            className="input"
-            value={form.driver_label}
-            onChange={(e) => setForm((f) => ({ ...f, driver_label: e.target.value }))}
-            placeholder={t('carForm.driverTextPh')}
-          />
         </label>
         {field('mileage_km', t('carForm.mileage'), 'number', { min: 0, step: 1 })}
         {field('weekly_rent_pln', t('carForm.rent'), 'number', { min: 0, step: 0.01 })}

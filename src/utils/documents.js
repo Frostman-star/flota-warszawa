@@ -145,7 +145,7 @@ export function isPilne14(car) {
  * @param {Record<string, unknown>} car
  */
 export function isFleetOk(car) {
-  if (!car.assigned_driver_id) return false
+  if (!car.driver_id) return false
   const w = worstDocumentTier(car)
   return w === 'green' || w === null
 }

@@ -76,9 +76,9 @@ Deno.serve(async (req) => {
     const { data: profile } = await userClient.from('profiles').select('role, email').eq('id', user.id).maybeSingle()
     const isAdmin = profile?.role === 'admin'
 
-    let carsQuery = userClient.from('cars').select('id, plate_number, oc_expiry, ac_expiry, przeglad_expiry, assigned_driver_id')
+    let carsQuery = userClient.from('cars').select('id, plate_number, oc_expiry, ac_expiry, przeglad_expiry, driver_id')
     if (!isAdmin) {
-      carsQuery = carsQuery.eq('assigned_driver_id', user.id)
+      carsQuery = carsQuery.eq('driver_id', user.id)
     }
     const { data: cars, error: carsErr } = await carsQuery
     if (carsErr) throw carsErr

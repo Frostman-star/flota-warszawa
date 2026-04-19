@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     }
 
     const admin = createClient(supabaseUrl, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } })
-    await admin.from('cars').update({ assigned_driver_id: null }).eq('assigned_driver_id', targetId)
+    await admin.from('cars').update({ driver_id: null }).eq('driver_id', targetId)
 
     const { error } = await admin.auth.admin.deleteUser(targetId)
     if (error) throw error

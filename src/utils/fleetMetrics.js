@@ -4,8 +4,8 @@ import { daysUntil, flattenDocumentAlerts, isUrgentExpiry, worstDocumentTier } f
 export function computeWeeklyRentTotal(cars) {
   return cars.reduce((sum, c) => sum + Number(c.weekly_rent_pln ?? 0), 0)
 }
-export function countActiveCars(cars) { return cars.filter((c) => c.assigned_driver_id).length }
-export function countCarsWithoutDriver(cars) { return cars.filter((c) => !c.assigned_driver_id).length }
+export function countActiveCars(cars) { return cars.filter((c) => c.driver_id).length }
+export function countCarsWithoutDriver(cars) { return cars.filter((c) => !c.driver_id).length }
 export function countUrgentDocumentAlerts(cars) {
   let n = 0
   for (const car of cars) for (const key of ['oc_expiry', 'ac_expiry', 'przeglad_expiry']) if (typeof car[key] === 'string' && isUrgentExpiry(car[key])) n += 1
@@ -14,7 +14,7 @@ export function countUrgentDocumentAlerts(cars) {
 export function monthlyRentForecast(cars) { return computeWeeklyRentTotal(cars) * 4 }
 export function countNewCarsWithoutDriverThisWeek(cars) {
   const weekAgo = Date.now() - 7 * 86400000
-  return cars.filter((c) => !c.assigned_driver_id && (c.created_at ? new Date(String(c.created_at)).getTime() : 0) >= weekAgo).length
+  return cars.filter((c) => !c.driver_id && (c.created_at ? new Date(String(c.created_at)).getTime() : 0) >= weekAgo).length
 }
 export function countBellAlerts(cars) { return cars.reduce((n, car) => n + flattenDocumentAlerts(car).length, 0) }
 export function buildAlertRows(cars) {
@@ -28,7 +28,7 @@ export function buildAlertRows(cars) {
   return rows
 }
 export function carOperationalStatus(car) {
-  if (!car.assigned_driver_id) return 'idle'
+  if (!car.driver_id) return 'idle'
   const w = worstDocumentTier(car)
   if (w === 'red' || w === 'orange' || w === 'yellow') return 'alert'
   return 'active'
