@@ -116,24 +116,20 @@ export function Marketplace() {
   const loadDriverListings = useCallback(async () => {
     setDriverLoading(true)
     setDriverError(null)
-    const rpc = await supabase.rpc('get_marketplace_listings')
-    if (!rpc.error) {
-      setDriverCars(Array.isArray(rpc.data) ? rpc.data : [])
-      setDriverError(null)
+    // Read catalog via RLS on public.cars (not RPC-first): empty RPC success skipped the
+    // .from('cars') fallback before, so drivers never saw other owners' listings.
+    const { data, error } = await supabase
+      .from('cars')
+      .select(DRIVER_SELECT)
+      .eq('marketplace_listed', true)
+      .is('driver_id', null)
+      .order('weekly_rent_pln', { ascending: true })
+    if (error) {
+      setDriverError(error.message)
+      setDriverCars([])
     } else {
-      const fb = await supabase
-        .from('cars')
-        .select(DRIVER_SELECT)
-        .eq('marketplace_listed', true)
-        .is('driver_id', null)
-        .order('weekly_rent_pln', { ascending: true })
-      if (fb.error) {
-        setDriverError(fb.error.message)
-        setDriverCars([])
-      } else {
-        setDriverCars(fb.data ?? [])
-        setDriverError(null)
-      }
+      setDriverCars(data ?? [])
+      setDriverError(null)
     }
     setDriverLoading(false)
   }, [])
