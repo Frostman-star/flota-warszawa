@@ -34,12 +34,16 @@ export function PushBanner() {
   }
 
   return (
-    <div className="push-banner" role="region" aria-label="push notifications">
+    <div className="push-banner" role="region" aria-label={t('push.regionAria')}>
       <div className="push-banner-inner">
-        <span className="push-banner-text">Enable push reminders for document deadlines?</span>
+        <span className="push-banner-text">{t('push.text')}</span>
         <div className="push-banner-actions">
-          <button type="button" className="btn primary small" disabled={busy} onClick={enable}>{busy ? '…' : 'Enable'}</button>
-          <button type="button" className="btn ghost small" onClick={skip}>Later</button>
+          <button type="button" className="btn primary small" disabled={busy} onClick={enable}>
+            {busy ? t('push.busy') : t('push.enable')}
+          </button>
+          <button type="button" className="btn ghost small" onClick={skip}>
+            {t('push.later')}
+          </button>
         </div>
       </div>
     </div>

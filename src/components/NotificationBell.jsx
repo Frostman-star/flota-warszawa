@@ -15,7 +15,14 @@ export function NotificationBell({ cars }) {
 
   return (
     <div className="notif-bell-wrap">
-      <button type="button" className="notif-bell-btn" aria-expanded={open} aria-haspopup="true" aria-label={`Notifications, ${count}`} onClick={() => setOpen((v) => !v)}>
+      <button
+        type="button"
+        className="notif-bell-btn"
+        aria-expanded={open}
+        aria-haspopup="true"
+        aria-label={t('notifications.bellAria', { count })}
+        onClick={() => setOpen((v) => !v)}
+      >
         <span className="notif-icon" aria-hidden>🔔</span>
         {count > 0 ? <span className="notif-badge" aria-hidden>{count > 99 ? '99+' : count}</span> : null}
       </button>
@@ -23,8 +30,11 @@ export function NotificationBell({ cars }) {
         <>
           <button type="button" className="notif-dismiss" aria-label={t('app.close')} onClick={() => setOpen(false)} />
           <div className="notif-popover" role="menu">
-            <header className="notif-pop-head"><strong>Document alerts</strong><span className="muted small">{count}</span></header>
-            {rows.length === 0 ? <p className="muted notif-empty">No alerts in 30-day window.</p> : (
+            <header className="notif-pop-head">
+              <strong>{t('notifications.title')}</strong>
+              <span className="muted small">{count}</span>
+            </header>
+            {rows.length === 0 ? <p className="muted notif-empty">{t('notifications.empty')}</p> : (
               <ul className="notif-list">
                 {rows.map((r) => (
                   <li key={`${r.carId}-${r.docLabel}-${r.date}`}>

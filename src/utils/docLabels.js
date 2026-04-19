@@ -1,3 +1,4 @@
+import i18next from 'i18next'
 import { daysSince, daysUntil } from './documents'
 
 /**
@@ -6,19 +7,19 @@ import { daysSince, daysUntil } from './documents'
  */
 export function expiryStatusLabel(isoDate) {
   const d = daysUntil(isoDate)
-  if (d === null) return { text: 'BRAK DATY', tone: 'muted' }
-  if (d < 0) return { text: 'PRZETERMINOWANE', tone: 'danger' }
-  if (d <= 7) return { text: 'PILNE', tone: 'danger' }
-  if (d <= 30) return { text: `Za ${d} ${d === 1 ? 'dzień' : 'dni'}`, tone: 'warn' }
-  return { text: 'OK', tone: 'ok' }
+  if (d === null) return { text: i18next.t('docStatus.noDate'), tone: 'muted' }
+  if (d < 0) return { text: i18next.t('docStatus.expired'), tone: 'danger' }
+  if (d <= 7) return { text: i18next.t('docStatus.urgent'), tone: 'danger' }
+  if (d <= 30) return { text: d === 1 ? i18next.t('docStatus.inOneDay') : i18next.t('docStatus.inDays', { count: d }), tone: 'warn' }
+  return { text: i18next.t('docStatus.ok'), tone: 'ok' }
 }
 
 /** Im dłużej bez serwisu, tym ostrzej (dni od serwisu). */
 export function serviceStatusLabel(isoDate) {
   const ds = daysSince(isoDate)
-  if (ds === null) return { text: 'BRAK DATY', tone: 'muted' }
-  if (ds > 730) return { text: 'PILNE', tone: 'danger' }
-  if (ds > 365) return { text: 'SPRAWDŹ', tone: 'danger' }
-  if (ds > 180) return { text: 'Za jakiś czas', tone: 'warn' }
-  return { text: 'OK', tone: 'ok' }
+  if (ds === null) return { text: i18next.t('serviceStatus.noDate'), tone: 'muted' }
+  if (ds > 730) return { text: i18next.t('serviceStatus.urgent'), tone: 'danger' }
+  if (ds > 365) return { text: i18next.t('serviceStatus.checkSoon'), tone: 'danger' }
+  if (ds > 180) return { text: i18next.t('serviceStatus.later'), tone: 'warn' }
+  return { text: i18next.t('serviceStatus.ok'), tone: 'ok' }
 }

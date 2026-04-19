@@ -12,7 +12,11 @@
     "search": "Пошук",
     "close": "Закрити",
     "loading": "Завантаження…",
-    "tryAgain": "Спробувати ще раз"
+    "tryAgain": "Спробувати ще раз",
+    "ok": "OK",
+    "language": "Мова",
+    "brandMain": "Flota",
+    "brandSub": "Warszawa"
   },
   "nav": {
     "fleet": "Авто",
@@ -25,8 +29,8 @@
     "tabLogin": "Вхід",
     "tabRegister": "Реєстрація",
     "pickRole": "Спочатку оберіть тип облікового запису:",
-    "owner": "Я власник автопарку",
-    "driver": "Я водій",
+    "owner": "Власник автопарку",
+    "driver": "Водій шукає авто",
     "changeType": "← Змінити тип акаунта",
     "fullName": "Ім'я та прізвище",
     "email": "E-mail",
@@ -34,7 +38,11 @@
     "submitLogin": "Увійти",
     "submitRegister": "Створити акаунт",
     "processing": "Обробка…",
-    "home": "На головну"
+    "home": "На головну",
+    "selectRoleFirst": "Спочатку оберіть тип облікового запису.",
+    "accountCreated": "Обліковий запис створено.",
+    "checkEmail": "Перевірте пошту для підтвердження.",
+    "loginError": "Помилка входу"
   },
   "panel": {
     "title": "Увага на сьогодні",
@@ -46,7 +54,8 @@
     "quick": "Швидкі дії",
     "myCars": "Мої авто",
     "market": "Marketplace (бета)",
-    "addCar": "Додати авто"
+    "addCar": "Додати авто",
+    "criticalBody": "{{count}} документів потребують уваги протягом 7 днів."
   },
   "fleet": {
     "title": "Мої авто",
@@ -72,6 +81,196 @@
     "interest": "Я зацікавлений",
     "contact": "Контакт — {{plate}}",
     "writeTo": "Напишіть на:",
-    "noEmail": "Адміністратор ще не вказав контактний e-mail (Налаштування → контактний e-mail)."
+    "noEmail": "Адміністратор ще не вказав контактний e-mail (Налаштування → контактний e-mail).",
+    "location": "Варшава"
+  },
+  "docDays": {
+    "missing": "—",
+    "expired": "прострочено ({{count}} д.)",
+    "today": "сьогодні",
+    "one": "1 день",
+    "inDays": "{{count}} дн."
+  },
+  "docStatus": {
+    "noDate": "НЕМАЄ ДАТИ",
+    "expired": "ПРОСТРОЧЕНО",
+    "urgent": "ТЕРМІНОВО",
+    "ok": "OK",
+    "inOneDay": "За 1 день",
+    "inDays": "За {{count}} дн."
+  },
+  "serviceStatus": {
+    "noDate": "НЕМАЄ ДАТИ",
+    "urgent": "ТЕРМІНОВО",
+    "checkSoon": "ПЕРЕВІР",
+    "later": "Незабаром",
+    "ok": "OK"
+  },
+  "docs": {
+    "oc_expiry": "ОСЦП (OC)",
+    "ac_expiry": "КАСКО (AC)",
+    "przeglad_expiry": "Техогляд",
+    "last_service_date": "Останній сервіс"
+  },
+  "tierBadge": {
+    "none": "немає дати",
+    "red": "терміново",
+    "orange": "7–14 дн.",
+    "yellow": "14–30 дн.",
+    "green": "OK"
+  },
+  "carStatus": {
+    "active": "На лінії",
+    "activeHint": "Призначений водій, документи в порядку",
+    "idle": "Без водія",
+    "idleHint": "Авто не призначене",
+    "alert": "Увага: документи",
+    "alertHint": "Потрібно перевірити терміни"
+  },
+  "fleetDoc": {
+    "legend": "OC · AC · Огляд · Сервіс — колір за днями / сервісом",
+    "abbrPrz": "Огляд",
+    "abbrSvc": "Сервіс",
+    "noTier": "немає",
+    "noDate": "немає дати"
+  },
+  "errors": {
+    "carNotFound": "Авто не знайдено.",
+    "generic": "Помилка",
+    "saveFailed": "Не вдалося зберегти",
+    "loadFailed": "Не вдалося завантажити"
+  },
+  "notifications": {
+    "bellAria": "Сповіщення, {{count}}",
+    "title": "Попередження щодо документів",
+    "empty": "Немає попереджень у вікні 30 днів."
+  },
+  "push": {
+    "regionAria": "Push-сповіщення",
+    "text": "Увімкнути push-нагадування про терміни документів?",
+    "enable": "Увімкнути",
+    "later": "Пізніше",
+    "busy": "…"
+  },
+  "noCar": {
+    "title": "Немає призначеного авто",
+    "body": "Обліковий запис {{name}} не має призначеного автомобіля."
+  },
+  "settings": {
+    "back": "← Панель",
+    "title": "Налаштування",
+    "lead": "Компанія, сповіщення та водії.",
+    "saved": "Збережено.",
+    "companyBlock": "Назва компанії",
+    "displayName": "Відображувана назва",
+    "contactEmail": "Контактний e-mail (marketplace)",
+    "contactPlaceholder": "напр. biuro@firma.pl",
+    "notificationsBlock": "Сповіщення",
+    "notificationsHint": "Надіслати нагадування (push / e-mail через Edge), коли до кінця терміну залишиться саме:",
+    "emailCheckbox": "Увімкнути e-mail (потрібен RESEND_API_KEY у Edge + розгорнутий notify-documents)",
+    "saveButton": "Зберегти налаштування",
+    "saving": "Збереження…",
+    "dayOne": "день",
+    "daysMany": "дн.",
+    "driversBlock": "Водії",
+    "remove": "Видалити",
+    "confirmRemove": "Видалити обліковий запис водія {{name}}?",
+    "addDriver": "Додати водія",
+    "inviteEmail": "E-mail",
+    "invitePassword": "Початковий пароль",
+    "inviteFullName": "Ім'я та прізвище",
+    "inviteSubmit": "Створити обліковий запис",
+    "inviteBusy": "Створення…",
+    "driverCreated": "Водія створено.",
+    "driverRemoved": "Видалено.",
+    "inviteEdgeError": "Помилка Edge Function (invite-driver)",
+    "removeEdgeError": "Помилка Edge Function (remove-driver)"
+  },
+  "wizard": {
+    "back": "← Назад",
+    "title": "Нове авто",
+    "step": "Крок {{current}} з 3",
+    "plateLabel": "Реєстраційний номер",
+    "platePh": "напр. WX4821K",
+    "modelLabel": "Модель",
+    "modelPh": "напр. Toyota Corolla",
+    "next": "Далі",
+    "driverLabel": "Водій (ім'я)",
+    "driverPh": "Іван Петренко",
+    "rentLabel": "Тижнева оренда (PLN)",
+    "rentPh": "напр. 800",
+    "backBtn": "Назад",
+    "docHint": "Дати документів — можна доповнити пізніше в редагуванні авто.",
+    "ocLabel": "OC — дійсне до",
+    "acLabel": "AC — дійсне до",
+    "przLabel": "Техогляд",
+    "svcLabel": "Останній сервіс",
+    "save": "Зберегти",
+    "saving": "Збереження…",
+    "doneTitle": "Авто додано!",
+    "doneLead": "Ми стежитимемо за документами.",
+    "doneFleet": "Мої авто",
+    "doneHome": "Головна"
+  },
+  "carDetail": {
+    "backFleet": "← Мої авто",
+    "driver": "Водій:",
+    "rent": "Оренда:",
+    "perWeek": "/ тиждень",
+    "documents": "Документи",
+    "mileage": "Пробіг",
+    "mileagePlaceholder": "Новий показник одометра",
+    "mileageInvalid": "Введіть коректний пробіг",
+    "save": "Зберегти",
+    "addNote": "Додати нотатку",
+    "editCar": "Редагувати авто",
+    "marketplace": "Marketplace",
+    "showMarketplace": "Показати на marketplace",
+    "statusAvailable": "Доступне",
+    "statusTaken": "Зайняте",
+    "history": "Останні записи",
+    "mileageHistoryDetail": "Пробіг: {{prev}} → {{next}} км"
+  },
+  "carForm": {
+    "editTitle": "Редагувати авто",
+    "addTitle": "Додати авто",
+    "plateRequired": "Потрібен реєстраційний номер.",
+    "saveFailed": "Не вдалося зберегти",
+    "cancel": "Скасувати",
+    "save": "Зберегти",
+    "saving": "Збереження…",
+    "plate": "Реєстраційний номер *",
+    "model": "Модель",
+    "year": "Рік випуску",
+    "color": "Колір (позначка)",
+    "driverSelect": "Водій зі списку (необов'язково)",
+    "driverNone": "— немає —",
+    "driverText": "Або ім'я водія (текст)",
+    "driverTextPh": "напр. Іван Петренко",
+    "mileage": "Пробіг (км)",
+    "rent": "Тижнева оренда (PLN)",
+    "fines": "Кількість штрафів",
+    "oc": "OC — дата закінчення",
+    "ac": "AC — дата закінчення",
+    "prz": "Техогляд",
+    "service": "Останній сервіс",
+    "notes": "Нотатки",
+    "showMarketplace": "Показати на marketplace",
+    "marketplaceStatus": "Статус на marketplace",
+    "statusOptionTaken": "Зайняте",
+    "statusOptionAvailable": "Доступне"
+  },
+  "noteModal": {
+    "title": "Нотатка",
+    "body": "Текст",
+    "cancel": "Скасувати",
+    "save": "Зберегти"
+  },
+  "alertPanel": {
+    "title": "Попередження щодо документів",
+    "titleWindow": "Попередження щодо документів (≤ 30 дн.)",
+    "empty": "Немає документів, що закінчуються протягом 30 днів.",
+    "legend": "Кольори: червоний — прострочено або <7 дн., помаранчевий — 7–14 дн., жовтий — 14–30 дн.",
+    "dateLine": "Дата: {{date}} · {{relative}}"
   }
 }

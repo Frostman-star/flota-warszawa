@@ -1,4 +1,5 @@
-import { daysUntil, DOC_LABELS } from './documents'
+import i18next from 'i18next'
+import { daysUntil } from './documents'
 
 /**
  * @param {Record<string, unknown>} car
@@ -21,7 +22,7 @@ export function collectDocRemindersForCar(car, thresholds) {
       carId,
       plate,
       docKey,
-      label: DOC_LABELS[docKey] ?? docKey,
+      label: i18next.t(`docs.${docKey}`, { defaultValue: docKey }),
       days,
       threshold: th,
     })

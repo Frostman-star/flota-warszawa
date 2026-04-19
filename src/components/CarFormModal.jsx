@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Modal } from './Modal'
 
@@ -25,6 +26,7 @@ const emptyForm = {
  * @param {{ open: boolean, onClose: () => void, car?: Record<string, unknown> | null, drivers: Array<{ id: string, full_name: string, email?: string | null }>, onSaved: () => void }} props
  */
 export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
+  const { t } = useTranslation()
   const editing = Boolean(car?.id)
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
@@ -57,7 +59,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
     }
   }, [open, car])
 
-  const title = useMemo(() => (editing ? 'Edytuj pojazd' : 'Dodaj pojazd'), [editing])
+  const title = useMemo(() => (editing ? t('carForm.editTitle') : t('carForm.addTitle')), [editing, t])
 
   function field(name, label, type = 'text', opts = {}) {
     const { rows, placeholder, step, min } = opts
@@ -113,7 +115,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
     }
 
     if (!payload.plate_number) {
-      setError('Numer rejestracyjny jest wymagany.')
+      setError(t('carForm.plateRequired'))
       setSaving(false)
       return
     }
@@ -129,7 +131,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       onSaved()
       onClose()
     } catch (err) {
-      setError(err.message ?? 'Nie udało się zapisać')
+      setError(err.message ?? t('carForm.saveFailed'))
     } finally {
       setSaving(false)
     }
@@ -138,10 +140,10 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
   const footer = (
     <div className="modal-actions">
       <button type="button" className="btn ghost" onClick={onClose} disabled={saving}>
-        Anuluj
+        {t('carForm.cancel')}
       </button>
       <button type="submit" form="car-form" className="btn primary" disabled={saving}>
-        {saving ? 'Zapisywanie…' : 'Zapisz'}
+        {saving ? t('carForm.saving') : t('carForm.save')}
       </button>
     </div>
   )
@@ -150,18 +152,18 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
     <Modal open={open} title={title} onClose={onClose} footer={footer}>
       <form id="car-form" className="form-grid" onSubmit={handleSubmit}>
         {error ? <p className="form-error">{error}</p> : null}
-        {field('plate_number', 'Numer rejestracyjny *')}
-        {field('model', 'Model')}
-        {field('year', 'Rok produkcji', 'number', { min: 1970, step: 1 })}
-        {field('color_label', 'Kolor (etykieta)')}
+        {field('plate_number', t('carForm.plate'))}
+        {field('model', t('carForm.model'))}
+        {field('year', t('carForm.year'), 'number', { min: 1970, step: 1 })}
+        {field('color_label', t('carForm.color'))}
         <label className="field">
-          <span className="field-label">Kierowca z listy (opcjonalnie)</span>
+          <span className="field-label">{t('carForm.driverSelect')}</span>
           <select
             className="input"
             value={form.assigned_driver_id}
             onChange={(e) => setForm((f) => ({ ...f, assigned_driver_id: e.target.value }))}
           >
-            <option value="">— brak —</option>
+            <option value="">{t('carForm.driverNone')}</option>
             {drivers.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.full_name}
@@ -171,39 +173,39 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
           </select>
         </label>
         <label className="field">
-          <span className="field-label">Albo imię kierowcy (tekst)</span>
+          <span className="field-label">{t('carForm.driverText')}</span>
           <input
             className="input"
             value={form.driver_label}
             onChange={(e) => setForm((f) => ({ ...f, driver_label: e.target.value }))}
-            placeholder="np. Jan Kowalski"
+            placeholder={t('carForm.driverTextPh')}
           />
         </label>
-        {field('mileage_km', 'Przebieg (km)', 'number', { min: 0, step: 1 })}
-        {field('weekly_rent_pln', 'Czynsz tygodniowy (PLN)', 'number', { min: 0, step: 0.01 })}
-        {field('fines_count', 'Liczba mandatów', 'number', { min: 0, step: 1 })}
-        {field('oc_expiry', 'OC — data ważności', 'date')}
-        {field('ac_expiry', 'AC — data ważności', 'date')}
-        {field('przeglad_expiry', 'Przegląd techniczny', 'date')}
-        {field('last_service_date', 'Ostatni serwis', 'date')}
-        {field('notes', 'Notatki', 'textarea', { rows: 4 })}
+        {field('mileage_km', t('carForm.mileage'), 'number', { min: 0, step: 1 })}
+        {field('weekly_rent_pln', t('carForm.rent'), 'number', { min: 0, step: 0.01 })}
+        {field('fines_count', t('carForm.fines'), 'number', { min: 0, step: 1 })}
+        {field('oc_expiry', t('carForm.oc'), 'date')}
+        {field('ac_expiry', t('carForm.ac'), 'date')}
+        {field('przeglad_expiry', t('carForm.prz'), 'date')}
+        {field('last_service_date', t('carForm.service'), 'date')}
+        {field('notes', t('carForm.notes'), 'textarea', { rows: 4 })}
         <label className="field checkbox-line">
           <input
             type="checkbox"
             checked={Boolean(form.show_in_marketplace)}
             onChange={(e) => setForm((f) => ({ ...f, show_in_marketplace: e.target.checked }))}
           />
-          <span>Pokaż na marketplace</span>
+          <span>{t('carForm.showMarketplace')}</span>
         </label>
         <label className="field">
-          <span className="field-label">Status na marketplace</span>
+          <span className="field-label">{t('carForm.marketplaceStatus')}</span>
           <select
             className="input"
             value={form.marketplace_status}
             onChange={(e) => setForm((f) => ({ ...f, marketplace_status: e.target.value }))}
           >
-            <option value="zajete">Zajęte</option>
-            <option value="dostepne">Dostępne</option>
+            <option value="zajete">{t('carForm.statusOptionTaken')}</option>
+            <option value="dostepne">{t('carForm.statusOptionAvailable')}</option>
           </select>
         </label>
       </form>

@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export function Modal({ open, title, children, onClose, footer }) {
+  const { t } = useTranslation()
   useEffect(() => {
     if (!open) return
     const onKey = (e) => {
@@ -25,7 +27,7 @@ export function Modal({ open, title, children, onClose, footer }) {
           <h2 id="modal-title" className="modal-title">
             {title}
           </h2>
-          <button type="button" className="icon-btn" onClick={onClose} aria-label="Zamknij">
+          <button type="button" className="icon-btn" onClick={onClose} aria-label={t('app.close')}>
             ×
           </button>
         </header>

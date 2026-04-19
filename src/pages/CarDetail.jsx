@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { carPath } from '../lib/carPaths'
 import { useAuth } from '../context/AuthContext'
@@ -11,12 +12,13 @@ import { CarStatusBadge } from '../components/CarStatusBadge'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { NoteModal } from '../components/NoteModal'
 import { useDrivers } from '../hooks/useDrivers'
-import { DOC_LABELS } from '../utils/documents'
 import { expiryStatusLabel, serviceStatusLabel } from '../utils/docLabels'
+import { localeTag } from '../utils/localeTag'
 
 export function CarDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { t, i18n } = useTranslation()
   const { isAdmin, user } = useAuth()
   const { drivers } = useDrivers(isAdmin)
   const { carId: assignedCarId } = useDriverCar(!isAdmin ? user?.id : null)
@@ -31,6 +33,16 @@ export function CarDetail() {
   const [noteOpen, setNoteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [formErr, setFormErr] = useState(null)
+
+  const docKeys = useMemo(
+    () => [
+      { key: 'oc_expiry', label: t('docs.oc_expiry') },
+      { key: 'ac_expiry', label: t('docs.ac_expiry') },
+      { key: 'przeglad_expiry', label: t('docs.przeglad_expiry') },
+      { key: 'last_service_date', label: t('docs.last_service_date') },
+    ],
+    [t]
+  )
 
   if (!isAdmin && assignedCarId && id && id !== assignedCarId) {
     return <Navigate to={carPath(assignedCarId, false)} replace />
@@ -47,9 +59,9 @@ export function CarDetail() {
   if (error || !car) {
     return (
       <div className="page-simple">
-        <p className="form-error">{error ?? 'Brak auta.'}</p>
+        <p className="form-error">{error ?? t('errors.carNotFound')}</p>
         <button type="button" className="btn btn-huge ghost" onClick={() => navigate(isAdmin ? '/flota' : '/')}>
-          Wróć
+          {t('app.back')}
         </button>
       </div>
     )
@@ -58,7 +70,7 @@ export function CarDetail() {
   async function saveMileage() {
     const next = Number(mileageVal)
     if (!Number.isFinite(next) || next < 0) {
-      setFormErr('Podaj poprawny przebieg')
+      setFormErr(t('carDetail.mileageInvalid'))
       return
     }
     setMileBusy(true)
@@ -72,7 +84,7 @@ export function CarDetail() {
         event_type: 'mileage',
         previous_mileage: prev,
         new_mileage: next,
-        detail: `Przebieg: ${prev} → ${next} km`,
+        detail: t('carDetail.mileageHistoryDetail', { prev, next }),
         created_by: user?.id ?? null,
       })
       if (h) throw h
@@ -80,14 +92,15 @@ export function CarDetail() {
       await refresh()
       await refreshHist()
     } catch (e) {
-      setFormErr(e.message ?? 'Błąd')
+      setFormErr(e.message ?? t('errors.generic'))
     } finally {
       setMileBusy(false)
     }
   }
 
   async function saveNote(text) {
-    const stamp = new Date().toLocaleString('pl-PL')
+    const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
+    const stamp = new Date().toLocaleString(lc)
     const next = `${car.notes ? `${car.notes.trim()}\n\n` : ''}[${stamp}] ${text.trim()}`
     const { error: u } = await supabase.from('cars').update({ notes: next }).eq('id', car.id)
     if (u) throw u
@@ -100,19 +113,14 @@ export function CarDetail() {
     await refresh()
   }
 
-  const docKeys = [
-    { key: 'oc_expiry', label: DOC_LABELS.oc_expiry },
-    { key: 'ac_expiry', label: DOC_LABELS.ac_expiry },
-    { key: 'przeglad_expiry', label: DOC_LABELS.przeglad_expiry },
-    { key: 'last_service_date', label: 'Serwis (ostatni)' },
-  ]
+  const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
 
   return (
     <div className="page-simple car-detail-simple">
       <p className="muted small">
         {isAdmin ? (
           <Link to="/flota" className="link">
-            ← Moje auta
+            {t('carDetail.backFleet')}
           </Link>
         ) : null}
       </p>
@@ -121,18 +129,18 @@ export function CarDetail() {
         <h1>{car.plate_number}</h1>
         <p className="muted lead">{car.model || '—'}</p>
         <p className="detail-line">
-          <strong>Kierowca:</strong> {car.driver_name ?? '—'}
+          <strong>{t('carDetail.driver')}</strong> {car.driver_name ?? '—'}
         </p>
         <p className="detail-line">
-          <strong>Czynsz:</strong>{' '}
-          {Number(car.weekly_rent_pln ?? 0).toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}{' '}
-          <span className="muted">/ tydzień</span>
+          <strong>{t('carDetail.rent')}</strong>{' '}
+          {Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}{' '}
+          <span className="muted">{t('carDetail.perWeek')}</span>
         </p>
         <CarStatusBadge car={car} />
       </header>
 
       <section className="detail-block">
-        <h2>Dokumenty</h2>
+        <h2>{t('carDetail.documents')}</h2>
         <ul className="doc-simple-list">
           {docKeys.map(({ key, label }) => {
             const date = car[key]
@@ -156,42 +164,42 @@ export function CarDetail() {
       {isAdmin ? (
         <>
           <section className="detail-block">
-            <h2>Przebieg</h2>
-            <p className="big-reading">{Number(car.mileage_km ?? 0).toLocaleString('pl-PL')} km</p>
+            <h2>{t('carDetail.mileage')}</h2>
+            <p className="big-reading">{Number(car.mileage_km ?? 0).toLocaleString(lc)} km</p>
             {formErr ? <p className="form-error">{formErr}</p> : null}
             <div className="mile-inline">
               <input
                 className="input input-xl"
                 type="number"
                 min={0}
-                placeholder="Nowy stan licznika"
+                placeholder={t('carDetail.mileagePlaceholder')}
                 value={mileageVal}
                 onChange={(e) => setMileageVal(e.target.value)}
               />
               <button type="button" className="btn btn-huge primary" disabled={mileBusy} onClick={saveMileage}>
-                Zapisz
+                {t('carDetail.save')}
               </button>
             </div>
           </section>
 
           <section className="detail-block actions-stack">
             <button type="button" className="btn btn-huge secondary" onClick={() => setNoteOpen(true)}>
-              Dodaj notatkę
+              {t('carDetail.addNote')}
             </button>
             <button type="button" className="btn btn-huge secondary" onClick={() => setEditOpen(true)}>
-              Edytuj auto
+              {t('carDetail.editCar')}
             </button>
           </section>
 
           <section className="detail-block">
-            <h2>Marketplace</h2>
+            <h2>{t('carDetail.marketplace')}</h2>
             <label className="field checkbox-line">
               <input
                 type="checkbox"
                 checked={Boolean(car.show_in_marketplace)}
                 onChange={(e) => saveMarketplace({ show_in_marketplace: e.target.checked })}
               />
-              <span>Pokaż na marketplace</span>
+              <span>{t('carDetail.showMarketplace')}</span>
             </label>
             <div className="chip-row" style={{ marginTop: '0.5rem' }}>
               <button
@@ -199,14 +207,14 @@ export function CarDetail() {
                 className={car.marketplace_status === 'dostepne' ? 'chip active' : 'chip'}
                 onClick={() => saveMarketplace({ marketplace_status: 'dostepne' })}
               >
-                Dostępne
+                {t('carDetail.statusAvailable')}
               </button>
               <button
                 type="button"
                 className={car.marketplace_status === 'zajete' ? 'chip active' : 'chip'}
                 onClick={() => saveMarketplace({ marketplace_status: 'zajete' })}
               >
-                Zajęte
+                {t('carDetail.statusTaken')}
               </button>
             </div>
           </section>
@@ -214,14 +222,14 @@ export function CarDetail() {
       ) : null}
 
       <section className="detail-block">
-        <h2>Ostatnie wpisy</h2>
+        <h2>{t('carDetail.history')}</h2>
         {histLoading ? (
           <LoadingSpinner />
         ) : (
           <ul className="mini-hist">
             {entries.slice(0, 5).map((e) => (
               <li key={e.id} className="muted small">
-                {new Date(e.created_at).toLocaleDateString('pl-PL')} — {e.detail}
+                {new Date(e.created_at).toLocaleDateString(lc)} — {e.detail}
               </li>
             ))}
           </ul>

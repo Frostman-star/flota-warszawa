@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import i18next from 'i18next'
 import { supabase } from '../lib/supabase'
 
 /**
@@ -123,7 +124,7 @@ export function useCar(carId, opts = {}) {
       setError(qErr.message)
       setCar(null)
     } else if (!data) {
-      setError('Nie znaleziono pojazdu')
+      setError(i18next.t('errors.carNotFound'))
       setCar(null)
     } else {
       setCar({

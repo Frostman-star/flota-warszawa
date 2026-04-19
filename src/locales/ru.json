@@ -12,7 +12,11 @@
     "search": "Поиск",
     "close": "Закрыть",
     "loading": "Загрузка…",
-    "tryAgain": "Попробовать снова"
+    "tryAgain": "Попробовать снова",
+    "ok": "OK",
+    "language": "Язык",
+    "brandMain": "Flota",
+    "brandSub": "Warszawa"
   },
   "nav": {
     "fleet": "Авто",
@@ -25,8 +29,8 @@
     "tabLogin": "Вход",
     "tabRegister": "Регистрация",
     "pickRole": "Сначала выберите тип аккаунта:",
-    "owner": "Я владелец автопарка",
-    "driver": "Я водитель",
+    "owner": "Владелец автопарка",
+    "driver": "Водитель ищет авто",
     "changeType": "← Изменить тип аккаунта",
     "fullName": "Имя и фамилия",
     "email": "E-mail",
@@ -34,7 +38,11 @@
     "submitLogin": "Войти",
     "submitRegister": "Создать аккаунт",
     "processing": "Обработка…",
-    "home": "Главная страница"
+    "home": "Главная страница",
+    "selectRoleFirst": "Сначала выберите тип аккаунта.",
+    "accountCreated": "Аккаунт создан.",
+    "checkEmail": "Проверьте почту для подтверждения.",
+    "loginError": "Ошибка входа"
   },
   "panel": {
     "title": "Внимание на сегодня",
@@ -46,7 +54,8 @@
     "quick": "Быстрые действия",
     "myCars": "Мои авто",
     "market": "Marketplace (бета)",
-    "addCar": "Добавить авто"
+    "addCar": "Добавить авто",
+    "criticalBody": "{{count}} документов требуют внимания в течение 7 дней."
   },
   "fleet": {
     "title": "Мои авто",
@@ -72,6 +81,196 @@
     "interest": "Мне интересно",
     "contact": "Контакт — {{plate}}",
     "writeTo": "Напишите на:",
-    "noEmail": "Администратор пока не указал контактный e-mail (Настройки → контактный e-mail)."
+    "noEmail": "Администратор пока не указал контактный e-mail (Настройки → контактный e-mail).",
+    "location": "Варшава"
+  },
+  "docDays": {
+    "missing": "—",
+    "expired": "просрочено ({{count}} д.)",
+    "today": "сегодня",
+    "one": "1 день",
+    "inDays": "{{count}} дн."
+  },
+  "docStatus": {
+    "noDate": "НЕТ ДАТЫ",
+    "expired": "ПРОСРОЧЕНО",
+    "urgent": "СРОЧНО",
+    "ok": "OK",
+    "inOneDay": "Через 1 день",
+    "inDays": "Через {{count}} дн."
+  },
+  "serviceStatus": {
+    "noDate": "НЕТ ДАТЫ",
+    "urgent": "СРОЧНО",
+    "checkSoon": "ПРОВЕРЬТЕ",
+    "later": "Вскоре",
+    "ok": "OK"
+  },
+  "docs": {
+    "oc_expiry": "ОСАГО (OC)",
+    "ac_expiry": "КАСКО (AC)",
+    "przeglad_expiry": "Техосмотр",
+    "last_service_date": "Последний сервис"
+  },
+  "tierBadge": {
+    "none": "нет даты",
+    "red": "срочно",
+    "orange": "7–14 дн.",
+    "yellow": "14–30 дн.",
+    "green": "OK"
+  },
+  "carStatus": {
+    "active": "В работе",
+    "activeHint": "Назначен водитель, документы в порядке",
+    "idle": "Без водителя",
+    "idleHint": "Авто не назначено",
+    "alert": "Внимание: документы",
+    "alertHint": "Проверьте сроки"
+  },
+  "fleetDoc": {
+    "legend": "OC · AC · Осмотр · Сервис — цвет по дням / сервису",
+    "abbrPrz": "Осмотр",
+    "abbrSvc": "Сервис",
+    "noTier": "нет",
+    "noDate": "нет даты"
+  },
+  "errors": {
+    "carNotFound": "Авто не найдено.",
+    "generic": "Ошибка",
+    "saveFailed": "Ошибка сохранения",
+    "loadFailed": "Ошибка загрузки"
+  },
+  "notifications": {
+    "bellAria": "Уведомления, {{count}}",
+    "title": "Алерты по документам",
+    "empty": "Нет алертов в окне 30 дней."
+  },
+  "push": {
+    "regionAria": "Push-уведомления",
+    "text": "Включить push-напоминания о сроках документов?",
+    "enable": "Включить",
+    "later": "Позже",
+    "busy": "…"
+  },
+  "noCar": {
+    "title": "Нет назначенного авто",
+    "body": "У аккаунта {{name}} нет назначенного автомобиля."
+  },
+  "settings": {
+    "back": "← Панель",
+    "title": "Настройки",
+    "lead": "Компания, уведомления и водители.",
+    "saved": "Сохранено.",
+    "companyBlock": "Название компании",
+    "displayName": "Отображаемое имя",
+    "contactEmail": "Контактный e-mail (marketplace)",
+    "contactPlaceholder": "напр. biuro@firma.pl",
+    "notificationsBlock": "Уведомления",
+    "notificationsHint": "Отправить напоминание (push / e-mail через Edge), когда до окончания срока останется ровно:",
+    "emailCheckbox": "Включить e-mail (нужен RESEND_API_KEY в Edge + развёрнутый notify-documents)",
+    "saveButton": "Сохранить настройки",
+    "saving": "Сохранение…",
+    "dayOne": "день",
+    "daysMany": "дн.",
+    "driversBlock": "Водители",
+    "remove": "Удалить",
+    "confirmRemove": "Удалить аккаунт водителя {{name}}?",
+    "addDriver": "Добавить водителя",
+    "inviteEmail": "E-mail",
+    "invitePassword": "Начальный пароль",
+    "inviteFullName": "Имя и фамилия",
+    "inviteSubmit": "Создать аккаунт",
+    "inviteBusy": "Создание…",
+    "driverCreated": "Водитель создан.",
+    "driverRemoved": "Удалено.",
+    "inviteEdgeError": "Ошибка Edge Function (invite-driver)",
+    "removeEdgeError": "Ошибка Edge Function (remove-driver)"
+  },
+  "wizard": {
+    "back": "← Назад",
+    "title": "Новое авто",
+    "step": "Шаг {{current}} из 3",
+    "plateLabel": "Регистрационный номер",
+    "platePh": "напр. WX4821K",
+    "modelLabel": "Модель",
+    "modelPh": "напр. Toyota Corolla",
+    "next": "Далее",
+    "driverLabel": "Водитель (имя)",
+    "driverPh": "Иван Иванов",
+    "rentLabel": "Аренда в неделю (PLN)",
+    "rentPh": "напр. 800",
+    "backBtn": "Назад",
+    "docHint": "Даты документов — можно заполнить позже в редактировании авто.",
+    "ocLabel": "OC — действует до",
+    "acLabel": "AC — действует до",
+    "przLabel": "Техосмотр",
+    "svcLabel": "Последний сервис",
+    "save": "Сохранить",
+    "saving": "Сохранение…",
+    "doneTitle": "Авто добавлено!",
+    "doneLead": "Мы будем следить за документами.",
+    "doneFleet": "Мои авто",
+    "doneHome": "Главная"
+  },
+  "carDetail": {
+    "backFleet": "← Мои авто",
+    "driver": "Водитель:",
+    "rent": "Аренда:",
+    "perWeek": "/ неделя",
+    "documents": "Документы",
+    "mileage": "Пробег",
+    "mileagePlaceholder": "Новые показания одометра",
+    "mileageInvalid": "Введите корректный пробег",
+    "save": "Сохранить",
+    "addNote": "Добавить заметку",
+    "editCar": "Редактировать авто",
+    "marketplace": "Marketplace",
+    "showMarketplace": "Показать на marketplace",
+    "statusAvailable": "Доступно",
+    "statusTaken": "Занято",
+    "history": "Последние записи",
+    "mileageHistoryDetail": "Пробег: {{prev}} → {{next}} км"
+  },
+  "carForm": {
+    "editTitle": "Редактировать авто",
+    "addTitle": "Добавить авто",
+    "plateRequired": "Нужен регистрационный номер.",
+    "saveFailed": "Не удалось сохранить",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "saving": "Сохранение…",
+    "plate": "Регистрационный номер *",
+    "model": "Модель",
+    "year": "Год выпуска",
+    "color": "Цвет (метка)",
+    "driverSelect": "Водитель из списка (необязательно)",
+    "driverNone": "— нет —",
+    "driverText": "Или имя водителя (текст)",
+    "driverTextPh": "напр. Иван Иванов",
+    "mileage": "Пробег (км)",
+    "rent": "Аренда в неделю (PLN)",
+    "fines": "Количество штрафов",
+    "oc": "OC — дата окончания",
+    "ac": "AC — дата окончания",
+    "prz": "Техосмотр",
+    "service": "Последний сервис",
+    "notes": "Заметки",
+    "showMarketplace": "Показать на marketplace",
+    "marketplaceStatus": "Статус на marketplace",
+    "statusOptionTaken": "Занято",
+    "statusOptionAvailable": "Доступно"
+  },
+  "noteModal": {
+    "title": "Заметка",
+    "body": "Текст",
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
+  "alertPanel": {
+    "title": "Алерты по документам",
+    "titleWindow": "Алерты по документам (≤ 30 дн.)",
+    "empty": "Нет документов, истекающих в течение 30 дней.",
+    "legend": "Цвета: красный — просрочено или <7 дн., оранжевый — 7–14 дн., жёлтый — 14–30 дн.",
+    "dateLine": "Дата: {{date}} · {{relative}}"
   }
 }

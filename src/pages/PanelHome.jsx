@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { daysUntil } from '../utils/documents'
+import { localeTag } from '../utils/localeTag'
 
 function countCriticalSoon(cars) {
   let n = 0
@@ -16,8 +17,9 @@ function countCriticalSoon(cars) {
 }
 
 export function PanelHome() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { cars, loading, error, refresh } = useOutletContext()
+  const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const weekly = computeWeeklyRentTotal(cars)
   const toCheck = buildAlertRows(cars).length
   const critical = countCriticalSoon(cars)
@@ -37,14 +39,14 @@ export function PanelHome() {
       {critical > 0 ? (
         <div className="urgent-banner" role="alert">
           <strong>{t('panel.title')}</strong>
-          <p>{critical}.</p>
+          <p>{t('panel.criticalBody', { count: critical })}</p>
           <Link to="/alerty" className="btn btn-huge light">{t('panel.seeAlerts')}</Link>
         </div>
       ) : null}
 
       <section className="hero-summary" aria-label={t('panel.summary')}>
         <div className="hero-stat"><span className="hero-stat-num">{cars.length}</span><span className="hero-stat-label">{t('panel.cars')}</span></div>
-        <div className="hero-stat"><span className="hero-stat-num">{weekly.toLocaleString('pl-PL', { maximumFractionDigits: 0 })} zł</span><span className="hero-stat-label">{t('panel.weekly')}</span></div>
+        <div className="hero-stat"><span className="hero-stat-num">{weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł</span><span className="hero-stat-label">{t('panel.weekly')}</span></div>
         <div className="hero-stat"><span className="hero-stat-num">{toCheck}</span><span className="hero-stat-label">{t('panel.toCheck')}</span></div>
       </section>
 

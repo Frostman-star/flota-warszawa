@@ -35,9 +35,9 @@ export function carOperationalStatus(car) {
 }
 export function formatDaysLabel(iso) {
   const d = daysUntil(iso)
-  if (d === null) return '—'
-  if (d < 0) return i18next.language === 'pl' ? `przeterminowane (${Math.abs(d)} d.)` : `expired (${Math.abs(d)}d)`
-  if (d === 0) return i18next.language === 'pl' ? 'dziś' : 'today'
-  if (d === 1) return i18next.language === 'pl' ? '1 dzień' : '1 day'
-  return i18next.language === 'pl' ? `${d} dni` : `${d} days`
+  if (d === null) return i18next.t('docDays.missing')
+  if (d < 0) return i18next.t('docDays.expired', { count: Math.abs(d) })
+  if (d === 0) return i18next.t('docDays.today')
+  if (d === 1) return i18next.t('docDays.one')
+  return i18next.t('docDays.inDays', { count: d })
 }

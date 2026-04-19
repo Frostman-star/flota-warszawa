@@ -44,15 +44,15 @@ export function Login() {
         await signIn(email, password)
       } else {
         if (!registerRole) {
-          setError('Select account type first.')
+          setError(t('login.selectRoleFirst'))
           setBusy(false)
           return
         }
         const data = await signUp(email, password, fullName, registerRole)
-        setInfo(data?.session ? 'Account created.' : 'Check your e-mail inbox for confirmation.')
+        setInfo(data?.session ? t('login.accountCreated') : t('login.checkEmail'))
       }
     } catch (err) {
-      setError(err.message ?? 'Login error')
+      setError(err.message ?? t('login.loginError'))
     } finally {
       setBusy(false)
     }

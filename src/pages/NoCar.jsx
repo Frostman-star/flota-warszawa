@@ -23,9 +23,9 @@ export function NoCar() {
   return (
     <div className="center-page narrow">
       <div className="card pad-lg">
-        <h1>No assigned vehicle</h1>
+        <h1>{t('noCar.title')}</h1>
         <p className="muted">
-          Account <strong>{profile?.full_name ?? profile?.email}</strong> has no assigned car.
+          {t('noCar.body', { name: profile?.full_name ?? profile?.email ?? '—' })}
         </p>
         <button type="button" className="btn ghost" onClick={() => signOut()}>{t('app.logout')}</button>
       </div>

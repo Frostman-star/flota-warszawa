@@ -17,14 +17,14 @@ export function AppLayout({ showNav = true, outletContext = null }) {
     <div className="app-shell">
       <header className="topbar topbar-simple">
         <Link to={isAdmin ? '/panel' : '/'} className="brand">
-          Flota <span className="brand-muted">Warszawa</span>
+          {t('app.brandMain')} <span className="brand-muted">{t('app.brandSub')}</span>
         </Link>
         {showNav && isAdmin ? (
           <Link to="/ustawienia" className="topbar-settings-link muted small">
             {t('app.settings')}
           </Link>
         ) : null}
-        <div className="lang-switch" aria-label="Language switcher">
+        <div className="lang-switch" aria-label={t('app.language')}>
           {LANG_OPTIONS.map((l) => (
             <button
               key={l.code}

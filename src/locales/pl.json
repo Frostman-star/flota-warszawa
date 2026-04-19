@@ -12,7 +12,11 @@
     "search": "Szukaj",
     "close": "Zamknij",
     "loading": "Ładowanie…",
-    "tryAgain": "Spróbuj ponownie"
+    "tryAgain": "Spróbuj ponownie",
+    "ok": "OK",
+    "language": "Język",
+    "brandMain": "Flota",
+    "brandSub": "Warszawa"
   },
   "nav": {
     "fleet": "Auta",
@@ -34,7 +38,11 @@
     "submitLogin": "Zaloguj",
     "submitRegister": "Utwórz konto",
     "processing": "Przetwarzanie…",
-    "home": "Strona główna"
+    "home": "Strona główna",
+    "selectRoleFirst": "Najpierw wybierz typ konta.",
+    "accountCreated": "Konto utworzone.",
+    "checkEmail": "Sprawdź skrzynkę e-mail (potwierdzenie).",
+    "loginError": "Błąd logowania"
   },
   "panel": {
     "title": "Uwaga na dziś",
@@ -46,7 +54,8 @@
     "quick": "Szybkie akcje",
     "myCars": "Moje auta",
     "market": "Marketplace (beta)",
-    "addCar": "Dodaj auto"
+    "addCar": "Dodaj auto",
+    "criticalBody": "{{count}} dokumentów wymaga uwagi w ciągu 7 dni."
   },
   "fleet": {
     "title": "Moje auta",
@@ -72,6 +81,196 @@
     "interest": "Jestem zainteresowany",
     "contact": "Kontakt — {{plate}}",
     "writeTo": "Napisz na:",
-    "noEmail": "Administrator nie ustawił jeszcze adresu e-mail kontaktowego (Ustawienia → e-mail kontaktowy)."
+    "noEmail": "Administrator nie ustawił jeszcze adresu e-mail kontaktowego (Ustawienia → e-mail kontaktowy).",
+    "location": "Warszawa"
+  },
+  "docDays": {
+    "missing": "—",
+    "expired": "przeterminowane ({{count}} d.)",
+    "today": "dziś",
+    "one": "1 dzień",
+    "inDays": "{{count}} dni"
+  },
+  "docStatus": {
+    "noDate": "BRAK DATY",
+    "expired": "PRZETERMINOWANE",
+    "urgent": "PILNE",
+    "ok": "OK",
+    "inOneDay": "Za 1 dzień",
+    "inDays": "Za {{count}} dni"
+  },
+  "serviceStatus": {
+    "noDate": "BRAK DATY",
+    "urgent": "PILNE",
+    "checkSoon": "SPRAWDŹ",
+    "later": "Za jakiś czas",
+    "ok": "OK"
+  },
+  "docs": {
+    "oc_expiry": "OC (NNW)",
+    "ac_expiry": "AC (Autocasco)",
+    "przeglad_expiry": "Przegląd techniczny",
+    "last_service_date": "Ostatni serwis"
+  },
+  "tierBadge": {
+    "none": "brak daty",
+    "red": "pilne",
+    "orange": "7–14 dni",
+    "yellow": "14–30 dni",
+    "green": "OK"
+  },
+  "carStatus": {
+    "active": "W trasie",
+    "activeHint": "Przypisany kierowca, dokumenty w porządku",
+    "idle": "Bez kierowcy",
+    "idleHint": "Pojazd nie jest przypisany",
+    "alert": "Uwaga dokumenty",
+    "alertHint": "Wymagana uwaga na terminy"
+  },
+  "fleetDoc": {
+    "legend": "OC · AC · Przegląd · Serwis — kolor wg dni / serwisu",
+    "abbrPrz": "Przegląd",
+    "abbrSvc": "Serwis",
+    "noTier": "brak",
+    "noDate": "brak daty"
+  },
+  "errors": {
+    "carNotFound": "Nie znaleziono pojazdu.",
+    "generic": "Błąd",
+    "saveFailed": "Błąd zapisu",
+    "loadFailed": "Błąd ładowania"
+  },
+  "notifications": {
+    "bellAria": "Powiadomienia, {{count}}",
+    "title": "Alerty dokumentów",
+    "empty": "Brak alertów w oknie 30 dni."
+  },
+  "push": {
+    "regionAria": "Powiadomienia push",
+    "text": "Włączyć przypomnienia push o terminach dokumentów?",
+    "enable": "Włącz",
+    "later": "Później",
+    "busy": "…"
+  },
+  "noCar": {
+    "title": "Brak przypisanego auta",
+    "body": "Konto {{name}} nie ma przypisanego pojazdu."
+  },
+  "settings": {
+    "back": "← Panel",
+    "title": "Ustawienia",
+    "lead": "Firma, powiadomienia i kierowcy.",
+    "saved": "Zapisano.",
+    "companyBlock": "Nazwa firmy",
+    "displayName": "Wyświetlana nazwa",
+    "contactEmail": "E-mail kontaktowy (marketplace)",
+    "contactPlaceholder": "np. biuro@firma.pl",
+    "notificationsBlock": "Powiadomienia",
+    "notificationsHint": "Wyślij przypomnienie (push / e-mail z Edge), gdy do końca ważności zostanie dokładnie:",
+    "emailCheckbox": "Włącz e-mail (wymaga RESEND_API_KEY w Edge + wdrożenia notify-documents)",
+    "saveButton": "Zapisz ustawienia",
+    "saving": "Zapisywanie…",
+    "dayOne": "dzień",
+    "daysMany": "dni",
+    "driversBlock": "Kierowcy",
+    "remove": "Usuń",
+    "confirmRemove": "Usunąć konto kierowcy {{name}}?",
+    "addDriver": "Dodaj kierowcę",
+    "inviteEmail": "E-mail",
+    "invitePassword": "Hasło startowe",
+    "inviteFullName": "Imię i nazwisko",
+    "inviteSubmit": "Utwórz konto",
+    "inviteBusy": "Tworzenie…",
+    "driverCreated": "Kierowca utworzony.",
+    "driverRemoved": "Usunięto.",
+    "inviteEdgeError": "Błąd Edge Function (invite-driver)",
+    "removeEdgeError": "Błąd Edge Function (remove-driver)"
+  },
+  "wizard": {
+    "back": "← Wróć",
+    "title": "Nowe auto",
+    "step": "Krok {{current}} z 3",
+    "plateLabel": "Numer rejestracyjny",
+    "platePh": "np. WX4821K",
+    "modelLabel": "Model",
+    "modelPh": "np. Toyota Corolla",
+    "next": "Dalej",
+    "driverLabel": "Kierowca (imię)",
+    "driverPh": "Jan Kowalski",
+    "rentLabel": "Czynsz tygodniowy (zł)",
+    "rentPh": "np. 800",
+    "backBtn": "Wstecz",
+    "docHint": "Daty dokumentów — możesz uzupełnić później w edycji auta.",
+    "ocLabel": "OC — ważne do",
+    "acLabel": "AC — ważne do",
+    "przLabel": "Przegląd techniczny",
+    "svcLabel": "Ostatni serwis",
+    "save": "Zapisz",
+    "saving": "Zapisuję…",
+    "doneTitle": "Auto dodane!",
+    "doneLead": "Będziemy pilnować dokumentów.",
+    "doneFleet": "Moje auta",
+    "doneHome": "Strona główna"
+  },
+  "carDetail": {
+    "backFleet": "← Moje auta",
+    "driver": "Kierowca:",
+    "rent": "Czynsz:",
+    "perWeek": "/ tydzień",
+    "documents": "Dokumenty",
+    "mileage": "Przebieg",
+    "mileagePlaceholder": "Nowy stan licznika",
+    "mileageInvalid": "Podaj poprawny przebieg",
+    "save": "Zapisz",
+    "addNote": "Dodaj notatkę",
+    "editCar": "Edytuj auto",
+    "marketplace": "Marketplace",
+    "showMarketplace": "Pokaż na marketplace",
+    "statusAvailable": "Dostępne",
+    "statusTaken": "Zajęte",
+    "history": "Ostatnie wpisy",
+    "mileageHistoryDetail": "Przebieg: {{prev}} → {{next}} km"
+  },
+  "carForm": {
+    "editTitle": "Edytuj pojazd",
+    "addTitle": "Dodaj pojazd",
+    "plateRequired": "Numer rejestracyjny jest wymagany.",
+    "saveFailed": "Nie udało się zapisać",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
+    "plate": "Numer rejestracyjny *",
+    "model": "Model",
+    "year": "Rok produkcji",
+    "color": "Kolor (etykieta)",
+    "driverSelect": "Kierowca z listy (opcjonalnie)",
+    "driverNone": "— brak —",
+    "driverText": "Albo imię kierowcy (tekst)",
+    "driverTextPh": "np. Jan Kowalski",
+    "mileage": "Przebieg (km)",
+    "rent": "Czynsz tygodniowy (PLN)",
+    "fines": "Liczba mandatów",
+    "oc": "OC — data ważności",
+    "ac": "AC — data ważności",
+    "prz": "Przegląd techniczny",
+    "service": "Ostatni serwis",
+    "notes": "Notatki",
+    "showMarketplace": "Pokaż na marketplace",
+    "marketplaceStatus": "Status na marketplace",
+    "statusOptionTaken": "Zajęte",
+    "statusOptionAvailable": "Dostępne"
+  },
+  "noteModal": {
+    "title": "Notatka",
+    "body": "Treść",
+    "cancel": "Anuluj",
+    "save": "Zapisz"
+  },
+  "alertPanel": {
+    "title": "Alerty dokumentów",
+    "titleWindow": "Alerty dokumentów (≤ 30 dni)",
+    "empty": "Brak dokumentów wygasających w ciągu 30 dni.",
+    "legend": "Kolory: czerwony — wygasło lub <7 dni, pomarańczowy — 7–14 dni, żółty — 14–30 dni.",
+    "dateLine": "Data: {{date}} · {{relative}}"
   }
 }

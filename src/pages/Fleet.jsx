@@ -8,6 +8,7 @@ import { FleetDocDots } from '../components/FleetDocDots'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { useDrivers } from '../hooks/useDrivers'
 import { useAuth } from '../context/AuthContext'
+import { localeTag } from '../utils/localeTag'
 import { tierForExpiry, tierForServiceDot } from '../utils/documents'
 
 function isAllOk(car) {
@@ -23,7 +24,8 @@ function isAllOk(car) {
 }
 
 export function Fleet() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const { cars, loading, error, refresh } = useOutletContext()
   const { isAdmin } = useAuth()
   const { drivers } = useDrivers(isAdmin)
@@ -64,7 +66,7 @@ export function Fleet() {
               <Link to={carPath(String(car.id), true)} className="car-tile-link">
                 <div className="car-mobile-card-head">
                   <p className="car-tile-plate">{car.plate_number}</p>
-                  <p className="car-tile-rent">{Number(car.weekly_rent_pln ?? 0).toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}<span className="car-tile-rent-suffix"> {t('fleet.rentSuffix')}</span></p>
+                  <p className="car-tile-rent">{Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}<span className="car-tile-rent-suffix"> {t('fleet.rentSuffix')}</span></p>
                 </div>
                 <p className="car-mobile-meta">{car.model || '—'} · {car.driver_name ?? '—'}</p>
                 <FleetDocDots car={car} />

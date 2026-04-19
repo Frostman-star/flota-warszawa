@@ -12,7 +12,11 @@
     "search": "Search",
     "close": "Close",
     "loading": "Loading…",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "ok": "OK",
+    "language": "Language",
+    "brandMain": "Flota",
+    "brandSub": "Warszawa"
   },
   "nav": {
     "fleet": "Cars",
@@ -34,7 +38,11 @@
     "submitLogin": "Sign in",
     "submitRegister": "Create account",
     "processing": "Processing…",
-    "home": "Homepage"
+    "home": "Homepage",
+    "selectRoleFirst": "Select account type first.",
+    "accountCreated": "Account created.",
+    "checkEmail": "Check your e-mail inbox for confirmation.",
+    "loginError": "Login error"
   },
   "panel": {
     "title": "Attention today",
@@ -46,7 +54,8 @@
     "quick": "Quick actions",
     "myCars": "My cars",
     "market": "Marketplace (beta)",
-    "addCar": "Add car"
+    "addCar": "Add car",
+    "criticalBody": "{{count}} document(s) need attention within 7 days."
   },
   "fleet": {
     "title": "My cars",
@@ -72,6 +81,196 @@
     "interest": "I'm interested",
     "contact": "Contact — {{plate}}",
     "writeTo": "Write to:",
-    "noEmail": "Admin has not set a contact email yet (Settings → contact email)."
+    "noEmail": "Admin has not set a contact email yet (Settings → contact email).",
+    "location": "Warsaw"
+  },
+  "docDays": {
+    "missing": "—",
+    "expired": "expired ({{count}} d)",
+    "today": "today",
+    "one": "1 day",
+    "inDays": "{{count}} days"
+  },
+  "docStatus": {
+    "noDate": "NO DATE",
+    "expired": "OVERDUE",
+    "urgent": "URGENT",
+    "ok": "OK",
+    "inOneDay": "In 1 day",
+    "inDays": "In {{count}} days"
+  },
+  "serviceStatus": {
+    "noDate": "NO DATE",
+    "urgent": "URGENT",
+    "checkSoon": "CHECK",
+    "later": "Review soon",
+    "ok": "OK"
+  },
+  "docs": {
+    "oc_expiry": "Third-party liability (OC)",
+    "ac_expiry": "Comprehensive (AC)",
+    "przeglad_expiry": "Technical inspection",
+    "last_service_date": "Last service"
+  },
+  "tierBadge": {
+    "none": "no date",
+    "red": "urgent",
+    "orange": "7–14 days",
+    "yellow": "14–30 days",
+    "green": "OK"
+  },
+  "carStatus": {
+    "active": "On the road",
+    "activeHint": "Driver assigned, documents in order",
+    "idle": "No driver",
+    "idleHint": "Vehicle is not assigned",
+    "alert": "Document attention",
+    "alertHint": "Check upcoming deadlines"
+  },
+  "fleetDoc": {
+    "legend": "OC · AC · Inspection · Service — colour by days / service",
+    "abbrPrz": "Inspection",
+    "abbrSvc": "Service",
+    "noTier": "none",
+    "noDate": "no date"
+  },
+  "errors": {
+    "carNotFound": "Car not found.",
+    "generic": "Error",
+    "saveFailed": "Save failed",
+    "loadFailed": "Load failed"
+  },
+  "notifications": {
+    "bellAria": "Notifications, {{count}}",
+    "title": "Document alerts",
+    "empty": "No alerts in the 30-day window."
+  },
+  "push": {
+    "regionAria": "Push notifications",
+    "text": "Enable push reminders for document deadlines?",
+    "enable": "Enable",
+    "later": "Later",
+    "busy": "…"
+  },
+  "noCar": {
+    "title": "No assigned vehicle",
+    "body": "Account {{name}} has no assigned car."
+  },
+  "settings": {
+    "back": "← Dashboard",
+    "title": "Settings",
+    "lead": "Company, notifications and drivers.",
+    "saved": "Saved.",
+    "companyBlock": "Company",
+    "displayName": "Display name",
+    "contactEmail": "Contact email (marketplace)",
+    "contactPlaceholder": "e.g. office@company.com",
+    "notificationsBlock": "Notifications",
+    "notificationsHint": "Send a reminder (push / e-mail via Edge) when exactly this many days remain until expiry:",
+    "emailCheckbox": "Enable e-mail (requires RESEND_API_KEY on Edge + deployed notify-documents)",
+    "saveButton": "Save settings",
+    "saving": "Saving…",
+    "dayOne": "day",
+    "daysMany": "days",
+    "driversBlock": "Drivers",
+    "remove": "Remove",
+    "confirmRemove": "Remove driver account {{name}}?",
+    "addDriver": "Add driver",
+    "inviteEmail": "E-mail",
+    "invitePassword": "Initial password",
+    "inviteFullName": "Full name",
+    "inviteSubmit": "Create account",
+    "inviteBusy": "Creating…",
+    "driverCreated": "Driver created.",
+    "driverRemoved": "Removed.",
+    "inviteEdgeError": "Edge Function error (invite-driver)",
+    "removeEdgeError": "Edge Function error (remove-driver)"
+  },
+  "wizard": {
+    "back": "← Back",
+    "title": "New car",
+    "step": "Step {{current}} of 3",
+    "plateLabel": "Registration number",
+    "platePh": "e.g. WX4821K",
+    "modelLabel": "Model",
+    "modelPh": "e.g. Toyota Corolla",
+    "next": "Next",
+    "driverLabel": "Driver (first name)",
+    "driverPh": "John Smith",
+    "rentLabel": "Weekly rent (PLN)",
+    "rentPh": "e.g. 800",
+    "backBtn": "Back",
+    "docHint": "Document dates — you can fill them in later when editing the car.",
+    "ocLabel": "Liability insurance — valid until",
+    "acLabel": "Comprehensive — valid until",
+    "przLabel": "Technical inspection",
+    "svcLabel": "Last service",
+    "save": "Save",
+    "saving": "Saving…",
+    "doneTitle": "Car added!",
+    "doneLead": "We will keep an eye on the documents.",
+    "doneFleet": "My cars",
+    "doneHome": "Home"
+  },
+  "carDetail": {
+    "backFleet": "← My cars",
+    "driver": "Driver:",
+    "rent": "Rent:",
+    "perWeek": "/ week",
+    "documents": "Documents",
+    "mileage": "Mileage",
+    "mileagePlaceholder": "New odometer reading",
+    "mileageInvalid": "Enter a valid mileage",
+    "save": "Save",
+    "addNote": "Add note",
+    "editCar": "Edit car",
+    "marketplace": "Marketplace",
+    "showMarketplace": "Show on marketplace",
+    "statusAvailable": "Available",
+    "statusTaken": "Taken",
+    "history": "Recent entries",
+    "mileageHistoryDetail": "Mileage: {{prev}} → {{next}} km"
+  },
+  "carForm": {
+    "editTitle": "Edit vehicle",
+    "addTitle": "Add vehicle",
+    "plateRequired": "Registration number is required.",
+    "saveFailed": "Could not save",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "plate": "Registration number *",
+    "model": "Model",
+    "year": "Year of manufacture",
+    "color": "Colour (label)",
+    "driverSelect": "Driver from list (optional)",
+    "driverNone": "— none —",
+    "driverText": "Or driver name (text)",
+    "driverTextPh": "e.g. John Smith",
+    "mileage": "Mileage (km)",
+    "rent": "Weekly rent (PLN)",
+    "fines": "Number of fines",
+    "oc": "Liability — expiry date",
+    "ac": "Comprehensive — expiry date",
+    "prz": "Technical inspection",
+    "service": "Last service",
+    "notes": "Notes",
+    "showMarketplace": "Show on marketplace",
+    "marketplaceStatus": "Marketplace status",
+    "statusOptionTaken": "Taken",
+    "statusOptionAvailable": "Available"
+  },
+  "noteModal": {
+    "title": "Note",
+    "body": "Content",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "alertPanel": {
+    "title": "Document alerts",
+    "titleWindow": "Document alerts (≤ 30 days)",
+    "empty": "No documents expiring within 30 days.",
+    "legend": "Colours: red — expired or <7 days, orange — 7–14 days, yellow — 14–30 days.",
+    "dateLine": "Date: {{date}} · {{relative}}"
   }
 }

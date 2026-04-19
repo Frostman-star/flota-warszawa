@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate, useOutletContext } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 
 export function AddCarWizard() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { refresh } = useOutletContext() ?? {}
   const [step, setStep] = useState(1)
@@ -47,7 +49,7 @@ export function AddCarWizard() {
       }
       setDone(true)
     } catch (e) {
-      setErr(e.message ?? 'Błąd zapisu')
+      setErr(e.message ?? t('errors.saveFailed'))
     } finally {
       setSaving(false)
     }
@@ -60,13 +62,13 @@ export function AddCarWizard() {
           <p className="success-emoji" aria-hidden>
             ✅
           </p>
-          <h1>Auto dodane!</h1>
-          <p className="muted lead">Będziemy pilnować dokumentów.</p>
+          <h1>{t('wizard.doneTitle')}</h1>
+          <p className="muted lead">{t('wizard.doneLead')}</p>
           <Link to="/flota" className="btn btn-huge primary">
-            Moje auta
+            {t('wizard.doneFleet')}
           </Link>
           <button type="button" className="btn btn-huge ghost" onClick={() => navigate('/panel')}>
-            Strona główna
+            {t('wizard.doneHome')}
           </button>
         </div>
       </div>
@@ -77,25 +79,25 @@ export function AddCarWizard() {
     <div className="page-simple wizard">
       <p className="muted small">
         <Link to="/panel" className="link">
-          ← Wróć
+          {t('wizard.back')}
         </Link>
       </p>
-      <h1>Nowe auto</h1>
-      <p className="wizard-step muted">Krok {step} z 3</p>
+      <h1>{t('wizard.title')}</h1>
+      <p className="wizard-step muted">{t('wizard.step', { current: step })}</p>
       {err ? <p className="form-error">{err}</p> : null}
 
       {step === 1 ? (
         <div className="wizard-fields">
           <label className="field">
-            <span className="field-label-lg">Numer rejestracyjny</span>
-            <input className="input input-xl" value={plate} onChange={(e) => setPlate(e.target.value)} placeholder="np. WX4821K" autoFocus />
+            <span className="field-label-lg">{t('wizard.plateLabel')}</span>
+            <input className="input input-xl" value={plate} onChange={(e) => setPlate(e.target.value)} placeholder={t('wizard.platePh')} autoFocus />
           </label>
           <label className="field">
-            <span className="field-label-lg">Model</span>
-            <input className="input input-xl" value={model} onChange={(e) => setModel(e.target.value)} placeholder="np. Toyota Corolla" />
+            <span className="field-label-lg">{t('wizard.modelLabel')}</span>
+            <input className="input input-xl" value={model} onChange={(e) => setModel(e.target.value)} placeholder={t('wizard.modelPh')} />
           </label>
           <button type="button" className="btn btn-huge primary" disabled={!plate.trim()} onClick={() => setStep(2)}>
-            Dalej
+            {t('wizard.next')}
           </button>
         </div>
       ) : null}
@@ -103,19 +105,19 @@ export function AddCarWizard() {
       {step === 2 ? (
         <div className="wizard-fields">
           <label className="field">
-            <span className="field-label-lg">Kierowca (imię)</span>
-            <input className="input input-xl" value={driverLabel} onChange={(e) => setDriverLabel(e.target.value)} placeholder="Jan Kowalski" />
+            <span className="field-label-lg">{t('wizard.driverLabel')}</span>
+            <input className="input input-xl" value={driverLabel} onChange={(e) => setDriverLabel(e.target.value)} placeholder={t('wizard.driverPh')} />
           </label>
           <label className="field">
-            <span className="field-label-lg">Czynsz tygodniowy (zł)</span>
-            <input className="input input-xl" type="number" min={0} step={10} value={rent} onChange={(e) => setRent(e.target.value)} placeholder="np. 800" />
+            <span className="field-label-lg">{t('wizard.rentLabel')}</span>
+            <input className="input input-xl" type="number" min={0} step={10} value={rent} onChange={(e) => setRent(e.target.value)} placeholder={t('wizard.rentPh')} />
           </label>
           <div className="wizard-nav-btns">
             <button type="button" className="btn btn-huge ghost" onClick={() => setStep(1)}>
-              Wstecz
+              {t('wizard.backBtn')}
             </button>
             <button type="button" className="btn btn-huge primary" onClick={() => setStep(3)}>
-              Dalej
+              {t('wizard.next')}
             </button>
           </div>
         </div>
@@ -123,29 +125,29 @@ export function AddCarWizard() {
 
       {step === 3 ? (
         <div className="wizard-fields">
-          <p className="muted small">Daty dokumentów — możesz uzupełnić później w edycji auta.</p>
+          <p className="muted small">{t('wizard.docHint')}</p>
           <label className="field">
-            <span className="field-label-lg">OC — ważne do</span>
+            <span className="field-label-lg">{t('wizard.ocLabel')}</span>
             <input className="input input-xl" type="date" value={oc} onChange={(e) => setOc(e.target.value)} />
           </label>
           <label className="field">
-            <span className="field-label-lg">AC — ważne do</span>
+            <span className="field-label-lg">{t('wizard.acLabel')}</span>
             <input className="input input-xl" type="date" value={ac} onChange={(e) => setAc(e.target.value)} />
           </label>
           <label className="field">
-            <span className="field-label-lg">Przegląd techniczny</span>
+            <span className="field-label-lg">{t('wizard.przLabel')}</span>
             <input className="input input-xl" type="date" value={prz} onChange={(e) => setPrz(e.target.value)} />
           </label>
           <label className="field">
-            <span className="field-label-lg">Ostatni serwis</span>
+            <span className="field-label-lg">{t('wizard.svcLabel')}</span>
             <input className="input input-xl" type="date" value={svc} onChange={(e) => setSvc(e.target.value)} />
           </label>
           <div className="wizard-nav-btns">
             <button type="button" className="btn btn-huge ghost" onClick={() => setStep(2)}>
-              Wstecz
+              {t('wizard.backBtn')}
             </button>
             <button type="button" className="btn btn-huge primary" disabled={saving || !plate.trim()} onClick={save}>
-              {saving ? 'Zapisuję…' : 'Zapisz'}
+              {saving ? t('wizard.saving') : t('wizard.save')}
             </button>
           </div>
         </div>

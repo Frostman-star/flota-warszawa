@@ -1,3 +1,5 @@
+import i18next from 'i18next'
+
 /** @typedef {'red' | 'orange' | 'yellow' | 'green'} AlertTier */
 
 const MS_PER_DAY = 86400000
@@ -60,13 +62,6 @@ function startOfLocalDay(date) {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate())
 }
 
-export const DOC_LABELS = {
-  oc_expiry: 'OC (NNW)',
-  ac_expiry: 'AC (Autocasco)',
-  przeglad_expiry: 'Przegląd techniczny',
-  last_service_date: 'Ostatni serwis',
-}
-
 /**
  * @param {Record<string, unknown>} car
  * @returns {Array<{ key: string, label: string, date: string, days: number, tier: AlertTier }>}
@@ -84,7 +79,7 @@ export function flattenDocumentAlerts(car) {
     const tier = tierForExpiry(date) ?? 'yellow'
     out.push({
       key,
-      label: DOC_LABELS[key] ?? key,
+      label: i18next.t(`docs.${key}`),
       date,
       days,
       tier,
