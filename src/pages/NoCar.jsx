@@ -1,9 +1,24 @@
-﻿import { useTranslation } from 'react-i18next'
+﻿import { Navigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { LoadingSpinner } from '../components/LoadingSpinner'
 import { useAuth } from '../context/AuthContext'
 
+/** Drivers without an assigned car. Fleet owners/admins must never stay here (bookmark / old URL). */
 export function NoCar() {
   const { t } = useTranslation()
-  const { signOut, profile } = useAuth()
+  const { signOut, profile, loading, isAdmin } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="center-page">
+        <LoadingSpinner />
+      </div>
+    )
+  }
+
+  if (isAdmin) {
+    return <Navigate to="/panel" replace />
+  }
 
   return (
     <div className="center-page narrow">
