@@ -12,8 +12,10 @@ export function PublicFleetProfile() {
   const [loading, setLoading] = useState(true)
   const [profile, setProfile] = useState(null)
   const [cars, setCars] = useState([])
+  const [totalCars, setTotalCars] = useState(0)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const isOwnProfile = Boolean(user?.id) && String(user.id) === String(ownerId)
 
   useEffect(() => {
     let cancelled = false
@@ -21,6 +23,7 @@ export function PublicFleetProfile() {
       if (!ownerId) return
       setLoading(true)
       setError('')
+      console.log('Owner ID from URL:', ownerId)
       const { data: pubProfile, error: profileErr } = await supabase.rpc('get_public_fleet_profile', {
         p_owner_id: ownerId,
       })
@@ -35,11 +38,20 @@ export function PublicFleetProfile() {
         .eq('marketplace_listed', true)
         .is('driver_id', null)
         .order('weekly_rent_pln', { ascending: true })
+      const { count: fleetTotal, error: fleetErr } = await supabase
+        .from('cars')
+        .select('id', { count: 'exact', head: true })
+        .eq('owner_id', ownerId)
       if (carsErr) {
         if (!cancelled) setError(carsErr.message)
       } else if (!cancelled) {
         setProfile(pubProfile ?? null)
         setCars(listedCars ?? [])
+        setTotalCars(Number(fleetTotal ?? 0))
+        console.log('Fetched cars:', listedCars ?? [])
+      }
+      if (fleetErr && !cancelled) {
+        setError(fleetErr.message)
       }
       if (!cancelled) setLoading(false)
     }
@@ -53,7 +65,7 @@ export function PublicFleetProfile() {
   const initials = companyName.slice(0, 1).toUpperCase() || 'C'
   const callHref = String(profile?.company_phone ?? '').trim()
   const availableCount = cars.length
-  const totalCount = Number(profile?.fleet_size ?? 0)
+  const totalCount = Number(totalCars || profile?.fleet_size || 0)
 
   const hasCars = useMemo(() => cars.length > 0, [cars.length])
 
@@ -67,6 +79,20 @@ export function PublicFleetProfile() {
     }
   }
 
+  function backHref() {
+    if (isOwnProfile) return '/panel'
+    if (user?.id) return '/marketplace'
+    return '/login'
+  }
+
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back()
+      return
+    }
+    window.location.href = '/panel'
+  }
+
   if (loading) {
     return (
       <div className="page-simple">
@@ -78,9 +104,24 @@ export function PublicFleetProfile() {
 
   return (
     <div className="page-simple public-fleet-page">
+      <div className="public-fleet-topnav" style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <Link to={backHref()} className="link muted small">
+          {isOwnProfile ? '← Панель' : user?.id ? '← Маркетплейс' : '← Cario'}
+        </Link>
+        {isOwnProfile ? (
+          <Link to="/ustawienia#profil-firmy" className="link muted small">
+            ✏️ Редагувати
+          </Link>
+        ) : null}
+      </div>
       <button type="button" className="btn ghost small public-fleet-share" onClick={() => void copyLink()}>
         🔗 {t('publicFleet.share')}
       </button>
+      {isOwnProfile ? (
+        <Link to="/ustawienia#profil-firmy" className="btn ghost small" style={{ position: 'absolute', top: '2.2rem', right: 0 }}>
+          ✏️ Редагувати профіль
+        </Link>
+      ) : null}
       {copied ? <p className="form-info">{t('publicFleet.linkCopied')}</p> : null}
 
       <section className="card pad-lg public-fleet-header">
@@ -137,6 +178,24 @@ export function PublicFleetProfile() {
       <p className="muted small">
         {t('publicFleet.totalFleet', { count: totalCount })}
       </p>
+      <button
+        type="button"
+        aria-label="Back"
+        onClick={goBack}
+        className="btn primary"
+        style={{
+          position: 'fixed',
+          left: '1rem',
+          bottom: '1rem',
+          width: '44px',
+          height: '44px',
+          borderRadius: '999px',
+          padding: 0,
+          zIndex: 50,
+        }}
+      >
+        ←
+      </button>
     </div>
   )
 }
