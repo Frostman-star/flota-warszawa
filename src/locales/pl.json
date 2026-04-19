@@ -137,7 +137,7 @@
     "market": "Marketplace (beta)",
     "addCar": "Dodaj auto",
     "criticalBody": "{{count}} dokumentów wymaga uwagi w ciągu 7 dni.",
-    "newApplicationsCard": "📋 Nowe wnioski: {{count}}",
+    "newApplicationsCard": "📋 Nowe zgłoszenia: {{count}}",
     "newApplicationsHint": "Kierowcy aplikują na Twoje auta z marketplace.",
     "newApplicationsBadge": "Nowe",
     "publicProfileTitle": "🌐 Twój profil publiczny:",
@@ -164,7 +164,8 @@
     "check": "🔴 Sprawdź",
     "edit": "Edytuj",
     "delete": "Usuń",
-    "confirmDelete": "Usunąć {{plate}}?"
+    "confirmDelete": "Usunąć {{plate}}?",
+    "pendingApplicationsBadge": "Oczekujące zgłoszenia kierowców: {{count}}"
   },
   "alerts": {
     "title": "Alerty",
@@ -540,7 +541,10 @@
     "editDataCta": "✏️ Edytuj dane",
     "managePhotosCta": "📸 Zarządzaj zdjęciami",
     "newHandoverCta": "🔄 Nowy protokół przekazania",
-    "deleteCarCta": "🗑️ Usuń auto"
+    "deleteCarCta": "🗑️ Usuń auto",
+    "applicationsSectionAria": "Zgłoszenia kierowców",
+    "applicationsLead": "📋 Zgłoszenia: {{count}} nowych",
+    "applicationsEmpty": "Brak oczekujących zgłoszeń na to auto."
   },
   "photoFullscreen": {
     "title": "Zdjęcie",

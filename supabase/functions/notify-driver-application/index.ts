@@ -1,10 +1,12 @@
 /**
- * Optional e-mail for driver application flow (Resend).
+ * Optional e-mail + Web Push for driver application flow (Resend + VAPID).
  * Secrets: SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
  *          RESEND_API_KEY, RESEND_FROM_EMAIL (optional)
+ *          VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY (optional push)
  * Deploy: supabase functions deploy notify-driver-application --no-verify-jwt
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.8'
+import webpush from 'npm:web-push@3.6.7'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -14,6 +16,39 @@ const cors = {
 type Body = {
   event?: 'new_application' | 'accepted' | 'rejected'
   application_id?: string
+}
+
+async function sendPushToUser(
+  admin: ReturnType<typeof createClient>,
+  userId: string,
+  payload: Record<string, unknown>,
+  vapidPublic: string,
+  vapidPrivate: string
+) {
+  const { data: subs } = await admin
+    .from('push_subscriptions')
+    .select('id, endpoint, p256dh, auth')
+    .eq('user_id', userId)
+  if (!subs?.length) return
+  webpush.setVapidDetails('mailto:flota@example.com', vapidPublic, vapidPrivate)
+  for (const sub of subs) {
+    try {
+      await webpush.sendNotification(
+        {
+          endpoint: sub.endpoint,
+          keys: { p256dh: sub.p256dh, auth: sub.auth },
+        } as webpush.PushSubscription,
+        JSON.stringify(payload),
+        { TTL: 86400 }
+      )
+    } catch (e: unknown) {
+      const st = (e as { statusCode?: number })?.statusCode
+      if (st === 404 || st === 410) {
+        await admin.from('push_subscriptions').delete().eq('id', sub.id)
+      }
+      console.error(e)
+    }
+  }
 }
 
 Deno.serve(async (req) => {
@@ -31,6 +66,8 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const resendKey = Deno.env.get('RESEND_API_KEY')
     const resendFrom = Deno.env.get('RESEND_FROM_EMAIL') ?? 'Cario <onboarding@resend.dev>'
+    const vapidPublic = Deno.env.get('VAPID_PUBLIC_KEY')
+    const vapidPrivate = Deno.env.get('VAPID_PRIVATE_KEY')
 
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
@@ -78,6 +115,7 @@ Deno.serve(async (req) => {
 
     const { data: car } = await admin.from('cars').select('plate_number, model').eq('id', appRow.car_id).maybeSingle()
     const plate = String(car?.plate_number ?? '—')
+    const carId = String(appRow.car_id)
 
     const { data: ownerProf } = await admin.from('profiles').select('email, full_name').eq('id', appRow.owner_id).maybeSingle()
     const { data: driverProf } = await admin.from('profiles').select('email, full_name').eq('id', appRow.driver_id).maybeSingle()
@@ -85,12 +123,26 @@ Deno.serve(async (req) => {
     const ownerEmail = String(ownerProf?.email ?? '').trim()
     const driverEmail = String(driverProf?.email ?? '').trim()
 
+    const canPush = Boolean(vapidPublic && vapidPrivate)
+
     if (event === 'new_application') {
       if (user.id !== appRow.driver_id) {
         return new Response(JSON.stringify({ error: 'Brak uprawnień' }), {
           status: 403,
           headers: { ...cors, 'Content-Type': 'application/json' },
         })
+      }
+      const driverName = String(appRow.driver_name ?? driverProf?.full_name ?? '—').trim()
+      const driverPhone = String(appRow.driver_phone ?? '—').trim()
+      const pushPayload = {
+        title: `🚗 Nowe zgłoszenie — ${plate}`,
+        body: `${driverName} · ${driverPhone}`,
+        url: `/pojazd/${carId}`,
+        type: 'new_application',
+        vehicle_id: carId,
+      }
+      if (canPush) {
+        await sendPushToUser(admin, appRow.owner_id, pushPayload, vapidPublic!, vapidPrivate!)
       }
       if (!resendKey || !ownerEmail) {
         return new Response(JSON.stringify({ ok: true, skipped: true }), {
@@ -111,6 +163,37 @@ Deno.serve(async (req) => {
           status: 403,
           headers: { ...cors, 'Content-Type': 'application/json' },
         })
+      }
+      if (canPush) {
+        if (event === 'accepted') {
+          await sendPushToUser(
+            admin,
+            appRow.driver_id,
+            {
+              title: `✅ Przyjęto — ${plate}`,
+              body: `Zostałeś przypisany do pojazdu ${plate}.`,
+              url: '/marketplace',
+              type: 'application_accepted',
+              vehicle_id: carId,
+            },
+            vapidPublic!,
+            vapidPrivate!
+          )
+        } else {
+          await sendPushToUser(
+            admin,
+            appRow.driver_id,
+            {
+              title: `Wniosek odrzucony — ${plate}`,
+              body: 'Sprawdź status w „Moje wnioski”.',
+              url: '/moje-wnioski',
+              type: 'application_rejected',
+              vehicle_id: carId,
+            },
+            vapidPublic!,
+            vapidPrivate!
+          )
+        }
       }
       if (!resendKey || !driverEmail) {
         return new Response(JSON.stringify({ ok: true, skipped: true }), {

@@ -137,7 +137,7 @@
     "market": "Marketplace (beta)",
     "addCar": "Add car",
     "criticalBody": "{{count}} document(s) need attention within 7 days.",
-    "newApplicationsCard": "📋 New applications: {{count}}",
+    "newApplicationsCard": "📋 New driver applications: {{count}}",
     "newApplicationsHint": "Drivers are applying to your marketplace cars.",
     "newApplicationsBadge": "New",
     "publicProfileTitle": "🌐 Your public profile:",
@@ -164,7 +164,8 @@
     "check": "🔴 Check",
     "edit": "Edit",
     "delete": "Delete",
-    "confirmDelete": "Delete {{plate}}?"
+    "confirmDelete": "Delete {{plate}}?",
+    "pendingApplicationsBadge": "Pending driver applications: {{count}}"
   },
   "alerts": {
     "title": "Alerts",
@@ -540,7 +541,10 @@
     "editDataCta": "✏️ Edit details",
     "managePhotosCta": "📸 Manage photos",
     "newHandoverCta": "🔄 New handover protocol",
-    "deleteCarCta": "🗑️ Delete car"
+    "deleteCarCta": "🗑️ Delete car",
+    "applicationsSectionAria": "Driver applications",
+    "applicationsLead": "📋 Applications: {{count}} new",
+    "applicationsEmpty": "No pending applications for this vehicle."
   },
   "photoFullscreen": {
     "title": "Photo",

@@ -132,11 +132,12 @@ Deno.serve(async (req) => {
         if (matchThreshold === undefined) continue
 
         const label = DOC_LABELS[docKey] ?? docKey
-        const title = `🚨 ${plate} — ${label}`
-        const body =
+        const title =
           days === 0
-            ? `${label} — ważność kończy się dziś!`
-            : `${label} wygasa za ${days} ${days === 1 ? 'dzień' : 'dni'}!`
+            ? `⚠️ ${plate} — ${label} wygasa dziś`
+            : `⚠️ ${plate} — ${label} wygasa za ${days} ${days === 1 ? 'dzień' : 'dni'}`
+        const body = 'Sprawdź dokumenty auta'
+        const docPath = isAdmin ? `/pojazd/${carId}` : `/samochod/${carId}`
 
         if (canPush) {
           const { error: insErr } = await admin.from('notification_log').insert({
@@ -155,7 +156,15 @@ Deno.serve(async (req) => {
                     endpoint: sub.endpoint,
                     keys: { p256dh: sub.p256dh, auth: sub.auth },
                   } as webpush.PushSubscription,
-                  JSON.stringify({ title, body, url: `/flota/${carId}` }),
+                  JSON.stringify({
+                    title,
+                    body,
+                    url: docPath,
+                    type: 'document_expiry',
+                    vehicle_id: carId,
+                    doc_type: label,
+                    days,
+                  }),
                   { TTL: 86400 }
                 )
                 sent.push(`push:${plate}:${docKey}:${matchThreshold}`)

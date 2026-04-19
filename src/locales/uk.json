@@ -137,7 +137,7 @@
     "market": "Marketplace (бета)",
     "addCar": "Додати авто",
     "criticalBody": "{{count}} документів потребують уваги протягом 7 днів.",
-    "newApplicationsCard": "📋 Нові заявки: {{count}}",
+    "newApplicationsCard": "📋 Нові заявки водіїв: {{count}}",
     "newApplicationsHint": "Водії подають заявки на ваші авто з маркетплейсу.",
     "newApplicationsBadge": "Нові",
     "publicProfileTitle": "🌐 Ваш публічний профіль:",
@@ -164,7 +164,8 @@
     "check": "🔴 Перевір",
     "edit": "Редагувати",
     "delete": "Видалити",
-    "confirmDelete": "Видалити {{plate}}?"
+    "confirmDelete": "Видалити {{plate}}?",
+    "pendingApplicationsBadge": "Очікуючі заявки водіїв: {{count}}"
   },
   "alerts": {
     "title": "Попередження",
@@ -540,7 +541,10 @@
     "editDataCta": "✏️ Редагувати дані",
     "managePhotosCta": "📸 Керувати фото",
     "newHandoverCta": "🔄 Новий протокол передачі",
-    "deleteCarCta": "🗑️ Видалити авто"
+    "deleteCarCta": "🗑️ Видалити авто",
+    "applicationsSectionAria": "Заявки водіїв",
+    "applicationsLead": "📋 Заявки: {{count}} нових",
+    "applicationsEmpty": "Немає очікуючих заявок на це авто."
   },
   "photoFullscreen": {
     "title": "Фото",

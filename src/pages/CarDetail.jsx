@@ -50,6 +50,8 @@ export function CarDetail() {
   const [listingForm, setListingForm] = useState(null)
   const [listingBusy, setListingBusy] = useState(false)
   const [deleteBusy, setDeleteBusy] = useState(false)
+  const [pendingApps, setPendingApps] = useState([])
+  const [pendingAppsLoading, setPendingAppsLoading] = useState(false)
 
   useEffect(() => {
     if (!car) {
@@ -73,6 +75,36 @@ export function CarDetail() {
       owner_telegram: String(car.owner_telegram ?? ''),
     })
   }, [car?.id, car?.updated_at])
+
+  useEffect(() => {
+    if (!isOwner || !car?.id || !user?.id) {
+      setPendingApps([])
+      setPendingAppsLoading(false)
+      return
+    }
+    let cancelled = false
+    setPendingAppsLoading(true)
+    void supabase
+      .from('driver_applications')
+      .select('id, driver_name, driver_phone, driver_message, created_at')
+      .eq('car_id', car.id)
+      .eq('owner_id', user.id)
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (cancelled) return
+        setPendingAppsLoading(false)
+        if (error) {
+          console.error(error)
+          setPendingApps([])
+          return
+        }
+        setPendingApps(data ?? [])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [isOwner, car?.id, user?.id])
 
   const docRows = useMemo(() => {
     if (!car) return []
@@ -411,6 +443,39 @@ export function CarDetail() {
             <p className="detail-line">
               <strong>{t('carDetail.driver')}</strong> {car.driver_name ?? '—'}
             </p>
+
+            <section className="car-detail-applications" aria-label={t('carDetail.applicationsSectionAria')}>
+              <h3 className="car-detail-subhead">{t('carDetail.applicationsLead', { count: pendingApps.length })}</h3>
+              {pendingAppsLoading ? <LoadingSpinner /> : null}
+              {!pendingAppsLoading && pendingApps.length === 0 ? (
+                <p className="muted small mb-0">{t('carDetail.applicationsEmpty')}</p>
+              ) : null}
+              {!pendingAppsLoading && pendingApps.length > 0 ? (
+                <ul className="car-detail-applications-list">
+                  {pendingApps.map((app) => {
+                    const phoneRaw = String(app.driver_phone ?? '').trim()
+                    return (
+                      <li key={app.id} className="car-detail-application-row">
+                        <p className="car-detail-application-name">
+                          <strong>{String(app.driver_name ?? '—')}</strong>
+                        </p>
+                        {phoneRaw ? (
+                          <a className="car-detail-application-phone" href={`tel:${phoneRaw.replace(/\s+/g, '')}`}>
+                            {phoneRaw}
+                          </a>
+                        ) : (
+                          <span className="muted small">—</span>
+                        )}
+                        {app.driver_message ? <p className="car-detail-application-msg muted small">{String(app.driver_message)}</p> : null}
+                        <p className="muted tiny mb-0">
+                          {app.created_at ? new Date(app.created_at).toLocaleString(lc) : ''}
+                        </p>
+                      </li>
+                    )
+                  })}
+                </ul>
+              ) : null}
+            </section>
 
             {car.notes ? (
               <div className="car-detail-notes">
