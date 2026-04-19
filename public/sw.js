@@ -1,4 +1,4 @@
-/* Flota — service worker (push + cache nazwy) */
+/* Cario — service worker (push + cache) */
 self.addEventListener('install', (event) => {
   self.skipWaiting()
 })
@@ -8,7 +8,7 @@ self.addEventListener('activate', (event) => {
 })
 
 self.addEventListener('push', (event) => {
-  let title = 'Flota Warszawa'
+  let title = 'Cario'
   let body = 'Nowe przypomnienie o dokumencie.'
   let url = '/panel'
   try {

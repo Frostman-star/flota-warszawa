@@ -96,6 +96,65 @@ a:hover {
   color: var(--accent);
 }
 
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.brand-lockup:hover {
+  text-decoration: none;
+}
+
+.brand-lockup:hover .brand-word {
+  color: var(--accent);
+}
+
+.brand-lockup:hover .brand-tagline {
+  color: var(--muted);
+}
+
+.brand-lockup:hover .brand-icon {
+  color: #fff;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 2px solid #3b82f6;
+  box-sizing: border-box;
+}
+
+.brand-text-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+  line-height: 1.15;
+}
+
+.brand-word {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.brand-tagline {
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
 .brand-muted {
   font-weight: 500;
   color: var(--muted);
@@ -760,6 +819,11 @@ a:hover {
   border-radius: 10px;
   padding: 0.35rem 0.45rem;
   cursor: pointer;
+  min-width: 56px;
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .notif-icon {
@@ -2677,4 +2741,250 @@ tr.tier-row-none td:first-child {
   margin: 0.5rem 0 0.25rem;
   font-size: 1rem;
   grid-column: 1 / -1;
+}
+
+.form-success {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid #14532d;
+  border-radius: var(--radius);
+  padding: 0.65rem 0.85rem;
+  margin: 0.5rem 0;
+}
+
+.profile-banner {
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin: 0.75rem 0;
+  font-weight: 600;
+}
+.profile-banner.warn {
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.45);
+  color: #fef3c7;
+}
+
+.profile-progress {
+  margin: 0.75rem 0 1rem;
+}
+.profile-progress-label {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+.profile-progress-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+.profile-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.stack-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.input-textarea {
+  min-height: 120px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.panel-pending-apps {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin: 0 0 1rem;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--border);
+}
+.panel-pending-apps:hover {
+  text-decoration: none;
+  border-color: var(--accent);
+}
+.panel-pending-apps--alert {
+  border-color: rgba(248, 113, 113, 0.55);
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15);
+}
+.panel-pending-apps-emoji {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+.panel-pending-apps-body {
+  flex: 1;
+  min-width: 0;
+}
+.panel-pending-apps-badge {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+.mob-nav--six {
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+}
+.mob-nav--six .mob-nav-item {
+  flex: 1 1 30%;
+  min-width: 28%;
+  min-height: 56px;
+}
+.mob-nav--driver .mob-nav-item {
+  min-height: 56px;
+}
+.mob-nav-item--badge-wrap {
+  position: relative;
+}
+.mob-nav-item-badge {
+  position: absolute;
+  top: 2px;
+  right: 10%;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--red);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+.notif-dot--unread {
+  background: var(--accent);
+}
+
+.driver-app-list,
+.owner-apps-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.status-pill {
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+}
+.status-pill--pending {
+  background: rgba(234, 179, 8, 0.12);
+  color: #fef3c7;
+}
+.status-pill--accepted {
+  background: rgba(34, 197, 94, 0.12);
+  color: #bbf7d0;
+}
+.status-pill--rejected {
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca;
+}
+.driver-app-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.driver-app-plate {
+  letter-spacing: 0.04em;
+}
+.driver-app-msg {
+  margin: 0.5rem 0 0;
+  font-size: 0.92rem;
+}
+
+.owner-apps-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.owner-apps-group-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-bottom: 0.75rem;
+}
+.owner-app-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  background: rgba(0, 0, 0, 0.12);
+}
+.owner-app-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.owner-app-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.owner-app-phone {
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.owner-app-phone:hover {
+  text-decoration: underline;
+}
+.exp-badge {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.35rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(56, 189, 248, 0.1);
+}
+.owner-app-msg {
+  margin: 0.65rem 0 0;
+  font-size: 0.95rem;
+}
+.owner-app-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+}
+.owner-app-accept {
+  background: var(--green) !important;
+  border-color: #166534 !important;
+  color: #052e16 !important;
+  font-weight: 800;
+}
+.owner-app-reject {
+  font-weight: 800;
+}
+
+.apply-success {
+  font-size: 1.05rem;
+  line-height: 1.45;
+  margin: 0 0 1rem;
+}
+.apply-modal-form .apply-prefill-name {
+  margin: 0.25rem 0 0;
+}
+.apply-modal-form .apply-prefill-phone {
+  margin: 0 0 0.5rem;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
 }

@@ -1,13 +1,17 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { AppLayout } from './components/AppLayout'
+import { DocumentHead } from './components/DocumentHead'
 import { AdminLayout } from './layouts/AdminLayout'
 import { CarPageShell } from './layouts/CarPageShell'
+import { DriverLayout } from './layouts/DriverLayout'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AddCarWizard } from './pages/AddCarWizard'
 import { AlertsPage } from './pages/AlertsPage'
 import { CarDetail } from './pages/CarDetail'
+import { DriverMyApplications } from './pages/DriverMyApplications'
+import { DriverProfile } from './pages/DriverProfile'
 import { Fleet } from './pages/Fleet'
 import { Marketplace } from './pages/Marketplace'
+import { OwnerApplications } from './pages/OwnerApplications'
 import { PanelHome } from './pages/PanelHome'
 import { HomeRedirect } from './pages/HomeRedirect'
 import { Login } from './pages/Login'
@@ -17,7 +21,9 @@ import { Statistics } from './pages/Statistics'
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <DocumentHead />
+      <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<HomeRedirect />} />
       <Route
@@ -29,14 +35,15 @@ export default function App() {
         }
       />
       <Route
-        path="/marketplace"
         element={
           <ProtectedRoute>
-            <AppLayout showNav={false} outletContext={null} />
+            <DriverLayout />
           </ProtectedRoute>
         }
       >
-        <Route index element={<Marketplace />} />
+        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/profil" element={<DriverProfile />} />
+        <Route path="/moje-wnioski" element={<DriverMyApplications />} />
       </Route>
       <Route
         element={
@@ -51,6 +58,7 @@ export default function App() {
         <Route path="/alerty" element={<AlertsPage />} />
         <Route path="/statystyki" element={<Statistics />} />
         <Route path="/ustawienia" element={<Settings />} />
+        <Route path="/wnioski" element={<OwnerApplications />} />
         <Route path="/flota/:id" element={<CarPageShell nestInAdminLayout />}>
           <Route index element={<CarDetail />} />
         </Route>
@@ -67,5 +75,6 @@ export default function App() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </>
   )
 }

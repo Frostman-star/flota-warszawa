@@ -4,6 +4,8 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { daysUntil } from '../utils/documents'
 import { localeTag } from '../utils/localeTag'
+import { useAuth } from '../context/AuthContext'
+import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 
 function countCriticalSoon(cars) {
   let n = 0
@@ -19,6 +21,8 @@ function countCriticalSoon(cars) {
 export function PanelHome() {
   const { t, i18n } = useTranslation()
   const { cars, loading, error, refresh } = useOutletContext()
+  const { user } = useAuth()
+  const { count: pendingApps } = useOwnerPendingApplicationCount(user?.id, Boolean(user?.id))
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const weekly = computeWeeklyRentTotal(cars)
   const toCheck = buildAlertRows(cars).length
@@ -49,6 +53,24 @@ export function PanelHome() {
         <div className="hero-stat"><span className="hero-stat-num">{weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł</span><span className="hero-stat-label">{t('panel.weekly')}</span></div>
         <div className="hero-stat"><span className="hero-stat-num">{toCheck}</span><span className="hero-stat-label">{t('panel.toCheck')}</span></div>
       </section>
+
+      <Link
+        to="/wnioski"
+        className={`panel-pending-apps card pad-lg${pendingApps > 0 ? ' panel-pending-apps--alert' : ''}`}
+      >
+        <span className="panel-pending-apps-emoji" aria-hidden>
+          📋
+        </span>
+        <div className="panel-pending-apps-body">
+          <strong>{t('panel.newApplicationsCard', { count: pendingApps })}</strong>
+          <p className="muted small mb-0">{t('panel.newApplicationsHint')}</p>
+        </div>
+        {pendingApps > 0 ? (
+          <span className="panel-pending-apps-badge" aria-label={t('panel.newApplicationsBadge')}>
+            {pendingApps > 99 ? '99+' : pendingApps}
+          </span>
+        ) : null}
+      </Link>
 
       <nav className="big-actions" aria-label={t('panel.quick')}>
         <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden>➕</span><span className="big-action-text">{t('panel.addCar')}</span></Link>

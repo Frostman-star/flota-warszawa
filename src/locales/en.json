@@ -15,17 +15,21 @@
     "tryAgain": "Try again",
     "ok": "OK",
     "language": "Language",
-    "brandMain": "Flota",
-    "brandSub": "Warszawa"
+    "brandName": "Cario",
+    "brandTagline": "Fleet Management"
   },
   "nav": {
     "fleet": "Cars",
     "addCar": "Add",
     "alerts": "Alerts",
-    "statistics": "Statistics"
+    "statistics": "Statistics",
+    "marketplace": "Marketplace",
+    "profile": "Profile",
+    "myApplications": "My applications",
+    "applicationsTab": "Applications"
   },
   "login": {
-    "title": "Flota Warszawa",
+    "title": "Cario",
     "lead": "Taxi fleet management — sign in to continue.",
     "tabLogin": "Sign in",
     "tabRegister": "Register",
@@ -45,6 +49,37 @@
     "checkEmail": "Check your e-mail inbox for confirmation.",
     "loginError": "Login error"
   },
+  "pageMeta": {
+    "brandTitleSuffix": " — Cario",
+    "defaultDocumentTitle": "Cario — Fleet Management",
+    "defaultDesc": "Cario: fleet management for taxi owners and drivers — vehicles, documents, alerts, and marketplace.",
+    "loginTitle": "Sign in",
+    "loginDesc": "Sign in to Cario to manage your fleet, documents, and marketplace listings.",
+    "panelTitle": "Dashboard",
+    "panelDesc": "Today’s priorities and fleet overview in Cario.",
+    "fleetTitle": "My cars",
+    "fleetDesc": "Browse and manage vehicles in your Cario fleet.",
+    "carTitle": "Vehicle details",
+    "carDesc": "Documents, costs, and listing details for this vehicle in Cario.",
+    "alertsTitle": "Alerts",
+    "alertsDesc": "Upcoming document deadlines in Cario.",
+    "statsTitle": "Statistics",
+    "statsDesc": "Profitability and fleet metrics in Cario.",
+    "settingsTitle": "Settings",
+    "settingsDesc": "Company profile and notifications in Cario.",
+    "marketplaceTitle": "Marketplace",
+    "marketplaceDesc": "Browse available rental cars on the Cario marketplace.",
+    "driverProfileTitle": "Profile",
+    "driverProfileDesc": "Your driver profile in Cario.",
+    "driverApplicationsTitle": "My applications",
+    "driverApplicationsDesc": "Track your marketplace applications in Cario.",
+    "ownerApplicationsTitle": "Applications",
+    "ownerApplicationsDesc": "Review driver applications to your listings in Cario.",
+    "wizardTitle": "Add car",
+    "wizardDesc": "Add a new vehicle to your fleet in Cario.",
+    "noCarTitle": "No vehicle assigned",
+    "noCarDesc": "No active car assignment in Cario — contact your fleet owner."
+  },
   "panel": {
     "title": "Attention today",
     "seeAlerts": "View alerts",
@@ -56,7 +91,10 @@
     "myCars": "My cars",
     "market": "Marketplace (beta)",
     "addCar": "Add car",
-    "criticalBody": "{{count}} document(s) need attention within 7 days."
+    "criticalBody": "{{count}} document(s) need attention within 7 days.",
+    "newApplicationsCard": "📋 New applications: {{count}}",
+    "newApplicationsHint": "Drivers are applying to your marketplace cars.",
+    "newApplicationsBadge": "New"
   },
   "fleet": {
     "title": "My cars",
@@ -84,6 +122,15 @@
     "weekShort": "week",
     "interest": "I'm interested",
     "contactCta": "Contact us",
+    "applyCta": "Apply",
+    "applicationSentWait": "Application sent ⏳",
+    "applyTitle": "Application — {{plate}}",
+    "applyPrefillHint": "Details from your profile (update them in Profile before sending):",
+    "applyMessageLabel": "Message to the owner",
+    "applySubmit": "Send application",
+    "applySuccess": "✅ Application sent! The owner will contact you soon.",
+    "profileIncompleteBanner": "Complete your profile to apply.",
+    "profileIncompleteCta": "Go to profile",
     "contact": "Contact — {{plate}}",
     "contactHeading": "Contact",
     "contactTitle": "Contact — {{model}}",
@@ -198,12 +245,17 @@
     "carNotFound": "Car not found.",
     "generic": "Error",
     "saveFailed": "Save failed",
-    "loadFailed": "Load failed"
+    "loadFailed": "Load failed",
+    "applicationOwnerMissing": "Missing owner data for this car — refresh the list or try again later."
   },
   "notifications": {
     "bellAria": "Notifications, {{count}}",
-    "title": "Document alerts",
-    "empty": "No alerts in the 30-day window."
+    "title": "Notifications",
+    "empty": "No notifications.",
+    "appNewApplication": "New application for {{plate}}",
+    "appAccepted": "Accepted for {{plate}}",
+    "appRejected": "Application rejected — {{plate}}",
+    "appGeneric": "Notification"
   },
   "push": {
     "regionAria": "Push notifications",
@@ -415,6 +467,35 @@
     "insightIdle": "💡 You have {{n}} car(s) without a driver. List them on the Marketplace and earn about {{amount}}/month extra.",
     "insightLowMargin": "🔴 {{plate}} has a low margin ({{pct}}%). Consider raising rent or cutting costs.",
     "insightAllProfitable": "🎉 All cars are profitable — great fleet management."
+  },
+  "driverProfile": {
+    "title": "Driver profile",
+    "lead": "Fill in your details so owners can approve you quickly.",
+    "incompleteBanner": "Complete your profile to submit applications.",
+    "progress": "Profile {{pct}}% complete",
+    "saved": "Profile saved.",
+    "fullName": "Full name",
+    "phone": "Phone",
+    "experienceYears": "Experience (years)",
+    "bio": "Short bio / message (optional)"
+  },
+  "driverApplications": {
+    "title": "My applications",
+    "lead": "Status of your marketplace applications.",
+    "empty": "You have not sent any applications yet.",
+    "statusPending": "Pending",
+    "statusAccepted": "Accepted",
+    "statusRejected": "Rejected"
+  },
+  "ownerApplications": {
+    "title": "Driver applications",
+    "lead": "Pending requests — grouped by car.",
+    "empty": "No pending applications.",
+    "accept": "✅ Accept",
+    "reject": "❌ Reject",
+    "expBadge": "{{n}} yrs experience",
+    "acceptedFlash": "Driver assigned! You can now start the vehicle handover checklist.",
+    "rejectedFlash": "Application rejected."
   },
   "noteModal": {
     "title": "Note",

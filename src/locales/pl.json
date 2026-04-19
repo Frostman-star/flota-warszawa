@@ -15,17 +15,21 @@
     "tryAgain": "Spróbuj ponownie",
     "ok": "OK",
     "language": "Język",
-    "brandMain": "Flota",
-    "brandSub": "Warszawa"
+    "brandName": "Cario",
+    "brandTagline": "Zarządzanie flotą"
   },
   "nav": {
     "fleet": "Auta",
     "addCar": "Dodaj",
     "alerts": "Alerty",
-    "statistics": "Statystyki"
+    "statistics": "Statystyki",
+    "marketplace": "Marketplace",
+    "profile": "Profil",
+    "myApplications": "Moje wnioski",
+    "applicationsTab": "Wnioski"
   },
   "login": {
-    "title": "Flota Warszawa",
+    "title": "Cario",
     "lead": "Zarządzanie taksówkami — zaloguj się, aby kontynuować.",
     "tabLogin": "Logowanie",
     "tabRegister": "Rejestracja",
@@ -45,6 +49,37 @@
     "checkEmail": "Sprawdź skrzynkę e-mail (potwierdzenie).",
     "loginError": "Błąd logowania"
   },
+  "pageMeta": {
+    "brandTitleSuffix": " — Cario",
+    "defaultDocumentTitle": "Cario — Zarządzanie flotą",
+    "defaultDesc": "Cario: zarządzanie flotą taksówek dla właścicieli i kierowców — auta, dokumenty, alerty i marketplace.",
+    "loginTitle": "Logowanie",
+    "loginDesc": "Zaloguj się do Cario, aby zarządzać flotą, dokumentami i ogłoszeniami.",
+    "panelTitle": "Panel",
+    "panelDesc": "Dzisiejsze priorytety i podsumowanie floty w Cario.",
+    "fleetTitle": "Moje auta",
+    "fleetDesc": "Przeglądaj i zarządzaj pojazdami w flocie Cario.",
+    "carTitle": "Szczegóły auta",
+    "carDesc": "Dokumenty, koszty i ogłoszenie marketplace dla tego pojazdu w Cario.",
+    "alertsTitle": "Alerty",
+    "alertsDesc": "Zbliżające się terminy dokumentów w Cario.",
+    "statsTitle": "Statystyki",
+    "statsDesc": "Rentowność i metryki floty w Cario.",
+    "settingsTitle": "Ustawienia",
+    "settingsDesc": "Profil firmy i powiadomienia w Cario.",
+    "marketplaceTitle": "Marketplace",
+    "marketplaceDesc": "Przeglądaj dostępne auta do wynajmu na marketplace Cario.",
+    "driverProfileTitle": "Profil",
+    "driverProfileDesc": "Twój profil kierowcy w Cario.",
+    "driverApplicationsTitle": "Moje wnioski",
+    "driverApplicationsDesc": "Śledź swoje zgłoszenia na ogłoszenia w Cario.",
+    "ownerApplicationsTitle": "Wnioski",
+    "ownerApplicationsDesc": "Przeglądaj zgłoszenia kierowców na Twoje ogłoszenia w Cario.",
+    "wizardTitle": "Dodaj auto",
+    "wizardDesc": "Dodaj nowy pojazd do floty w Cario.",
+    "noCarTitle": "Brak przypisanego auta",
+    "noCarDesc": "Brak aktywnego przypisania auta w Cario — skontaktuj się z właścicielem floty."
+  },
   "panel": {
     "title": "Uwaga na dziś",
     "seeAlerts": "Zobacz alerty",
@@ -56,7 +91,10 @@
     "myCars": "Moje auta",
     "market": "Marketplace (beta)",
     "addCar": "Dodaj auto",
-    "criticalBody": "{{count}} dokumentów wymaga uwagi w ciągu 7 dni."
+    "criticalBody": "{{count}} dokumentów wymaga uwagi w ciągu 7 dni.",
+    "newApplicationsCard": "📋 Nowe wnioski: {{count}}",
+    "newApplicationsHint": "Kierowcy aplikują na Twoje auta z marketplace.",
+    "newApplicationsBadge": "Nowe"
   },
   "fleet": {
     "title": "Moje auta",
@@ -84,6 +122,15 @@
     "weekShort": "tydzień",
     "interest": "Jestem zainteresowany",
     "contactCta": "Skontaktuj się",
+    "applyCta": "Złóż wniosek",
+    "applicationSentWait": "Wniosek wysłany ⏳",
+    "applyTitle": "Wniosek — {{plate}}",
+    "applyPrefillHint": "Dane z Twojego profilu (możesz je zmienić w Profilu przed wysłaniem):",
+    "applyMessageLabel": "Wiadomość do właściciela",
+    "applySubmit": "Wyślij wniosek",
+    "applySuccess": "✅ Wniosek wysłany! Właściciel skontaktuje się z Tobą wkrótce.",
+    "profileIncompleteBanner": "Uzupełnij profil aby składać wnioski.",
+    "profileIncompleteCta": "Przejdź do profilu",
     "contact": "Kontakt — {{plate}}",
     "contactHeading": "Kontakt",
     "contactTitle": "Kontakt — {{model}}",
@@ -198,12 +245,17 @@
     "carNotFound": "Nie znaleziono pojazdu.",
     "generic": "Błąd",
     "saveFailed": "Błąd zapisu",
-    "loadFailed": "Błąd ładowania"
+    "loadFailed": "Błąd ładowania",
+    "applicationOwnerMissing": "Brak danych właściciela pojazdu — odśwież listę lub spróbuj później."
   },
   "notifications": {
     "bellAria": "Powiadomienia, {{count}}",
-    "title": "Alerty dokumentów",
-    "empty": "Brak alertów w oknie 30 dni."
+    "title": "Powiadomienia",
+    "empty": "Brak powiadomień.",
+    "appNewApplication": "Nowy wniosek na {{plate}}",
+    "appAccepted": "Przyjęto na {{plate}}",
+    "appRejected": "Odrzucono wniosek — {{plate}}",
+    "appGeneric": "Powiadomienie"
   },
   "push": {
     "regionAria": "Powiadomienia push",
@@ -227,7 +279,7 @@
     "contactPlaceholder": "np. biuro@firma.pl",
     "contactPhone": "Telefon kontaktowy (opcjonalnie)",
     "contactPhonePlaceholder": "np. +48 600 000 000",
-    "contactTelegram": "Telegram firmowy (np. @flota)",
+    "contactTelegram": "Telegram firmowy (np. @cario)",
     "contactTelegramPlaceholder": "@username",
     "notificationsBlock": "Powiadomienia",
     "notificationsHint": "Wyślij przypomnienie (push / e-mail z Edge), gdy do końca ważności zostanie dokładnie:",
@@ -415,6 +467,35 @@
     "insightIdle": "💡 Masz {{n}} aut bez kierowcy. Dodaj je do Marketplace i zarabiaj dodatkowe {{amount}}/mies.",
     "insightLowMargin": "🔴 {{plate}} ma niską marżę {{pct}}%. Rozważ podwyżkę czynszu lub redukcję kosztów.",
     "insightAllProfitable": "🎉 Wszystkie auta generują zysk! Świetne zarządzanie flotą."
+  },
+  "driverProfile": {
+    "title": "Profil kierowcy",
+    "lead": "Uzupełnij dane, aby właściciele mogli Cię szybko zatwierdzić.",
+    "incompleteBanner": "Uzupełnij profil aby składać wnioski.",
+    "progress": "Profil uzupełniony w {{pct}}%",
+    "saved": "Profil zapisany.",
+    "fullName": "Imię i nazwisko",
+    "phone": "Telefon",
+    "experienceYears": "Staż (lata)",
+    "bio": "Krótka wiadomość / bio (opcjonalnie)"
+  },
+  "driverApplications": {
+    "title": "Moje wnioski",
+    "lead": "Status zgłoszeń na auta z marketplace.",
+    "empty": "Nie wysłałeś jeszcze żadnego wniosku.",
+    "statusPending": "Oczekuje",
+    "statusAccepted": "Przyjęty",
+    "statusRejected": "Odrzucony"
+  },
+  "ownerApplications": {
+    "title": "Wnioski kierowców",
+    "lead": "Oczekujące zgłoszenia — pogrupowane wg auta.",
+    "empty": "Brak oczekujących wniosków.",
+    "accept": "✅ Przyjmij",
+    "reject": "❌ Odrzuć",
+    "expBadge": "{{n}} lat stażu",
+    "acceptedFlash": "Kierowca przypisany! Możesz teraz zrobić protokół zdania auta.",
+    "rejectedFlash": "Wniosek odrzucony."
   },
   "noteModal": {
     "title": "Notatka",

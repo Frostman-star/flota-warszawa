@@ -8,11 +8,13 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Modal } from '../components/Modal'
 import { localeTag } from '../utils/localeTag'
 import { carPath } from '../lib/carPaths'
+import { isDriverProfileCompleteForApply } from '../utils/driverProfile'
 
 const DRIVER_SELECT = `
   id, model, year, weekly_rent_pln, marketplace_photo_url, marketplace_description, marketplace_location,
   marketplace_status, deposit_amount, fuel_type, transmission, seats, consumption, marketplace_features,
-  min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram
+  min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram,
+  plate_number, owner_id
 `
 
 /** @param {unknown} ft */
@@ -34,12 +36,6 @@ function fuelIcon(ft) {
 /** @param {unknown} tr */
 function transmissionIcon(tr) {
   return String(tr || '').toLowerCase() === 'manualna' ? '⚙️' : '🅰️'
-}
-
-/** @param {unknown} handle */
-function telegramHref(handle) {
-  const h = String(handle || '').trim().replace(/^@/, '')
-  return h ? `https://t.me/${encodeURIComponent(h)}` : ''
 }
 
 /** @param {Record<string, unknown>} car */
@@ -66,7 +62,7 @@ function matchesChip(car, chip) {
 export function Marketplace() {
   const { t, i18n } = useTranslation()
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
-  const { isAdmin, isDriver, user } = useAuth()
+  const { isAdmin, isDriver, user, session, profile } = useAuth()
   const [searchParams, setSearchParams] = useSearchParams()
   const ownerSectionRef = useRef(null)
 
@@ -74,16 +70,36 @@ export function Marketplace() {
   const [driverLoading, setDriverLoading] = useState(true)
   const [driverError, setDriverError] = useState(null)
 
-  const [company, setCompany] = useState({
-    company_name: '',
-    contact_email: '',
-    contact_phone: '',
-    contact_telegram: '',
-  })
-  const [interestCar, setInterestCar] = useState(null)
-  const [openContact, setOpenContact] = useState(false)
+  const [applyCar, setApplyCar] = useState(null)
+  const [applyOpen, setApplyOpen] = useState(false)
+  const [applyStep, setApplyStep] = useState('form')
+  const [applyMessage, setApplyMessage] = useState('')
+  const [applySubmitting, setApplySubmitting] = useState(false)
+  const [applyError, setApplyError] = useState(null)
+  /** @type {[Record<string, true>, import('react').Dispatch<import('react').SetStateAction<Record<string, true>>>]} */
+  const [blockedApplyCars, setBlockedApplyCars] = useState({})
 
   const [chipFilter, setChipFilter] = useState('all')
+
+  const profileApplyReady = isDriverProfileCompleteForApply(profile)
+
+  const loadMyApplications = useCallback(async () => {
+    if (!isDriver || !user?.id) {
+      setBlockedApplyCars({})
+      return
+    }
+    const { data, error } = await supabase
+      .from('driver_applications')
+      .select('car_id,status')
+      .eq('driver_id', user.id)
+    if (error) return
+    const next = {}
+    for (const r of data ?? []) {
+      const st = String(r.status || '')
+      if (st === 'pending' || st === 'accepted') next[String(r.car_id)] = true
+    }
+    setBlockedApplyCars(next)
+  }, [isDriver, user?.id])
 
   const {
     cars: ownerCars,
@@ -91,20 +107,6 @@ export function Marketplace() {
     error: ownerError,
     refresh: refreshOwnerCars,
   } = useCars({ enabled: isAdmin && Boolean(user?.id), ownerId: user?.id ?? null })
-
-  const loadCompany = useCallback(async () => {
-    const { data } = await supabase
-      .from('company_settings')
-      .select('company_name, contact_email, contact_phone, contact_telegram')
-      .eq('id', 1)
-      .maybeSingle()
-    setCompany({
-      company_name: data?.company_name != null ? String(data.company_name) : '',
-      contact_email: data?.contact_email != null ? String(data.contact_email) : '',
-      contact_phone: data?.contact_phone != null ? String(data.contact_phone) : '',
-      contact_telegram: data?.contact_telegram != null ? String(data.contact_telegram) : '',
-    })
-  }, [])
 
   const loadDriverListings = useCallback(async () => {
     setDriverLoading(true)
@@ -132,16 +134,16 @@ export function Marketplace() {
   }, [])
 
   useEffect(() => {
-    loadCompany()
-  }, [loadCompany])
-
-  useEffect(() => {
     if (isDriver) loadDriverListings()
     else {
       setDriverCars([])
       setDriverLoading(false)
     }
   }, [isDriver, loadDriverListings])
+
+  useEffect(() => {
+    void loadMyApplications()
+  }, [loadMyApplications])
 
   useEffect(() => {
     if (searchParams.get('manage') !== '1' || !isAdmin || ownerLoading) return undefined
@@ -194,13 +196,47 @@ export function Marketplace() {
     [t]
   )
 
-  const mergedPhone = interestCar
-    ? String(interestCar.owner_phone ?? '').trim() || company.contact_phone.trim()
-    : company.contact_phone.trim()
-  const mergedTelegram = interestCar
-    ? String(interestCar.owner_telegram ?? '').trim() || company.contact_telegram.trim()
-    : company.contact_telegram.trim()
-  const mergedEmail = company.contact_email.trim()
+  const submitApplication = useCallback(async () => {
+    if (!applyCar || !user?.id || !profile) return
+    const ownerId = applyCar.owner_id
+    if (!ownerId) {
+      setApplyError('missing_owner')
+      return
+    }
+    setApplySubmitting(true)
+    setApplyError(null)
+    const { data: ins, error } = await supabase
+      .from('driver_applications')
+      .insert({
+        car_id: applyCar.id,
+        driver_id: user.id,
+        owner_id: ownerId,
+        status: 'pending',
+        driver_name: String(profile.full_name ?? '').trim(),
+        driver_phone: String(profile.phone ?? '').trim(),
+        driver_message: applyMessage.trim() || null,
+      })
+      .select('id')
+      .maybeSingle()
+    setApplySubmitting(false)
+    if (error) {
+      setApplyError(error.message)
+      return
+    }
+    if (session?.access_token && ins?.id) {
+      try {
+        await supabase.functions.invoke('notify-driver-application', {
+          body: { event: 'new_application', application_id: ins.id },
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        })
+      } catch {
+        /* brak wdrożonej funkcji */
+      }
+    }
+    setApplyStep('success')
+    setBlockedApplyCars((prev) => ({ ...prev, [String(applyCar.id)]: true }))
+    void loadMyApplications()
+  }, [applyCar, user?.id, profile, applyMessage, session?.access_token, loadMyApplications])
 
   function formatWeekly(car) {
     const n = Math.round(Number(car.weekly_rent_pln ?? 0))
@@ -228,6 +264,15 @@ export function Marketplace() {
               </span>
             </div>
           </header>
+
+          {!profileApplyReady ? (
+            <div className="profile-banner warn" role="status">
+              {t('marketplace.profileIncompleteBanner')}{' '}
+              <Link to="/profil" className="link-strong">
+                {t('marketplace.profileIncompleteCta')}
+              </Link>
+            </div>
+          ) : null}
 
           {driverError ? <p className="form-error">{driverError}</p> : null}
 
@@ -319,13 +364,19 @@ export function Marketplace() {
                           <button
                             type="button"
                             className="btn btn-huge primary market-catalog-cta"
+                            disabled={!profileApplyReady || Boolean(blockedApplyCars[String(car.id)])}
                             onClick={() => {
-                              setInterestCar(car)
-                              setOpenContact(true)
-                              loadCompany()
+                              if (!profileApplyReady || blockedApplyCars[String(car.id)]) return
+                              setApplyCar(car)
+                              setApplyOpen(true)
+                              setApplyStep('form')
+                              setApplyMessage('')
+                              setApplyError(null)
                             }}
                           >
-                            {t('marketplace.contactCta')}
+                            {blockedApplyCars[String(car.id)]
+                              ? t('marketplace.applicationSentWait')
+                              : t('marketplace.applyCta')}
                           </button>
                         </div>
                       </article>
@@ -387,53 +438,68 @@ export function Marketplace() {
       ) : null}
 
       <Modal
-        open={openContact}
-        title={interestCar ? t('marketplace.contactTitle', { model: interestCar.model || t('marketplace.car') }) : t('marketplace.contactHeading')}
+        open={applyOpen && Boolean(applyCar)}
+        title={
+          applyCar
+            ? t('marketplace.applyTitle', {
+                plate: String(applyCar.plate_number ?? '').trim() || applyCar.model || t('marketplace.car'),
+              })
+            : ''
+        }
         onClose={() => {
-          setOpenContact(false)
-          setInterestCar(null)
+          setApplyOpen(false)
+          setApplyCar(null)
+          setApplyStep('form')
+          setApplyError(null)
         }}
       >
-        <div className="market-contact-block">
-          <p className="market-contact-company">
-            <strong>{t('marketplace.contactCompany')}</strong> {company.company_name || '—'}
-          </p>
-          {mergedPhone ? (
-            <a className="market-contact-bigbtn" href={`tel:${mergedPhone.replace(/\s+/g, '')}`}>
-              <span aria-hidden>📞</span> {t('marketplace.btnCall')}
-              <span className="market-contact-bigbtn-sub">{mergedPhone}</span>
-            </a>
-          ) : null}
-          {mergedTelegram ? (
-            <a
-              className="market-contact-bigbtn market-contact-bigbtn--tg"
-              href={telegramHref(mergedTelegram)}
-              target="_blank"
-              rel="noreferrer"
+        {applyStep === 'success' ? (
+          <div className="apply-modal-success">
+            <p className="apply-success">{t('marketplace.applySuccess')}</p>
+            <button
+              type="button"
+              className="btn btn-huge primary"
+              onClick={() => {
+                setApplyOpen(false)
+                setApplyCar(null)
+                setApplyStep('form')
+              }}
             >
-              <span aria-hidden>✈️</span> {t('marketplace.btnTelegram')}
-              <span className="market-contact-bigbtn-sub">{mergedTelegram}</span>
-            </a>
-          ) : null}
-          {mergedEmail ? (
-            <a className="market-contact-bigbtn market-contact-bigbtn--mail" href={`mailto:${mergedEmail}`}>
-              <span aria-hidden>📧</span> {t('marketplace.btnEmail')}
-              <span className="market-contact-bigbtn-sub">{mergedEmail}</span>
-            </a>
-          ) : (
-            <p className="muted">{t('marketplace.noEmail')}</p>
-          )}
-        </div>
-        <button
-          type="button"
-          className="btn btn-huge ghost market-contact-close"
-          onClick={() => {
-            setOpenContact(false)
-            setInterestCar(null)
-          }}
-        >
-          {t('app.close')}
-        </button>
+              {t('app.ok')}
+            </button>
+          </div>
+        ) : (
+          <div className="apply-modal-form stack-form">
+            <p className="muted small">{t('marketplace.applyPrefillHint')}</p>
+            <p className="apply-prefill-name">
+              <strong>{String(profile?.full_name ?? '')}</strong>
+            </p>
+            <p className="muted apply-prefill-phone">{String(profile?.phone ?? '')}</p>
+            <label className="field-label-lg" htmlFor="apply-msg">
+              {t('marketplace.applyMessageLabel')}
+            </label>
+            <textarea
+              id="apply-msg"
+              className="input input-textarea"
+              rows={4}
+              value={applyMessage}
+              onChange={(e) => setApplyMessage(e.target.value)}
+            />
+            {applyError ? (
+              <p className="form-error">
+                {applyError === 'missing_owner' ? t('errors.applicationOwnerMissing') : applyError}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              className="btn btn-huge primary"
+              disabled={applySubmitting || !profileApplyReady}
+              onClick={() => void submitApplication()}
+            >
+              {applySubmitting ? t('app.loading') : t('marketplace.applySubmit')}
+            </button>
+          </div>
+        )}
       </Modal>
     </div>
   )

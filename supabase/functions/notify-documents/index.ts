@@ -47,7 +47,7 @@ Deno.serve(async (req) => {
     const vapidPublic = Deno.env.get('VAPID_PUBLIC_KEY')
     const vapidPrivate = Deno.env.get('VAPID_PRIVATE_KEY')
     const resendKey = Deno.env.get('RESEND_API_KEY')
-    const resendFrom = Deno.env.get('RESEND_FROM_EMAIL') ?? 'Flota <onboarding@resend.dev>'
+    const resendFrom = Deno.env.get('RESEND_FROM_EMAIL') ?? 'Cario <onboarding@resend.dev>'
 
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {

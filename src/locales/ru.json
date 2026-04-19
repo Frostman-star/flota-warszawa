@@ -15,17 +15,21 @@
     "tryAgain": "Попробовать снова",
     "ok": "OK",
     "language": "Язык",
-    "brandMain": "Flota",
-    "brandSub": "Warszawa"
+    "brandName": "Cario",
+    "brandTagline": "Управление флотом"
   },
   "nav": {
     "fleet": "Авто",
     "addCar": "Добавить",
     "alerts": "Алерты",
-    "statistics": "Статистика"
+    "statistics": "Статистика",
+    "marketplace": "Маркетплейс",
+    "profile": "Профиль",
+    "myApplications": "Мои заявки",
+    "applicationsTab": "Заявки"
   },
   "login": {
-    "title": "Flota Warszawa",
+    "title": "Cario",
     "lead": "Управление таксопарком — войдите, чтобы продолжить.",
     "tabLogin": "Вход",
     "tabRegister": "Регистрация",
@@ -45,6 +49,37 @@
     "checkEmail": "Проверьте почту для подтверждения.",
     "loginError": "Ошибка входа"
   },
+  "pageMeta": {
+    "brandTitleSuffix": " — Cario",
+    "defaultDocumentTitle": "Cario — Управление флотом",
+    "defaultDesc": "Cario: управление таксопарком для владельцев и водителей — авто, документы, уведомления и маркетплейс.",
+    "loginTitle": "Вход",
+    "loginDesc": "Войдите в Cario, чтобы управлять автопарком, документами и объявлениями.",
+    "panelTitle": "Панель",
+    "panelDesc": "Приоритеты на сегодня и обзор автопарка в Cario.",
+    "fleetTitle": "Мои авто",
+    "fleetDesc": "Просматривайте и управляйте транспортом в автопарке Cario.",
+    "carTitle": "Детали авто",
+    "carDesc": "Документы, расходы и объявление для этого авто в Cario.",
+    "alertsTitle": "Алерты",
+    "alertsDesc": "Ближайшие сроки документов в Cario.",
+    "statsTitle": "Статистика",
+    "statsDesc": "Доходность и метрики автопарка в Cario.",
+    "settingsTitle": "Настройки",
+    "settingsDesc": "Профиль компании и уведомления в Cario.",
+    "marketplaceTitle": "Маркетплейс",
+    "marketplaceDesc": "Доступные авто для аренды на маркетплейсе Cario.",
+    "driverProfileTitle": "Профиль",
+    "driverProfileDesc": "Ваш профиль водителя в Cario.",
+    "driverApplicationsTitle": "Мои заявки",
+    "driverApplicationsDesc": "Статус ваших заявок на объявления в Cario.",
+    "ownerApplicationsTitle": "Заявки",
+    "ownerApplicationsDesc": "Просматривайте заявки водителей на ваши объявления в Cario.",
+    "wizardTitle": "Добавить авто",
+    "wizardDesc": "Добавьте новый транспорт в автопарк в Cario.",
+    "noCarTitle": "Нет назначенного авто",
+    "noCarDesc": "Нет активного назначения авто в Cario — свяжитесь с владельцем автопарка."
+  },
   "panel": {
     "title": "Внимание на сегодня",
     "seeAlerts": "Смотреть алерты",
@@ -56,7 +91,10 @@
     "myCars": "Мои авто",
     "market": "Marketplace (бета)",
     "addCar": "Добавить авто",
-    "criticalBody": "{{count}} документов требуют внимания в течение 7 дней."
+    "criticalBody": "{{count}} документов требуют внимания в течение 7 дней.",
+    "newApplicationsCard": "📋 Новые заявки: {{count}}",
+    "newApplicationsHint": "Водители подают заявки на ваши авто с маркетплейса.",
+    "newApplicationsBadge": "Новые"
   },
   "fleet": {
     "title": "Мои авто",
@@ -84,6 +122,15 @@
     "weekShort": "неделя",
     "interest": "Мне интересно",
     "contactCta": "Связаться",
+    "applyCta": "Подать заявку",
+    "applicationSentWait": "Заявка отправлена ⏳",
+    "applyTitle": "Заявка — {{plate}}",
+    "applyPrefillHint": "Данные из вашего профиля (можно изменить в Профиле перед отправкой):",
+    "applyMessageLabel": "Сообщение владельцу",
+    "applySubmit": "Отправить заявку",
+    "applySuccess": "✅ Заявка отправлена! Владелец свяжется с вами в ближайшее время.",
+    "profileIncompleteBanner": "Заполните профиль, чтобы подавать заявки.",
+    "profileIncompleteCta": "Перейти в профиль",
     "contact": "Контакт — {{plate}}",
     "contactHeading": "Контакт",
     "contactTitle": "Контакт — {{model}}",
@@ -198,12 +245,17 @@
     "carNotFound": "Авто не найдено.",
     "generic": "Ошибка",
     "saveFailed": "Ошибка сохранения",
-    "loadFailed": "Ошибка загрузки"
+    "loadFailed": "Ошибка загрузки",
+    "applicationOwnerMissing": "Нет данных владельца авто — обновите список или попробуйте позже."
   },
   "notifications": {
     "bellAria": "Уведомления, {{count}}",
-    "title": "Алерты по документам",
-    "empty": "Нет алертов в окне 30 дней."
+    "title": "Уведомления",
+    "empty": "Нет уведомлений.",
+    "appNewApplication": "Новая заявка на {{plate}}",
+    "appAccepted": "Принято на {{plate}}",
+    "appRejected": "Заявка отклонена — {{plate}}",
+    "appGeneric": "Уведомление"
   },
   "push": {
     "regionAria": "Push-уведомления",
@@ -227,7 +279,7 @@
     "contactPlaceholder": "напр. biuro@firma.pl",
     "contactPhone": "Контактный телефон (необязательно)",
     "contactPhonePlaceholder": "напр. +48 600 000 000",
-    "contactTelegram": "Telegram компании (напр. @flota)",
+    "contactTelegram": "Telegram компании (напр. @cario)",
     "contactTelegramPlaceholder": "@username",
     "notificationsBlock": "Уведомления",
     "notificationsHint": "Отправить напоминание (push / e-mail через Edge), когда до окончания срока останется ровно:",
@@ -415,6 +467,35 @@
     "insightIdle": "💡 У вас {{n}} авто без водителя. Добавьте их на Marketplace и зарабатывайте около {{amount}}/мес.",
     "insightLowMargin": "🔴 {{plate}} — низкая маржа {{pct}}%. Рассмотрите повышение аренды или снижение расходов.",
     "insightAllProfitable": "🎉 Все авто в прибыли! Отличное управление автопарком."
+  },
+  "driverProfile": {
+    "title": "Профиль водителя",
+    "lead": "Заполните данные, чтобы владельцы могли быстро вас одобрить.",
+    "incompleteBanner": "Заполните профиль, чтобы подавать заявки.",
+    "progress": "Профиль заполнен на {{pct}}%",
+    "saved": "Профиль сохранён.",
+    "fullName": "Имя и фамилия",
+    "phone": "Телефон",
+    "experienceYears": "Стаж (лет)",
+    "bio": "Краткое сообщение / био (необязательно)"
+  },
+  "driverApplications": {
+    "title": "Мои заявки",
+    "lead": "Статус заявок на авто с маркетплейса.",
+    "empty": "Вы ещё не отправляли заявок.",
+    "statusPending": "Ожидает",
+    "statusAccepted": "Принято",
+    "statusRejected": "Отклонено"
+  },
+  "ownerApplications": {
+    "title": "Заявки водителей",
+    "lead": "Ожидающие заявки — сгруппированы по авто.",
+    "empty": "Нет ожидающих заявок.",
+    "accept": "✅ Принять",
+    "reject": "❌ Отклонить",
+    "expBadge": "{{n}} лет стажа",
+    "acceptedFlash": "Водитель назначен! Можно начать протокол передачи авто.",
+    "rejectedFlash": "Заявка отклонена."
   },
   "noteModal": {
     "title": "Заметка",

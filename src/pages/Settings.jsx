@@ -12,7 +12,7 @@ export function Settings() {
   const { t } = useTranslation()
   const { session, user } = useAuth()
   const { drivers, refresh: refreshDrivers } = useDrivers(true, user?.id)
-  const [companyName, setCompanyName] = useState('Flota Warszawa')
+  const [companyName, setCompanyName] = useState('Cario')
   const [emailEnabled, setEmailEnabled] = useState(false)
   const [alertDays, setAlertDays] = useState([30, 14, 7, 3, 1])
   const [contactEmail, setContactEmail] = useState('')

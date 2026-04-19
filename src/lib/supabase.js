@@ -5,7 +5,7 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!url || !anonKey) {
   console.warn(
-    '[Flota] Brak VITE_SUPABASE_URL lub VITE_SUPABASE_ANON_KEY. Skopiuj .env.example do .env i uzupełnij dane Supabase.'
+    '[Cario] Brak VITE_SUPABASE_URL lub VITE_SUPABASE_ANON_KEY. Skopiuj .env.example do .env i uzupełnij dane Supabase.'
   )
 }
 

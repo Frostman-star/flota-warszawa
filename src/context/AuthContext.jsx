@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
       if (delaysMs[i] > 0) await new Promise((r) => setTimeout(r, delaysMs[i]))
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, email, full_name, role')
+        .select('id, email, full_name, role, phone, experience_years, bio')
         .eq('id', userId)
         .maybeSingle()
       if (error) {

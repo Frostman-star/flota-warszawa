@@ -13,7 +13,7 @@ export function AdminLayout() {
     <>
       <RemindersBootstrap cars={cars} />
       <PushBanner />
-      <AppLayout showNav={isAdmin} outletContext={{ cars, loading, error, refresh }} />
+      <AppLayout showNav={isAdmin} outletContext={{ cars, loading, error, refresh }} notifCars={cars} />
       {isAdmin ? <MobileBottomNav /> : null}
     </>
   )

@@ -19,7 +19,7 @@ export async function registerServiceWorker() {
   try {
     return await navigator.serviceWorker.register('/sw.js')
   } catch (e) {
-    console.warn('[Flota] Service worker', e)
+    console.warn('[Cario] Service worker', e)
     return null
   }
 }
@@ -42,7 +42,7 @@ export async function savePushSubscription(userId, subscription) {
     },
     { onConflict: 'endpoint' }
   )
-  if (error) console.error('[Flota] push_subscriptions', error)
+  if (error) console.error('[Cario] push_subscriptions', error)
 }
 
 /**
@@ -52,7 +52,7 @@ export async function savePushSubscription(userId, subscription) {
 export async function subscribeUserToPush(userId) {
   const vapid = import.meta.env.VITE_VAPID_PUBLIC_KEY
   if (!vapid) {
-    console.warn('[Flota] Brak VITE_VAPID_PUBLIC_KEY — pomijam Web Push')
+    console.warn('[Cario] Brak VITE_VAPID_PUBLIC_KEY — pomijam Web Push')
     return null
   }
   const reg = await navigator.serviceWorker.ready
