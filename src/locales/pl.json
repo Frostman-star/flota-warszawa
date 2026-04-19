@@ -21,7 +21,8 @@
   "nav": {
     "fleet": "Auta",
     "addCar": "Dodaj",
-    "alerts": "Alerty"
+    "alerts": "Alerty",
+    "statistics": "Statystyki"
   },
   "login": {
     "title": "Flota Warszawa",
@@ -257,7 +258,35 @@
     "showMarketplace": "Pokaż na marketplace",
     "marketplaceStatus": "Status na marketplace",
     "statusOptionTaken": "Zajęte",
-    "statusOptionAvailable": "Dostępne"
+    "statusOptionAvailable": "Dostępne",
+    "monthlyCostsHeading": "Miesięczne koszty (PLN)",
+    "ocCostMonth": "OC miesięcznie",
+    "acCostMonth": "AC miesięcznie",
+    "serviceCostMonth": "Ostatni serwis (koszt)",
+    "otherCostsMonth": "Inne koszty miesięczne"
+  },
+  "stats": {
+    "title": "Statystyki",
+    "lead": "Przychody i koszty floty — krok 1 analityki.",
+    "summaryAria": "Sumy floty",
+    "totalMonthlyIncome": "Przychód miesięczny łącznie",
+    "totalMonthlyCosts": "Koszty miesięczne łącznie",
+    "totalNetProfit": "Zysk netto (miesiąc)",
+    "profitabilityTitle": "Rentowność aut",
+    "rowIncome": "Przychód miesięczny",
+    "rowCosts": "Koszty miesięczne",
+    "rowNet": "Zysk netto",
+    "rowMargin": "Marża",
+    "noCostData": "Brak danych kosztowych",
+    "fleetSummaryTitle": "Podsumowanie floty",
+    "carsInProfit": "Auta na plusie:",
+    "carsLossBreakEven": "Auta na zero lub minusie:",
+    "bestCar": "Najlepsze auto:",
+    "worstCar": "Najsłabsze auto:",
+    "idleCars": "Auta bez kierowcy:",
+    "estimatedLostIncome": "Szac. utracony przychód / mies.:",
+    "chartTitle": "Marża zysku (słupki)",
+    "chartHint": "Szerokość słupka = marża % (ujemne — krótki czerwony pasek)."
   },
   "noteModal": {
     "title": "Notatka",

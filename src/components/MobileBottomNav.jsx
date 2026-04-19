@@ -15,9 +15,10 @@ export function MobileBottomNav() {
   }
 
   return (
-    <nav className="mob-nav" aria-label={t('panel.quick')}>
+    <nav className="mob-nav mob-nav--five" aria-label={t('panel.quick')}>
       {item('/panel', `🏠 ${t('app.panel')}`, { exact: true })}
       {item('/flota', `🚗 ${t('nav.fleet')}`)}
+      {item('/statystyki', `📊 ${t('nav.statistics')}`)}
       <Link to="/dodaj" className={`mob-nav-item${pathname === '/dodaj' ? ' active' : ''}`}>
         ➕ {t('nav.addCar')}
       </Link>

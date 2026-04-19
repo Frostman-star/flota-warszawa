@@ -54,6 +54,7 @@ export function PanelHome() {
         <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden>➕</span><span className="big-action-text">{t('panel.addCar')}</span></Link>
         <Link to="/flota" className="big-action"><span className="big-action-emoji" aria-hidden>🚗</span><span className="big-action-text">{t('panel.myCars')}</span></Link>
         <Link to="/alerty" className="big-action"><span className="big-action-emoji" aria-hidden>🔔</span><span className="big-action-text">{t('nav.alerts')}</span></Link>
+        <Link to="/statystyki" className="big-action"><span className="big-action-emoji" aria-hidden>📊</span><span className="big-action-text">{t('nav.statistics')}</span></Link>
       </nav>
 
       <p className="muted small footer-hint">

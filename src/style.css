@@ -1076,7 +1076,7 @@ code {
     display: flex;
   }
   .main-content {
-    padding-bottom: 4.5rem;
+    padding-bottom: 5rem;
   }
   .desktop-add-btn {
     display: none !important;
@@ -1766,4 +1766,211 @@ tr.tier-row-none td:first-child {
 .lang-flag.active {
   border-color: var(--accent);
   box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.25);
+}
+
+/* --- Statistics (analytics step 1) --- */
+.mob-nav--five .mob-nav-item {
+  font-size: 0.65rem;
+  padding: 0.4rem 0.15rem;
+}
+
+.stats-page .stats-section {
+  margin-top: 1.5rem;
+}
+
+.stats-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .stats-summary-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+.stats-summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  box-shadow: var(--shadow);
+}
+
+.stats-summary-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.stats-summary-value {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.stats-summary-card--income .stats-summary-value {
+  color: var(--green);
+}
+
+.stats-summary-card--costs .stats-summary-value {
+  color: var(--red);
+}
+
+.stats-summary-card--profit.is-positive .stats-summary-value {
+  color: var(--green);
+}
+
+.stats-summary-card--profit.is-negative .stats-summary-value {
+  color: var(--red);
+}
+
+.stats-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.stats-car-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stats-car-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.stats-car-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.stats-car-title {
+  font-size: 1rem;
+}
+
+.stats-car-model {
+  display: block;
+  font-weight: 500;
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 0.15rem;
+}
+
+.stats-car-emoji {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.stats-car-dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem 1rem;
+  font-size: 0.88rem;
+}
+
+.stats-car-dl dt {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.stats-car-dl dd {
+  margin: 0;
+}
+
+.stats-money--in {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.stats-money--out {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.stats-no-cost {
+  margin: 0.5rem 0 0;
+}
+
+.stats-fleet-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  line-height: 1.65;
+}
+
+.stats-bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.stats-bar-row {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, 22%) 1fr minmax(5.5rem, 28%);
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.stats-bar-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats-bar-track {
+  height: 10px;
+  background: rgba(36, 48, 68, 0.9);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.stats-bar-fill {
+  height: 100%;
+  min-width: 2px;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.stats-bar-fill--green {
+  background: linear-gradient(90deg, #15803d, var(--green));
+}
+
+.stats-bar-fill--yellow {
+  background: linear-gradient(90deg, #a16207, var(--yellow));
+}
+
+.stats-bar-fill--red {
+  background: linear-gradient(90deg, #991b1b, var(--red));
+}
+
+.stats-bar-value {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.field-span-heading {
+  margin-top: 0.5rem;
+}
+
+.stats-form-cost-heading {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
 }

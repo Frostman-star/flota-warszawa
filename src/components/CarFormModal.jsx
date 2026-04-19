@@ -20,6 +20,10 @@ const emptyForm = {
   notes: '',
   show_in_marketplace: false,
   marketplace_status: 'zajete',
+  oc_cost: '0',
+  ac_cost: '0',
+  service_cost: '0',
+  other_costs: '0',
 }
 
 /**
@@ -56,6 +60,10 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         notes: String(car.notes ?? ''),
         show_in_marketplace: Boolean(car.show_in_marketplace),
         marketplace_status: car.marketplace_status === 'dostepne' ? 'dostepne' : 'zajete',
+        oc_cost: String(car.oc_cost ?? '0'),
+        ac_cost: String(car.ac_cost ?? '0'),
+        service_cost: String(car.service_cost ?? '0'),
+        other_costs: String(car.other_costs ?? '0'),
       })
     } else {
       setForm(emptyForm)
@@ -115,6 +123,14 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       notes: form.notes,
       show_in_marketplace: Boolean(form.show_in_marketplace),
       marketplace_status: form.marketplace_status,
+      ...(editing
+        ? {
+            oc_cost: Number(form.oc_cost) || 0,
+            ac_cost: Number(form.ac_cost) || 0,
+            service_cost: Number(form.service_cost) || 0,
+            other_costs: Number(form.other_costs) || 0,
+          }
+        : {}),
     }
 
     if (!payload.plate_number) {
@@ -229,6 +245,17 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
             <option value="dostepne">{t('carForm.statusOptionAvailable')}</option>
           </select>
         </label>
+        {editing ? (
+          <>
+            <div className="field-span-heading">
+              <h3 className="stats-form-cost-heading">{t('carForm.monthlyCostsHeading')}</h3>
+            </div>
+            {field('oc_cost', t('carForm.ocCostMonth'), 'number', { min: 0, step: 1 })}
+            {field('ac_cost', t('carForm.acCostMonth'), 'number', { min: 0, step: 1 })}
+            {field('service_cost', t('carForm.serviceCostMonth'), 'number', { min: 0, step: 1 })}
+            {field('other_costs', t('carForm.otherCostsMonth'), 'number', { min: 0, step: 1 })}
+          </>
+        ) : null}
       </form>
     </Modal>
   )

@@ -21,7 +21,8 @@
   "nav": {
     "fleet": "Авто",
     "addCar": "Додати",
-    "alerts": "Попередження"
+    "alerts": "Попередження",
+    "statistics": "Статистика"
   },
   "login": {
     "title": "Flota Warszawa",
@@ -257,7 +258,35 @@
     "showMarketplace": "Показати на marketplace",
     "marketplaceStatus": "Статус на marketplace",
     "statusOptionTaken": "Зайняте",
-    "statusOptionAvailable": "Доступне"
+    "statusOptionAvailable": "Доступне",
+    "monthlyCostsHeading": "Щомісячні витрати (PLN)",
+    "ocCostMonth": "OC на місяць",
+    "acCostMonth": "AC на місяць",
+    "serviceCostMonth": "Вартість останнього сервісу",
+    "otherCostsMonth": "Інші щомісячні витрати"
+  },
+  "stats": {
+    "title": "Статистика",
+    "lead": "Дохід і витрати автопарку — крок 1 аналітики.",
+    "summaryAria": "Підсумки автопарку",
+    "totalMonthlyIncome": "Усього щомісячний дохід",
+    "totalMonthlyCosts": "Усього щомісячні витрати",
+    "totalNetProfit": "Чистий прибуток (місяць)",
+    "profitabilityTitle": "Рентабельність авто",
+    "rowIncome": "Щомісячний дохід",
+    "rowCosts": "Щомісячні витрати",
+    "rowNet": "Чистий прибуток",
+    "rowMargin": "Маржа прибутку",
+    "noCostData": "Немає даних про витрати",
+    "fleetSummaryTitle": "Підсумок автопарку",
+    "carsInProfit": "Авто в прибутку:",
+    "carsLossBreakEven": "Авто без прибутку або в збитку:",
+    "bestCar": "Найкраще авто:",
+    "worstCar": "Найгірше авто:",
+    "idleCars": "Авто без водія:",
+    "estimatedLostIncome": "Орієнтовно втрачений дохід / міс.:",
+    "chartTitle": "Маржа прибутку (смуги)",
+    "chartHint": "Ширина смуги відповідає маржі % (від’ємна — коротка червона смуга)."
   },
   "noteModal": {
     "title": "Нотатка",

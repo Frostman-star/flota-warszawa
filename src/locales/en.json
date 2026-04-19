@@ -21,7 +21,8 @@
   "nav": {
     "fleet": "Cars",
     "addCar": "Add",
-    "alerts": "Alerts"
+    "alerts": "Alerts",
+    "statistics": "Statistics"
   },
   "login": {
     "title": "Flota Warszawa",
@@ -257,7 +258,35 @@
     "showMarketplace": "Show on marketplace",
     "marketplaceStatus": "Marketplace status",
     "statusOptionTaken": "Taken",
-    "statusOptionAvailable": "Available"
+    "statusOptionAvailable": "Available",
+    "monthlyCostsHeading": "Monthly costs (PLN)",
+    "ocCostMonth": "Liability insurance (OC) per month",
+    "acCostMonth": "Comprehensive (AC) per month",
+    "serviceCostMonth": "Last service cost (monthly)",
+    "otherCostsMonth": "Other monthly costs"
+  },
+  "stats": {
+    "title": "Statistics",
+    "lead": "Fleet income and costs — step 1 of analytics.",
+    "summaryAria": "Fleet totals",
+    "totalMonthlyIncome": "Total monthly income",
+    "totalMonthlyCosts": "Total monthly costs",
+    "totalNetProfit": "Net profit (month)",
+    "profitabilityTitle": "Car profitability",
+    "rowIncome": "Monthly income",
+    "rowCosts": "Monthly costs",
+    "rowNet": "Net profit",
+    "rowMargin": "Profit margin",
+    "noCostData": "No cost data entered",
+    "fleetSummaryTitle": "Fleet summary",
+    "carsInProfit": "Cars in profit:",
+    "carsLossBreakEven": "Cars at loss or break-even:",
+    "bestCar": "Best car:",
+    "worstCar": "Worst car:",
+    "idleCars": "Idle cars (no driver):",
+    "estimatedLostIncome": "Estimated lost income / month:",
+    "chartTitle": "Profit margin (bars)",
+    "chartHint": "Bar width reflects margin % (negative margins show as short red bars)."
   },
   "noteModal": {
     "title": "Note",

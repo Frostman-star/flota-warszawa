@@ -13,6 +13,7 @@ import { HomeRedirect } from './pages/HomeRedirect'
 import { Login } from './pages/Login'
 import { NoCar } from './pages/NoCar'
 import { Settings } from './pages/Settings'
+import { Statistics } from './pages/Statistics'
 
 export default function App() {
   return (
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="/dodaj" element={<AddCarWizard />} />
         <Route path="/flota" element={<Fleet />} />
         <Route path="/alerty" element={<AlertsPage />} />
+        <Route path="/statystyki" element={<Statistics />} />
         <Route path="/ustawienia" element={<Settings />} />
         <Route path="/flota/:id" element={<CarPageShell nestInAdminLayout />}>
           <Route index element={<CarDetail />} />
