@@ -42,7 +42,8 @@
     "marketplace": "Маркетплейс",
     "profile": "Профиль",
     "myApplications": "Мои заявки",
-    "applicationsTab": "Заявки"
+    "applicationsTab": "Заявки",
+    "services": "Сервисы"
   },
   "login": {
     "title": "Cario",
@@ -94,7 +95,9 @@
     "wizardTitle": "Добавить авто",
     "wizardDesc": "Добавьте новый транспорт в автопарк в Cario.",
     "noCarTitle": "Нет назначенного авто",
-    "noCarDesc": "Нет активного назначения авто в Cario — свяжитесь с владельцем автопарка."
+    "noCarDesc": "Нет активного назначения авто в Cario — свяжитесь с владельцем автопарка.",
+    "servicesTitle": "Сервисы",
+    "servicesDesc": "Каталог автосервисов в Cario — Варшава и окрестности, отзывы и контакты."
   },
   "panel": {
     "title": "Внимание на сегодня",
@@ -127,6 +130,32 @@
     "lead": "Документы в пределах 30 дней — сначала самые срочные.",
     "emptyTitle": "Все в порядке! 🎉",
     "emptyText": "Нет сроков в окне предупреждений."
+  },
+  "services": {
+    "pageTitle": "Сервисы — {{city}}",
+    "cityFilter": "Город",
+    "categories": "Категории",
+    "allCategories": "Все",
+    "addService": "Добавить сервис",
+    "verified": "Проверенный",
+    "rate": "Оценить",
+    "noReviews": "Нет отзывов",
+    "maps": "Google Maps",
+    "call": "Позвонить",
+    "successAdded": "Спасибо! Сервис добавлен.",
+    "fieldName": "Название",
+    "fieldCategory": "Категория",
+    "fieldAddress": "Адрес",
+    "fieldCity": "Город",
+    "fieldPhone": "Телефон",
+    "fieldMapsUrl": "Ссылка Google Maps",
+    "fieldDescription": "Описание",
+    "descriptionPlaceholder": "напр. Специализация на гибридах Toyota, быстрое обслуживание",
+    "submitAdd": "Добавить сервис",
+    "rateTitle": "Оценить сервис",
+    "commentOptional": "Комментарий (необязательно)",
+    "submitRate": "Отправить оценку",
+    "reviewCount": "{{count}} отзывов"
   },
   "marketplace": {
     "title": "Marketplace",

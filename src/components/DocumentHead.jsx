@@ -16,6 +16,7 @@ const ROUTES = [
   { test: (p) => p === '/statystyki', titleMode: 'suffix', titleKey: 'pageMeta.statsTitle', descKey: 'pageMeta.statsDesc' },
   { test: (p) => p === '/ustawienia', titleMode: 'suffix', titleKey: 'pageMeta.settingsTitle', descKey: 'pageMeta.settingsDesc' },
   { test: (p) => p === '/marketplace', titleMode: 'suffix', titleKey: 'pageMeta.marketplaceTitle', descKey: 'pageMeta.marketplaceDesc' },
+  { test: (p) => p === '/serwisy', titleMode: 'suffix', titleKey: 'pageMeta.servicesTitle', descKey: 'pageMeta.servicesDesc' },
   { test: (p) => p === '/profil', titleMode: 'suffix', titleKey: 'pageMeta.driverProfileTitle', descKey: 'pageMeta.driverProfileDesc' },
   { test: (p) => p === '/moje-wnioski', titleMode: 'suffix', titleKey: 'pageMeta.driverApplicationsTitle', descKey: 'pageMeta.driverApplicationsDesc' },
   { test: (p) => p === '/wnioski', titleMode: 'suffix', titleKey: 'pageMeta.ownerApplicationsTitle', descKey: 'pageMeta.ownerApplicationsDesc' },

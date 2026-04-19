@@ -21,10 +21,11 @@ export function MobileBottomNav() {
   const appsActive = pathname === '/wnioski'
 
   return (
-    <nav className="mob-nav mob-nav--seven" aria-label={t('panel.quick')}>
+    <nav className="mob-nav mob-nav--eight" aria-label={t('panel.quick')}>
       {item('/panel', `🏠 ${t('app.panel')}`, { exact: true })}
       {item('/flota', `🚗 ${t('nav.fleet')}`)}
       {item('/marketplace', `🛒 ${t('nav.marketplace')}`)}
+      {item('/serwisy', `🔧 ${t('nav.services')}`)}
       <Link to="/wnioski" className={`mob-nav-item mob-nav-item--badge-wrap${appsActive ? ' active' : ''}`}>
         📋 {t('nav.applicationsTab')}
         {pendingApps > 0 ? (

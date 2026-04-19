@@ -18,6 +18,7 @@ import { Login } from './pages/Login'
 import { NoCar } from './pages/NoCar'
 import { Settings } from './pages/Settings'
 import { Statistics } from './pages/Statistics'
+import { Services } from './pages/Services'
 
 export default function App() {
   return (
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/flota" element={<Fleet />} />
         <Route path="/alerty" element={<AlertsPage />} />
         <Route path="/statystyki" element={<Statistics />} />
+        <Route path="/serwisy" element={<Services />} />
         <Route path="/ustawienia" element={<Settings />} />
         <Route path="/wnioski" element={<OwnerApplications />} />
         <Route path="/flota/:id" element={<CarPageShell nestInAdminLayout />}>

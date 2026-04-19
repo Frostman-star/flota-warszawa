@@ -42,7 +42,8 @@
     "marketplace": "Marketplace",
     "profile": "Profile",
     "myApplications": "My applications",
-    "applicationsTab": "Applications"
+    "applicationsTab": "Applications",
+    "services": "Services"
   },
   "login": {
     "title": "Cario",
@@ -94,7 +95,9 @@
     "wizardTitle": "Add car",
     "wizardDesc": "Add a new vehicle to your fleet in Cario.",
     "noCarTitle": "No vehicle assigned",
-    "noCarDesc": "No active car assignment in Cario — contact your fleet owner."
+    "noCarDesc": "No active car assignment in Cario — contact your fleet owner.",
+    "servicesTitle": "Services",
+    "servicesDesc": "Car service directory in Cario — Warsaw area, ratings and contact."
   },
   "panel": {
     "title": "Attention today",
@@ -127,6 +130,32 @@
     "lead": "Documents due within 30 days — most urgent first.",
     "emptyTitle": "All good! 🎉",
     "emptyText": "No deadlines in the warning window."
+  },
+  "services": {
+    "pageTitle": "Services — {{city}}",
+    "cityFilter": "City",
+    "categories": "Categories",
+    "allCategories": "All",
+    "addService": "Add service",
+    "verified": "Verified",
+    "rate": "Rate",
+    "noReviews": "No reviews",
+    "maps": "Google Maps",
+    "call": "Call",
+    "successAdded": "Thank you! The service has been added.",
+    "fieldName": "Name",
+    "fieldCategory": "Category",
+    "fieldAddress": "Address",
+    "fieldCity": "City",
+    "fieldPhone": "Phone",
+    "fieldMapsUrl": "Google Maps link",
+    "fieldDescription": "Description",
+    "descriptionPlaceholder": "e.g. Specializes in Toyota hybrids, quick turnaround",
+    "submitAdd": "Add service",
+    "rateTitle": "Rate this service",
+    "commentOptional": "Comment (optional)",
+    "submitRate": "Submit rating",
+    "reviewCount": "{{count}} reviews"
   },
   "marketplace": {
     "title": "Marketplace",

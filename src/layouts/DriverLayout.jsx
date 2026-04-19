@@ -26,6 +26,7 @@ export function DriverLayout() {
         notifCars={isAdmin ? cars : []}
         extraTopLinkTo={extraTopLinkTo}
         extraTopLinkLabel={extraTopLinkLabel}
+        useOwnerSidebar={isAdmin && !isDriver}
       />
       {isDriver ? <DriverMobileBottomNav /> : null}
       {isAdmin && !isDriver ? <MobileBottomNav /> : null}

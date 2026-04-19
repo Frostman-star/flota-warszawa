@@ -42,7 +42,8 @@
     "marketplace": "Marketplace",
     "profile": "Profil",
     "myApplications": "Moje wnioski",
-    "applicationsTab": "Wnioski"
+    "applicationsTab": "Wnioski",
+    "services": "Serwisy"
   },
   "login": {
     "title": "Cario",
@@ -94,7 +95,9 @@
     "wizardTitle": "Dodaj auto",
     "wizardDesc": "Dodaj nowy pojazd do floty w Cario.",
     "noCarTitle": "Brak przypisanego auta",
-    "noCarDesc": "Brak aktywnego przypisania auta w Cario — skontaktuj się z właścicielem floty."
+    "noCarDesc": "Brak aktywnego przypisania auta w Cario — skontaktuj się z właścicielem floty.",
+    "servicesTitle": "Serwisy",
+    "servicesDesc": "Katalog serwisów samochodowych w Cario — Warszawa i okolice, opinie i kontakt."
   },
   "panel": {
     "title": "Uwaga na dziś",
@@ -127,6 +130,32 @@
     "lead": "Dokumenty w ciągu 30 dni — od najpilniejszych.",
     "emptyTitle": "Wszystko w porządku! 🎉",
     "emptyText": "Brak terminów w oknie ostrzeżeń."
+  },
+  "services": {
+    "pageTitle": "Serwisy — {{city}}",
+    "cityFilter": "Miasto",
+    "categories": "Kategorie",
+    "allCategories": "Wszystkie",
+    "addService": "Dodaj serwis",
+    "verified": "Zweryfikowany",
+    "rate": "Oceń",
+    "noReviews": "Brak opinii",
+    "maps": "Google Maps",
+    "call": "Zadzwoń",
+    "successAdded": "Dziękujemy! Serwis dodany.",
+    "fieldName": "Nazwa",
+    "fieldCategory": "Kategoria",
+    "fieldAddress": "Adres",
+    "fieldCity": "Miasto",
+    "fieldPhone": "Telefon",
+    "fieldMapsUrl": "Link Google Maps",
+    "fieldDescription": "Opis",
+    "descriptionPlaceholder": "np. Specjalizuje się w hybrydach Toyota, szybka obsługa",
+    "submitAdd": "Dodaj serwis",
+    "rateTitle": "Oceń serwis",
+    "commentOptional": "Komentarz (opcjonalnie)",
+    "submitRate": "Wyślij ocenę",
+    "reviewCount": "{{count}} opinii"
   },
   "marketplace": {
     "title": "Marketplace",

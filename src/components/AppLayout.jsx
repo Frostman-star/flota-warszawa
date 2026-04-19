@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { LANG_OPTIONS } from '../i18n'
 import { NotificationBell } from './NotificationBell'
+import { DesktopOwnerSidebar } from './DesktopOwnerSidebar'
 
 /**
  * @param {{
@@ -11,6 +12,7 @@ import { NotificationBell } from './NotificationBell'
  *   notifCars?: Array<Record<string, unknown>>,
  *   extraTopLinkTo?: string | null,
  *   extraTopLinkLabel?: string,
+ *   useOwnerSidebar?: boolean,
  * }} props
  */
 export function AppLayout({
@@ -19,55 +21,60 @@ export function AppLayout({
   notifCars = [],
   extraTopLinkTo = null,
   extraTopLinkLabel,
+  useOwnerSidebar = false,
 }) {
   const { profile, signOut, isAdmin } = useAuth()
   const { t, i18n } = useTranslation()
   const headerLinkTo = extraTopLinkTo ?? (showNav && isAdmin ? '/ustawienia' : null)
   const headerLinkLabel = extraTopLinkTo ? extraTopLinkLabel ?? t('app.settings') : t('app.settings')
+  const shellClass = `app-shell${useOwnerSidebar ? ' app-shell--with-owner-sidebar' : ''}`
 
   return (
-    <div className="app-shell">
-      <header className="topbar topbar-simple">
-        <Link to={isAdmin ? '/panel' : '/'} className="brand brand-lockup">
-          <span className="brand-icon" aria-hidden>
-            C
-          </span>
-          <span className="brand-text-stack">
-            <span className="brand-word">{t('app.brandName')}</span>
-            <span className="brand-tagline muted small">{t('app.brandTagline')}</span>
-          </span>
-        </Link>
-        {headerLinkTo ? (
-          <Link to={headerLinkTo} className="topbar-settings-link muted small">
-            {headerLinkLabel}
+    <div className={shellClass}>
+      {useOwnerSidebar ? <DesktopOwnerSidebar /> : null}
+      <div className="app-body-column">
+        <header className="topbar topbar-simple">
+          <Link to={isAdmin ? '/panel' : '/'} className="brand brand-lockup">
+            <span className="brand-icon" aria-hidden>
+              C
+            </span>
+            <span className="brand-text-stack">
+              <span className="brand-word">{t('app.brandName')}</span>
+              <span className="brand-tagline muted small">{t('app.brandTagline')}</span>
+            </span>
           </Link>
-        ) : null}
-        <div className="lang-switch" aria-label={t('app.language')}>
-          {LANG_OPTIONS.map((l) => (
-            <button
-              key={l.code}
-              type="button"
-              className={`lang-flag${i18n.language === l.code ? ' active' : ''}`}
-              onClick={() => i18n.changeLanguage(l.code)}
-              aria-label={l.code}
-            >
-              {l.flag}
+          {headerLinkTo ? (
+            <Link to={headerLinkTo} className="topbar-settings-link muted small">
+              {headerLinkLabel}
+            </Link>
+          ) : null}
+          <div className="lang-switch" aria-label={t('app.language')}>
+            {LANG_OPTIONS.map((l) => (
+              <button
+                key={l.code}
+                type="button"
+                className={`lang-flag${i18n.language === l.code ? ' active' : ''}`}
+                onClick={() => i18n.changeLanguage(l.code)}
+                aria-label={l.code}
+              >
+                {l.flag}
+              </button>
+            ))}
+          </div>
+          <NotificationBell cars={notifCars} />
+          <div className="topbar-actions">
+            <span className="user-chip muted small" title={profile?.email ?? ''}>
+              {profile?.full_name ?? profile?.email ?? t('app.user')}
+            </span>
+            <button type="button" className="btn ghost small" onClick={() => signOut()}>
+              {t('app.logout')}
             </button>
-          ))}
-        </div>
-        <NotificationBell cars={notifCars} />
-        <div className="topbar-actions">
-          <span className="user-chip muted small" title={profile?.email ?? ''}>
-            {profile?.full_name ?? profile?.email ?? t('app.user')}
-          </span>
-          <button type="button" className="btn ghost small" onClick={() => signOut()}>
-            {t('app.logout')}
-          </button>
-        </div>
-      </header>
-      <main className="main-content">
-        <Outlet context={outletContext ?? undefined} />
-      </main>
+          </div>
+        </header>
+        <main className="main-content">
+          <Outlet context={outletContext ?? undefined} />
+        </main>
+      </div>
     </div>
   )
 }
