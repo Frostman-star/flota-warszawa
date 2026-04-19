@@ -16,6 +16,7 @@ export function Settings() {
   const [emailEnabled, setEmailEnabled] = useState(false)
   const [alertDays, setAlertDays] = useState([30, 14, 7, 3, 1])
   const [contactEmail, setContactEmail] = useState('')
+  const [contactPhone, setContactPhone] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState(null)
@@ -30,9 +31,10 @@ export function Settings() {
     setLoading(true)
     setErr(null)
     try {
-      const { data: comp } = await supabase.from('company_settings').select('company_name, contact_email').eq('id', 1).maybeSingle()
+      const { data: comp } = await supabase.from('company_settings').select('company_name, contact_email, contact_phone').eq('id', 1).maybeSingle()
       if (comp?.company_name) setCompanyName(comp.company_name)
       if (comp?.contact_email != null) setContactEmail(comp.contact_email)
+      if (comp?.contact_phone != null) setContactPhone(comp.contact_phone)
 
       if (user?.id) {
         const { data: prefs } = await supabase
@@ -66,7 +68,11 @@ export function Settings() {
     try {
       const { error: cErr } = await supabase
         .from('company_settings')
-        .update({ company_name: companyName, contact_email: contactEmail.trim() || null })
+        .update({
+          company_name: companyName,
+          contact_email: contactEmail.trim() || null,
+          contact_phone: contactPhone.trim() || null,
+        })
         .eq('id', 1)
       if (cErr) throw cErr
 
@@ -164,6 +170,16 @@ export function Settings() {
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
             placeholder={t('settings.contactPlaceholder')}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">{t('settings.contactPhone')}</span>
+          <input
+            className="input"
+            type="tel"
+            value={contactPhone}
+            onChange={(e) => setContactPhone(e.target.value)}
+            placeholder={t('settings.contactPhonePlaceholder')}
           />
         </label>
 

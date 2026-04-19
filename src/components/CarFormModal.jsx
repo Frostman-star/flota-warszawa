@@ -18,8 +18,10 @@ const emptyForm = {
   przeglad_expiry: '',
   last_service_date: '',
   notes: '',
-  show_in_marketplace: false,
-  marketplace_status: 'zajete',
+  marketplace_listed: false,
+  marketplace_description: '',
+  marketplace_location: 'Warszawa',
+  marketplace_photo_url: '',
   oc_cost: '0',
   ac_cost: '0',
   service_cost: '0',
@@ -58,8 +60,10 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         przeglad_expiry: car.przeglad_expiry ? String(car.przeglad_expiry) : '',
         last_service_date: car.last_service_date ? String(car.last_service_date) : '',
         notes: String(car.notes ?? ''),
-        show_in_marketplace: Boolean(car.show_in_marketplace),
-        marketplace_status: car.marketplace_status === 'dostepne' ? 'dostepne' : 'zajete',
+        marketplace_listed: Boolean(car.marketplace_listed ?? car.show_in_marketplace),
+        marketplace_description: String(car.marketplace_description ?? ''),
+        marketplace_location: String(car.marketplace_location ?? 'Warszawa'),
+        marketplace_photo_url: String(car.marketplace_photo_url ?? ''),
         oc_cost: String(car.oc_cost ?? '0'),
         ac_cost: String(car.ac_cost ?? '0'),
         service_cost: String(car.service_cost ?? '0'),
@@ -106,6 +110,8 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
     e.preventDefault()
     setSaving(true)
     setError(null)
+    const hasDriver = Boolean(form.driver_id)
+    const listed = hasDriver ? false : Boolean(form.marketplace_listed)
     const payload = {
       plate_number: form.plate_number.trim(),
       model: form.model.trim(),
@@ -121,8 +127,12 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       przeglad_expiry: form.przeglad_expiry || null,
       last_service_date: form.last_service_date || null,
       notes: form.notes,
-      show_in_marketplace: Boolean(form.show_in_marketplace),
-      marketplace_status: form.marketplace_status,
+      marketplace_listed: listed,
+      marketplace_photo_url: (form.marketplace_photo_url || '').trim() || null,
+      marketplace_description: (form.marketplace_description || '').trim() || null,
+      marketplace_location: (form.marketplace_location || '').trim() || 'Warszawa',
+      show_in_marketplace: listed,
+      marketplace_status: listed ? 'dostepne' : 'zajete',
       ...(editing
         ? {
             oc_cost: Number(form.oc_cost) || 0,
@@ -204,7 +214,10 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
           <select
             className="input"
             value={form.driver_id}
-            onChange={(e) => setForm((f) => ({ ...f, driver_id: e.target.value }))}
+            onChange={(e) => {
+              const id = e.target.value
+              setForm((f) => ({ ...f, driver_id: id, marketplace_listed: id ? false : f.marketplace_listed }))
+            }}
           >
             <option value="">{t('carForm.driverNone')}</option>
             {drivers.map((d) => {
@@ -226,25 +239,24 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         {field('przeglad_expiry', t('carForm.prz'), 'date')}
         {field('last_service_date', t('carForm.service'), 'date')}
         {field('notes', t('carForm.notes'), 'textarea', { rows: 4 })}
-        <label className="field checkbox-line">
+        {form.driver_id ? <p className="muted small">{t('carForm.marketplaceDriverHint')}</p> : null}
+        <label className="toggle-switch toggle-switch--block">
           <input
             type="checkbox"
-            checked={Boolean(form.show_in_marketplace)}
-            onChange={(e) => setForm((f) => ({ ...f, show_in_marketplace: e.target.checked }))}
+            checked={Boolean(form.marketplace_listed)}
+            disabled={Boolean(form.driver_id) && !form.marketplace_listed}
+            onChange={(e) => setForm((f) => ({ ...f, marketplace_listed: e.target.checked }))}
           />
-          <span>{t('carForm.showMarketplace')}</span>
+          <span className="toggle-switch-ui" aria-hidden />
+          <span className="toggle-switch-text">{t('carForm.listedToggle')}</span>
         </label>
-        <label className="field">
-          <span className="field-label">{t('carForm.marketplaceStatus')}</span>
-          <select
-            className="input"
-            value={form.marketplace_status}
-            onChange={(e) => setForm((f) => ({ ...f, marketplace_status: e.target.value }))}
-          >
-            <option value="zajete">{t('carForm.statusOptionTaken')}</option>
-            <option value="dostepne">{t('carForm.statusOptionAvailable')}</option>
-          </select>
-        </label>
+        {form.marketplace_listed && !form.driver_id ? (
+          <>
+            {field('marketplace_description', t('carForm.marketplaceDescription'), 'textarea', { rows: 3 })}
+            {field('marketplace_location', t('carForm.marketplaceLocation'))}
+            {field('marketplace_photo_url', t('carForm.marketplacePhotoUrl'), 'url', { placeholder: 'https://' })}
+          </>
+        ) : null}
         {editing ? (
           <>
             <div className="field-span-heading">

@@ -428,7 +428,7 @@ export function Statistics() {
           <p className="stats-idle-cost-text">
             {t('stats.idleCostCard', { amount: fmt(idleMonthlyOpportunity) })}
           </p>
-          <Link to="/marketplace" className="btn btn-huge primary stats-idle-cost-btn">
+          <Link to="/marketplace?manage=1" className="btn btn-huge primary stats-idle-cost-btn">
             {t('stats.addToMarketplace')}
           </Link>
         </article>

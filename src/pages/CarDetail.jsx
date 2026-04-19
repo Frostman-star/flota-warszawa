@@ -113,12 +113,22 @@ export function CarDetail() {
   }
 
   async function saveMarketplace(patch) {
-    let mq = supabase.from('cars').update(patch).eq('id', car.id)
+    const merged = { ...patch }
+    if ('marketplace_listed' in merged) {
+      const on = Boolean(merged.marketplace_listed)
+      merged.show_in_marketplace = on
+      merged.marketplace_status = on ? 'dostepne' : 'zajete'
+    }
+    let mq = supabase.from('cars').update(merged).eq('id', car.id)
     if (isAdmin && user?.id) mq = mq.eq('owner_id', user.id)
     const { error: u } = await mq
     if (u) throw u
     await refresh()
   }
+
+  const hasDriver = Boolean(car.driver_id)
+  const listed = Boolean(car.marketplace_listed)
+  const canTurnListingOn = !hasDriver
 
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
 
@@ -200,30 +210,81 @@ export function CarDetail() {
 
           <section className="detail-block">
             <h2>{t('carDetail.marketplace')}</h2>
-            <label className="field checkbox-line">
+            {hasDriver ? <p className="muted small">{t('carDetail.marketplaceDriverHint')}</p> : null}
+            <label className="toggle-switch toggle-switch--block">
               <input
                 type="checkbox"
-                checked={Boolean(car.show_in_marketplace)}
-                onChange={(e) => saveMarketplace({ show_in_marketplace: e.target.checked })}
+                checked={listed}
+                disabled={hasDriver && !listed}
+                onChange={(e) => {
+                  setFormErr(null)
+                  saveMarketplace({ marketplace_listed: e.target.checked }).catch((err) => {
+                    setFormErr(err.message ?? t('errors.generic'))
+                  })
+                }}
               />
-              <span>{t('carDetail.showMarketplace')}</span>
+              <span className="toggle-switch-ui" aria-hidden />
+              <span className="toggle-switch-text">{t('carDetail.listedToggle')}</span>
             </label>
-            <div className="chip-row" style={{ marginTop: '0.5rem' }}>
-              <button
-                type="button"
-                className={car.marketplace_status === 'dostepne' ? 'chip active' : 'chip'}
-                onClick={() => saveMarketplace({ marketplace_status: 'dostepne' })}
-              >
-                {t('carDetail.statusAvailable')}
-              </button>
-              <button
-                type="button"
-                className={car.marketplace_status === 'zajete' ? 'chip active' : 'chip'}
-                onClick={() => saveMarketplace({ marketplace_status: 'zajete' })}
-              >
-                {t('carDetail.statusTaken')}
-              </button>
-            </div>
+            {listed && canTurnListingOn ? (
+              <div className="stack-gap" style={{ marginTop: '1rem' }} key={`mk-${car.id}-${listed}`}>
+                <label className="field">
+                  <span className="field-label">{t('carDetail.marketplaceDescription')}</span>
+                  <textarea
+                    className="input"
+                    rows={3}
+                    defaultValue={car.marketplace_description != null ? String(car.marketplace_description) : ''}
+                    key={`md-${car.id}-${car.updated_at}`}
+                    onBlur={(e) => {
+                      const v = e.target.value.trim()
+                      if (v !== String(car.marketplace_description ?? '').trim()) {
+                        setFormErr(null)
+                        saveMarketplace({ marketplace_description: v || null }).catch((err) => {
+                          setFormErr(err.message ?? t('errors.generic'))
+                        })
+                      }
+                    }}
+                  />
+                </label>
+                <label className="field">
+                  <span className="field-label">{t('carDetail.marketplaceLocation')}</span>
+                  <input
+                    className="input"
+                    type="text"
+                    defaultValue={car.marketplace_location != null ? String(car.marketplace_location) : ''}
+                    key={`ml-${car.id}-${car.updated_at}`}
+                    onBlur={(e) => {
+                      const v = e.target.value.trim()
+                      if (v !== String(car.marketplace_location ?? '').trim()) {
+                        setFormErr(null)
+                        saveMarketplace({ marketplace_location: v || 'Warszawa' }).catch((err) => {
+                          setFormErr(err.message ?? t('errors.generic'))
+                        })
+                      }
+                    }}
+                  />
+                </label>
+                <label className="field">
+                  <span className="field-label">{t('carDetail.marketplacePhotoUrl')}</span>
+                  <input
+                    className="input"
+                    type="url"
+                    placeholder="https://"
+                    defaultValue={car.marketplace_photo_url != null ? String(car.marketplace_photo_url) : ''}
+                    key={`mp-${car.id}-${car.updated_at}`}
+                    onBlur={(e) => {
+                      const v = e.target.value.trim()
+                      if (v !== String(car.marketplace_photo_url ?? '').trim()) {
+                        setFormErr(null)
+                        saveMarketplace({ marketplace_photo_url: v || null }).catch((err) => {
+                          setFormErr(err.message ?? t('errors.generic'))
+                        })
+                      }
+                    }}
+                  />
+                </label>
+              </div>
+            ) : null}
           </section>
         </>
       ) : null}

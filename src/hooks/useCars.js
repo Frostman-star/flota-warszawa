@@ -29,6 +29,10 @@ const CAR_SELECT_NEW = `
         driver_label,
         show_in_marketplace,
         marketplace_status,
+        marketplace_listed,
+        marketplace_photo_url,
+        marketplace_description,
+        marketplace_location,
         ${CAR_EMBED}
       `
 
@@ -56,6 +60,10 @@ const CAR_SELECT_LEGACY = `
         driver_label,
         show_in_marketplace,
         marketplace_status,
+        marketplace_listed,
+        marketplace_photo_url,
+        marketplace_description,
+        marketplace_location,
         ${CAR_EMBED}
       `
 

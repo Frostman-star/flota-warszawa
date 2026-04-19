@@ -1614,6 +1614,281 @@ tr.tier-row-none td:first-child {
   margin: 0.25rem 0;
 }
 
+.marketplace-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.market-hero {
+  margin-bottom: 1rem;
+}
+
+.market-hero-title {
+  font-size: 1.35rem;
+  line-height: 1.25;
+  margin: 0 0 0.35rem;
+}
+
+.market-hero-lead {
+  margin: 0;
+}
+
+.market-filters {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: var(--bg-card);
+  margin-bottom: 1.25rem;
+}
+
+.market-filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 420px) {
+  .market-filter-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.market-field-compact .field-label {
+  font-size: 0.8rem;
+}
+
+.market-range-block {
+  margin-top: 1rem;
+}
+
+.market-dual-range {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.market-range-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.market-range-label input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent-strong);
+}
+
+.market-range-values {
+  margin: 0.15rem 0 0.5rem;
+}
+
+.market-grid--mobile-two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.market-card-lg {
+  padding: 0.85rem;
+  gap: 0.5rem;
+}
+
+.market-photo-lg {
+  height: 140px;
+  margin-bottom: 0.25rem;
+  overflow: hidden;
+}
+
+.market-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.market-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.market-price-lg {
+  font-size: 1.2rem;
+  color: var(--green);
+  margin: 0.15rem 0;
+}
+
+.market-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.location-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.market-stars {
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  color: var(--muted);
+  opacity: 0.45;
+}
+
+.market-card-desc {
+  margin: 0.25rem 0 0;
+  line-height: 1.35;
+}
+
+.market-card-cta {
+  margin-top: 0.35rem;
+  width: 100%;
+}
+
+.market-empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 1rem;
+}
+
+.market-owner-panel {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.market-owner-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.market-owner-title {
+  font-size: 1.2rem;
+  margin: 0 0 0.35rem;
+}
+
+.market-owner-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.market-owner-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+
+@media (min-width: 520px) {
+  .market-owner-row {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+}
+
+.market-owner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.market-contact-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-switch--block {
+  margin-top: 0.5rem;
+}
+
+.toggle-switch--inline {
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toggle-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch-ui {
+  width: 3rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  background: var(--border);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.toggle-switch-ui::after {
+  content: '';
+  position: absolute;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: #fff;
+  top: 0.2rem;
+  left: 0.22rem;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.toggle-switch input:checked + .toggle-switch-ui {
+  background: var(--accent-strong);
+}
+
+.toggle-switch input:checked + .toggle-switch-ui::after {
+  transform: translateX(1.25rem);
+}
+
+.toggle-switch input:focus-visible + .toggle-switch-ui {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.toggle-switch input:disabled + .toggle-switch-ui {
+  opacity: 0.45;
+}
+
+.toggle-switch-text {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
 .car-detail-simple .status-hero {
   font-size: 1rem;
   font-weight: 700;
