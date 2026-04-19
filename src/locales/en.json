@@ -316,6 +316,14 @@
     "ownerDismissHint": "Done",
     "roleUnsupported": "This page is for drivers and fleet owners."
   },
+  "favorites": {
+    "title": "Favorites",
+    "add": "Add to favorites",
+    "remove": "Remove from favorites",
+    "addedToast": "Added to favorites ❤️",
+    "removedToast": "Removed from favorites",
+    "empty": "❤️ No favorite cars yet. Add cars from marketplace!"
+  },
   "docDays": {
     "missing": "—",
     "expired": "expired ({{count}} d)",

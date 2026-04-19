@@ -316,6 +316,14 @@
     "ownerDismissHint": "Gotowe",
     "roleUnsupported": "Ten widok jest dostępny dla kont kierowcy lub właściciela floty."
   },
+  "favorites": {
+    "title": "Ulubione",
+    "add": "Dodaj do ulubionych",
+    "remove": "Usuń z ulubionych",
+    "addedToast": "Dodano do ulubionych ❤️",
+    "removedToast": "Usunięto z ulubionych",
+    "empty": "❤️ Jeszcze nie ma ulubionych aut. Dodaj auto z marketplace!"
+  },
   "docDays": {
     "missing": "—",
     "expired": "przeterminowane ({{count}} d.)",

@@ -23,6 +23,7 @@ import { ResetPassword } from './pages/ResetPassword'
 import { AuthCallback } from './pages/AuthCallback'
 import { RoleSelection } from './pages/RoleSelection'
 import { PublicFleetProfile } from './pages/PublicFleetProfile'
+import { Favorites } from './pages/Favorites'
 
 export default function App() {
   return (
@@ -59,6 +60,7 @@ export default function App() {
         }
       >
         <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/obrane" element={<Favorites />} />
         <Route path="/profil" element={<DriverProfile />} />
         <Route path="/moje-wnioski" element={<DriverMyApplications />} />
       </Route>

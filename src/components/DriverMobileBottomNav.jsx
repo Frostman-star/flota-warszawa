@@ -17,6 +17,7 @@ export function DriverMobileBottomNav() {
   return (
     <nav className="mob-nav mob-nav--driver" aria-label={t('panel.quick')}>
       {item('/marketplace', `🛒 ${t('nav.marketplace')}`, { exact: true })}
+      {item('/obrane', `❤️ ${t('favorites.title')}`, { exact: true })}
       {item('/profil', `👤 ${t('nav.profile')}`)}
       {item('/moje-wnioski', `📋 ${t('nav.myApplications')}`)}
     </nav>

@@ -78,6 +78,8 @@ export function Marketplace() {
 
   const [chipFilter, setChipFilter] = useState('all')
   const [selectedPartner, setSelectedPartner] = useState('all')
+  const [favoritedIds, setFavoritedIds] = useState(() => new Set())
+  const [favToast, setFavToast] = useState('')
   const [contactCar, setContactCar] = useState(null)
   const [catalogPhotoZoom, setCatalogPhotoZoom] = useState(null)
   /** @type {[Record<string, number>, import('react').Dispatch<import('react').SetStateAction<Record<string, number>>>]} */
@@ -157,6 +159,31 @@ export function Marketplace() {
   useEffect(() => {
     void loadMyApplications()
   }, [loadMyApplications])
+
+  useEffect(() => {
+    if (!isDriver || !user?.id) {
+      setFavoritedIds(new Set())
+      return
+    }
+    let cancelled = false
+    void supabase
+      .from('driver_favorites')
+      .select('vehicle_id')
+      .eq('driver_id', user.id)
+      .then(({ data, error }) => {
+        if (cancelled || error) return
+        setFavoritedIds(new Set((data ?? []).map((r) => String(r.vehicle_id))))
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [isDriver, user?.id])
+
+  useEffect(() => {
+    if (!favToast) return undefined
+    const timer = window.setTimeout(() => setFavToast(''), 1600)
+    return () => window.clearTimeout(timer)
+  }, [favToast])
 
   useEffect(() => {
     if (!ownerCars.length) {
@@ -244,6 +271,27 @@ export function Marketplace() {
     } catch (e) {
       console.error(e)
     }
+  }
+
+  async function toggleFavorite(carId) {
+    if (!isDriver || !user?.id) return
+    const id = String(carId)
+    const isFav = favoritedIds.has(id)
+    if (isFav) {
+      const { error } = await supabase.from('driver_favorites').delete().eq('driver_id', user.id).eq('vehicle_id', id)
+      if (error) return
+      setFavoritedIds((prev) => {
+        const next = new Set(prev)
+        next.delete(id)
+        return next
+      })
+      setFavToast(t('favorites.removedToast'))
+      return
+    }
+    const { error } = await supabase.from('driver_favorites').insert({ driver_id: user.id, vehicle_id: id })
+    if (error) return
+    setFavoritedIds((prev) => new Set(prev).add(id))
+    setFavToast(t('favorites.addedToast'))
   }
 
   function clearManageParam() {
@@ -431,9 +479,21 @@ export function Marketplace() {
                     const available = String(car.marketplace_status || '') === 'dostepne'
                     const feats = normalizeMarketplaceFeatures(car)
                     const dep = Number(car.deposit_amount ?? 0)
+                    const isFavorited = favoritedIds.has(String(car.id))
                     return (
                       <article key={car.id} className="market-catalog-card">
                         <div className="market-catalog-photo-wrap">
+                          {isDriver ? (
+                            <button
+                              type="button"
+                              className="btn ghost small"
+                              style={{ position: 'absolute', top: '0.4rem', right: '0.4rem', zIndex: 2 }}
+                              onClick={() => void toggleFavorite(car.id)}
+                              aria-label={isFavorited ? t('favorites.remove') : t('favorites.add')}
+                            >
+                              <span style={{ color: isFavorited ? '#ef4444' : '#9ca3af' }}>{isFavorited ? '❤️' : '♡'}</span>
+                            </button>
+                          ) : null}
                           {photo ? (
                             <button
                               type="button"
@@ -724,6 +784,7 @@ export function Marketplace() {
           </div>
         )}
       </Modal>
+      {favToast ? <div className="services-toast" role="status">{favToast}</div> : null}
     </div>
   )
 }
