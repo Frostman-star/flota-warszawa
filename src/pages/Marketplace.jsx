@@ -37,6 +37,25 @@ function matchesChip(car, chip) {
   return true
 }
 
+/**
+ * @param {unknown} value
+ * @returns {string[]}
+ */
+function partnerNamesFromValue(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((v) => String(v ?? '').trim())
+      .filter(Boolean)
+  }
+  if (typeof value === 'string') {
+    return value
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean)
+  }
+  return []
+}
+
 export function Marketplace() {
   const { t, i18n } = useTranslation()
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
@@ -58,6 +77,8 @@ export function Marketplace() {
   const [blockedApplyCars, setBlockedApplyCars] = useState({})
 
   const [chipFilter, setChipFilter] = useState('all')
+  /** @type {[string[], import('react').Dispatch<import('react').SetStateAction<string[]>>]} */
+  const [activePartners, setActivePartners] = useState([])
   const [contactCar, setContactCar] = useState(null)
   const [catalogPhotoZoom, setCatalogPhotoZoom] = useState(null)
   /** @type {[Record<string, number>, import('react').Dispatch<import('react').SetStateAction<Record<string, number>>>]} */
@@ -172,8 +193,25 @@ export function Marketplace() {
   }, [searchParams, isAdmin, ownerLoading])
 
   const filteredDriverCars = useMemo(() => {
-    return driverCars.filter((c) => matchesChip(c, chipFilter))
-  }, [driverCars, chipFilter])
+    return driverCars.filter((c) => {
+      if (!matchesChip(c, chipFilter)) return false
+      if (activePartners.length === 0) return true
+      const names = partnerNamesFromValue(c.partner_names)
+      return activePartners.some((p) => names.includes(p))
+    })
+  }, [driverCars, chipFilter, activePartners])
+
+  const partnerOptions = useMemo(() => {
+    const uniq = new Set()
+    for (const car of driverCars) {
+      for (const name of partnerNamesFromValue(car.partner_names)) {
+        uniq.add(name)
+      }
+    }
+    return [...uniq].sort((a, b) => a.localeCompare(b, lc))
+  }, [driverCars, lc])
+
+  const hasPartnerFilter = activePartners.length > 0
 
   async function setOwnerListed(car, listed) {
     if (!user?.id) return
@@ -303,6 +341,7 @@ export function Marketplace() {
             <LoadingSpinner />
           ) : (
             <>
+              <p className="muted small">{t('marketplace.partnerFilterLabel')}</p>
               <div className="market-chip-scroll" role="tablist" aria-label={t('marketplace.chipsAria')}>
                 {chips.map((c) => (
                   <button
@@ -316,10 +355,56 @@ export function Marketplace() {
                     {c.label}
                   </button>
                 ))}
+                {partnerOptions.length > 0 ? (
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={!hasPartnerFilter}
+                    className={`market-chip${!hasPartnerFilter ? ' market-chip--active' : ''}`}
+                    onClick={() => setActivePartners([])}
+                  >
+                    {t('marketplace.allPartners')}
+                  </button>
+                ) : null}
+                {partnerOptions.map((partner) => {
+                  const active = activePartners.includes(partner)
+                  return (
+                    <button
+                      key={`partner-${partner}`}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      className={`market-chip${active ? ' market-chip--active' : ''}`}
+                      onClick={() =>
+                        setActivePartners((prev) =>
+                          prev.includes(partner) ? prev.filter((p) => p !== partner) : [...prev, partner]
+                        )
+                      }
+                    >
+                      {partner}
+                    </button>
+                  )
+                })}
               </div>
+              {hasPartnerFilter ? (
+                <div className="market-chip-scroll" aria-label={t('marketplace.partnerFilterLabel')}>
+                  {activePartners.map((partner) => (
+                    <button
+                      key={`active-partner-${partner}`}
+                      type="button"
+                      className="market-chip market-chip--active"
+                      onClick={() => setActivePartners((prev) => prev.filter((p) => p !== partner))}
+                    >
+                      {t('marketplace.partnerLabel')}: {partner} ×
+                    </button>
+                  ))}
+                </div>
+              ) : null}
 
               {driverCars.length === 0 ? (
                 <p className="market-empty market-empty-lg">{t('marketplace.emptyDriver')}</p>
+              ) : hasPartnerFilter && filteredDriverCars.length === 0 ? (
+                <p className="market-empty muted">{t('marketplace.filteredEmptyPartner')}</p>
               ) : filteredDriverCars.length === 0 ? (
                 <p className="market-empty muted">{t('marketplace.filteredEmpty')}</p>
               ) : (
