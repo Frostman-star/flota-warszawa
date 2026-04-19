@@ -20,6 +20,8 @@
   },
   "legalPartner": {
     "fleetPartner": "Partner flotowy",
+    "fleetPartners": "Partnerzy flotowi",
+    "addPartner": "Dodaj partnera",
     "intermediaryCompany": "Firma pośrednicząca",
     "registrationCity": "Miasto rejestracji",
     "availableApps": "Dostępne aplikacje"
@@ -171,7 +173,7 @@
     "badgeAvailable": "DOSTĘPNE",
     "badgeTaken": "ZAJĘTE",
     "deposit": "Kaucja: {{amount}} zł",
-    "legalPartnerPartnerRow": "Partner: {{name}}",
+    "legalPartnerPartnersRow": "Partnerzy: {{names}}",
     "legalPartnerAppsRow": "Dostępne: {{apps}}",
     "legalPartnerRegRow": "Rejestracja: {{city}}",
     "iconsAria": "Paliwo, skrzynia, miejsca",
@@ -373,7 +375,7 @@
     "history": "Ostatnie wpisy",
     "mileageHistoryDetail": "Przebieg: {{prev}} → {{next}} km",
     "legalPartnerTitle": "Partner i rejestracja",
-    "legalPartnerPartnerPrefix": "Partner:",
+    "legalPartnerPartnersPrefix": "Partnerzy:",
     "legalPartnerContactPrefix": "Kontakt:",
     "legalPartnerAppsPrefix": "Aplikacje:",
     "legalPartnerRegistrationPrefix": "Rejestracja:"
@@ -489,8 +491,7 @@
     "serviceCostMonth": "Ostatni serwis (koszt)",
     "otherCostsMonth": "Inne koszty miesięczne",
     "partnerSectionHeading": "Partner i rejestracja",
-    "partnerCompanyLabel": "Partner flotowy (firma pośrednicząca)",
-    "partnerCompanyPlaceholder": "np. Promin, Qiwi, Spark…",
+    "partnerOtherPlaceholder": "Dodaj innego partnera",
     "partnerContactLabel": "Kontakt do partnera (opcjonalnie)",
     "partnerContactPlaceholder": "telefon lub email",
     "appsAvailableLabel": "Dostępne aplikacje przez tego partnera",

@@ -20,6 +20,8 @@
   },
   "legalPartner": {
     "fleetPartner": "Fleet Partner",
+    "fleetPartners": "Fleet Partners",
+    "addPartner": "Add partner",
     "intermediaryCompany": "Intermediary company",
     "registrationCity": "Registration city",
     "availableApps": "Available apps"
@@ -171,7 +173,7 @@
     "badgeAvailable": "AVAILABLE",
     "badgeTaken": "TAKEN",
     "deposit": "Deposit: {{amount}} PLN",
-    "legalPartnerPartnerRow": "Partner: {{name}}",
+    "legalPartnerPartnersRow": "Partners: {{names}}",
     "legalPartnerAppsRow": "Available: {{apps}}",
     "legalPartnerRegRow": "Registration: {{city}}",
     "iconsAria": "Fuel, transmission, seats",
@@ -373,7 +375,7 @@
     "history": "Recent entries",
     "mileageHistoryDetail": "Mileage: {{prev}} → {{next}} km",
     "legalPartnerTitle": "Partner & registration",
-    "legalPartnerPartnerPrefix": "Partner:",
+    "legalPartnerPartnersPrefix": "Partners:",
     "legalPartnerContactPrefix": "Contact:",
     "legalPartnerAppsPrefix": "Apps:",
     "legalPartnerRegistrationPrefix": "Registration:"
@@ -489,8 +491,7 @@
     "serviceCostMonth": "Last service cost (monthly)",
     "otherCostsMonth": "Other monthly costs",
     "partnerSectionHeading": "Partner & registration",
-    "partnerCompanyLabel": "Fleet partner (intermediary company)",
-    "partnerCompanyPlaceholder": "e.g. Promin, Qiwi, Spark…",
+    "partnerOtherPlaceholder": "Add another partner",
     "partnerContactLabel": "Partner contact (optional)",
     "partnerContactPlaceholder": "phone or email",
     "appsAvailableLabel": "Ride-hailing apps available through this partner",

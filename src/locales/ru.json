@@ -20,6 +20,8 @@
   },
   "legalPartner": {
     "fleetPartner": "Партнер флота",
+    "fleetPartners": "Партнеры флота",
+    "addPartner": "Добавить партнера",
     "intermediaryCompany": "Посредническая фирма",
     "registrationCity": "Город регистрации",
     "availableApps": "Доступные приложения"
@@ -171,7 +173,7 @@
     "badgeAvailable": "ДОСТУПНО",
     "badgeTaken": "ЗАНЯТО",
     "deposit": "Залог: {{amount}} zł",
-    "legalPartnerPartnerRow": "Партнёр: {{name}}",
+    "legalPartnerPartnersRow": "Партнёры: {{names}}",
     "legalPartnerAppsRow": "Доступно: {{apps}}",
     "legalPartnerRegRow": "Регистрация: {{city}}",
     "iconsAria": "Топливо, коробка, места",
@@ -373,7 +375,7 @@
     "history": "Последние записи",
     "mileageHistoryDetail": "Пробег: {{prev}} → {{next}} км",
     "legalPartnerTitle": "Партнёр и регистрация",
-    "legalPartnerPartnerPrefix": "Партнёр:",
+    "legalPartnerPartnersPrefix": "Партнёры:",
     "legalPartnerContactPrefix": "Контакт:",
     "legalPartnerAppsPrefix": "Приложения:",
     "legalPartnerRegistrationPrefix": "Регистрация:"
@@ -489,8 +491,7 @@
     "serviceCostMonth": "Стоимость последнего ТО",
     "otherCostsMonth": "Прочие ежемесячные расходы",
     "partnerSectionHeading": "Партнёр и регистрация",
-    "partnerCompanyLabel": "Партнер флота (посредническая фирма)",
-    "partnerCompanyPlaceholder": "напр. Promin, Qiwi, Spark…",
+    "partnerOtherPlaceholder": "Добавить другого партнёра",
     "partnerContactLabel": "Контакт партнёра (необязательно)",
     "partnerContactPlaceholder": "телефон или email",
     "appsAvailableLabel": "Доступные приложения через этого партнёра",

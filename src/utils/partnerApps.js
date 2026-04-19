@@ -29,3 +29,24 @@ export function formatAppsReadable(raw, t, sep = ' · ') {
 export function appPillClassName(id) {
   return `app-pill app-pill--${id}`
 }
+
+/**
+ * @param {unknown} rawNames
+ * @param {unknown} [legacySingleName]
+ */
+export function normalizePartnerNames(rawNames, legacySingleName) {
+  const a = Array.isArray(rawNames) ? rawNames.map((x) => String(x).trim()).filter(Boolean) : []
+  if (a.length) return a
+  const leg = String(legacySingleName ?? '').trim()
+  return leg ? [leg] : []
+}
+
+/**
+ * @param {Record<string, unknown> | null | undefined} car
+ * @param {string} [sep]
+ */
+export function formatPartnerNamesFromCar(car, sep = ' · ') {
+  if (!car || typeof car !== 'object') return ''
+  const c = /** @type {Record<string, unknown>} */ (car)
+  return normalizePartnerNames(c.partner_names, c.partner_name).join(sep)
+}

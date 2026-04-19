@@ -20,6 +20,8 @@
   },
   "legalPartner": {
     "fleetPartner": "Партнер флоту",
+    "fleetPartners": "Партнери флоту",
+    "addPartner": "Додати партнера",
     "intermediaryCompany": "Посередницька фірма",
     "registrationCity": "Місто реєстрації",
     "availableApps": "Доступні додатки"
@@ -171,7 +173,7 @@
     "badgeAvailable": "ДОСТУПНО",
     "badgeTaken": "ЗАЙНЯТО",
     "deposit": "Завдаток: {{amount}} zł",
-    "legalPartnerPartnerRow": "Партнер: {{name}}",
+    "legalPartnerPartnersRow": "Партнери: {{names}}",
     "legalPartnerAppsRow": "Доступно: {{apps}}",
     "legalPartnerRegRow": "Реєстрація: {{city}}",
     "iconsAria": "Паливо, коробка, місця",
@@ -373,7 +375,7 @@
     "history": "Останні записи",
     "mileageHistoryDetail": "Пробіг: {{prev}} → {{next}} км",
     "legalPartnerTitle": "Партнер і реєстрація",
-    "legalPartnerPartnerPrefix": "Партнер:",
+    "legalPartnerPartnersPrefix": "Партнери:",
     "legalPartnerContactPrefix": "Контакт:",
     "legalPartnerAppsPrefix": "Додатки:",
     "legalPartnerRegistrationPrefix": "Реєстрація:"
@@ -489,8 +491,7 @@
     "serviceCostMonth": "Вартість останнього сервісу",
     "otherCostsMonth": "Інші щомісячні витрати",
     "partnerSectionHeading": "Партнер і реєстрація",
-    "partnerCompanyLabel": "Партнер флоту (посередницька фірма)",
-    "partnerCompanyPlaceholder": "напр. Promin, Qiwi, Spark…",
+    "partnerOtherPlaceholder": "Додати іншого партнера",
     "partnerContactLabel": "Контакт партнера (необов’язково)",
     "partnerContactPlaceholder": "телефон або email",
     "appsAvailableLabel": "Доступні додатки через цього партнера",

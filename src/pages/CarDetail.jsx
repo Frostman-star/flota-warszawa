@@ -17,7 +17,7 @@ import { useDrivers } from '../hooks/useDrivers'
 import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { expiryStatusLabel, serviceStatusLabel } from '../utils/docLabels'
 import { localeTag } from '../utils/localeTag'
-import { formatAppsReadable } from '../utils/partnerApps'
+import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
 
 export function CarDetail() {
   const { id } = useParams()
@@ -188,7 +188,7 @@ export function CarDetail() {
   const canTurnListingOn = !hasDriver
 
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
-  const partnerName = String(car.partner_name ?? '').trim()
+  const partnersLine = formatPartnerNamesFromCar(car)
   const partnerContact = String(car.partner_contact ?? '').trim()
 
   return (
@@ -218,14 +218,14 @@ export function CarDetail() {
       <section className="detail-block">
         <h2>{t('carDetail.legalPartnerTitle')}</h2>
         <p className="detail-line legal-partner-line">
-          {partnerName || partnerContact ? (
+          {partnersLine || partnerContact ? (
             <>
-              {partnerName ? (
+              {partnersLine ? (
                 <>
-                  <strong>{t('carDetail.legalPartnerPartnerPrefix')}</strong> {partnerName}
+                  <strong>{t('carDetail.legalPartnerPartnersPrefix')}</strong> {partnersLine}
                 </>
               ) : null}
-              {partnerName && partnerContact ? <span className="legal-partner-sep"> | </span> : null}
+              {partnersLine && partnerContact ? <span className="legal-partner-sep"> | </span> : null}
               {partnerContact ? (
                 <>
                   <strong>{t('carDetail.legalPartnerContactPrefix')}</strong> {partnerContact}

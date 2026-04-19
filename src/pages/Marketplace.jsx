@@ -10,14 +10,14 @@ import { localeTag } from '../utils/localeTag'
 import { carPath } from '../lib/carPaths'
 import { isDriverProfileCompleteForApply } from '../utils/driverProfile'
 import { AppPlatformPills } from '../components/AppPlatformPills'
-import { formatAppsReadable } from '../utils/partnerApps'
+import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
 
 const DRIVER_SELECT = `
   id, model, year, weekly_rent_pln, marketplace_photo_url, marketplace_description, marketplace_location,
   marketplace_status, deposit_amount, fuel_type, transmission, seats, consumption, marketplace_features,
   min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram,
   plate_number, owner_id,
-  partner_name, partner_contact, apps_available, registration_city
+  partner_names, partner_contact, apps_available, registration_city
 `
 
 /** @param {unknown} ft */
@@ -343,8 +343,8 @@ export function Marketplace() {
                           ) : null}
                           <div className="market-legal-partner-block" aria-label={t('carDetail.legalPartnerTitle')}>
                             <p className="market-legal-partner-line">
-                              🏢 {t('marketplace.legalPartnerPartnerRow', {
-                                name: String(car.partner_name ?? '').trim() || '—',
+                              🏢 {t('marketplace.legalPartnerPartnersRow', {
+                                names: formatPartnerNamesFromCar(car) || '—',
                               })}
                             </p>
                             <p className="market-legal-partner-line">

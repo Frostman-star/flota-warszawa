@@ -3,11 +3,32 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { shouldUseLegacyAssignedDriverColumn, toLegacyCarWritePayload } from '../utils/carDriverSchema'
 import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
-import { TAXI_APP_ORDER, normalizeAppsAvailable } from '../utils/partnerApps'
+import { TAXI_APP_ORDER, normalizeAppsAvailable, normalizePartnerNames } from '../utils/partnerApps'
 import { Modal } from './Modal'
 import { MarketplaceListingFields } from './MarketplaceListingFields'
 
-const PARTNER_NAME_HINTS = ['Promin', 'Qiwi', 'Spark', 'Fleet Partner', 'Inny']
+const KNOWN_PARTNER_CHIPS = ['Promin', 'Qiwi', 'Spark', 'Fleet Partner']
+
+/** @param {string[]} list @param {string} name */
+function partnersHas(list, name) {
+  const t = name.trim().toLowerCase()
+  return list.some((p) => String(p).trim().toLowerCase() === t)
+}
+
+/** @param {unknown} list */
+function normalizePartnerNamesPayload(list) {
+  const out = []
+  const seen = new Set()
+  for (const x of Array.isArray(list) ? list : []) {
+    const t = String(x).trim()
+    if (!t) continue
+    const k = t.toLowerCase()
+    if (seen.has(k)) continue
+    seen.add(k)
+    out.push(t)
+  }
+  return out
+}
 
 const emptyForm = {
   plate_number: '',
@@ -40,7 +61,7 @@ const emptyForm = {
   insurance_cost: '0',
   service_cost: '0',
   other_costs: '0',
-  partner_name: '',
+  partner_names: [],
   partner_contact: '',
   apps_available: [],
   registration_city: 'Warszawa',
@@ -56,11 +77,11 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
-  const [partnerSuggestOpen, setPartnerSuggestOpen] = useState(false)
+  const [customPartnerDraft, setCustomPartnerDraft] = useState('')
 
   useEffect(() => {
     if (!open) {
-      setPartnerSuggestOpen(false)
+      setCustomPartnerDraft('')
       return
     }
     setError(null)
@@ -110,7 +131,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         })(),
         service_cost: String(car.service_cost ?? '0'),
         other_costs: String(car.other_costs ?? '0'),
-        partner_name: String(car.partner_name ?? ''),
+        partner_names: normalizePartnerNames(car.partner_names, car.partner_name),
         partner_contact: String(car.partner_contact ?? ''),
         apps_available: normalizeAppsAvailable(car.apps_available),
         registration_city: String(car.registration_city ?? '').trim() || 'Warszawa',
@@ -120,13 +141,32 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
     }
   }, [open, car])
 
-  const partnerHintMatches = useMemo(() => {
-    const q = String(form.partner_name ?? '').trim().toLowerCase()
-    if (!q) return PARTNER_NAME_HINTS
-    return PARTNER_NAME_HINTS.filter((h) => h.toLowerCase().includes(q))
-  }, [form.partner_name])
-
   const title = useMemo(() => (editing ? t('carForm.editTitle') : t('carForm.addTitle')), [editing, t])
+
+  function addPartnerTag(name) {
+    const tname = String(name).trim()
+    if (!tname) return
+    setForm((f) => {
+      const cur = Array.isArray(f.partner_names) ? f.partner_names : []
+      if (partnersHas(cur, tname)) return f
+      return { ...f, partner_names: [...cur, tname] }
+    })
+  }
+
+  function removePartnerAt(index) {
+    setForm((f) => {
+      const cur = Array.isArray(f.partner_names) ? [...f.partner_names] : []
+      cur.splice(index, 1)
+      return { ...f, partner_names: cur }
+    })
+  }
+
+  function commitCustomPartner() {
+    addPartnerTag(customPartnerDraft)
+    setCustomPartnerDraft('')
+  }
+
+  const selectedPartners = Array.isArray(form.partner_names) ? form.partner_names : []
 
   function field(name, label, type = 'text', opts = {}) {
     const { rows, placeholder, step, min } = opts
@@ -203,7 +243,8 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       ...listingExtras,
       show_in_marketplace: listed,
       marketplace_status: listed ? 'dostepne' : 'zajete',
-      partner_name: (form.partner_name || '').trim() || null,
+      partner_names: normalizePartnerNamesPayload(form.partner_names),
+      partner_name: null,
       partner_contact: (form.partner_contact || '').trim() || null,
       apps_available: normalizeAppsAvailable(form.apps_available),
       registration_city: (form.registration_city || '').trim() || 'Warszawa',
@@ -316,39 +357,59 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         <div className="field-span-heading">
           <h3 className="stats-form-cost-heading">{t('carForm.partnerSectionHeading')}</h3>
         </div>
-        <div className="field partner-autocomplete-field">
-          <span className="field-label">{t('carForm.partnerCompanyLabel')}</span>
-          <div className="partner-autocomplete-wrap">
+        <div className="field partner-fleet-field">
+          <span className="field-label">{t('legalPartner.fleetPartners')}</span>
+          <div className="partner-pick-chips" role="group" aria-label={t('legalPartner.addPartner')}>
+            {KNOWN_PARTNER_CHIPS.map((chip) => {
+              const taken = partnersHas(selectedPartners, chip)
+              return (
+                <button
+                  key={chip}
+                  type="button"
+                  className="partner-pick-chip"
+                  disabled={taken}
+                  onClick={() => addPartnerTag(chip)}
+                >
+                  {chip}
+                </button>
+              )
+            })}
+          </div>
+          {selectedPartners.length > 0 ? (
+            <div className="partner-tags-row" aria-label={t('legalPartner.fleetPartners')}>
+              {selectedPartners.map((name, idx) => (
+                <span key={`${name}-${idx}`} className="partner-tag">
+                  {name}
+                  <button
+                    type="button"
+                    className="partner-tag-remove"
+                    aria-label={`${t('settings.remove')} ${name}`}
+                    onClick={() => removePartnerAt(idx)}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          ) : null}
+          <div className="partner-custom-row">
             <input
               className="input"
               type="text"
-              name="partner_name"
               autoComplete="off"
-              value={form.partner_name}
-              placeholder={t('carForm.partnerCompanyPlaceholder')}
-              onChange={(e) => setForm((f) => ({ ...f, partner_name: e.target.value }))}
-              onFocus={() => setPartnerSuggestOpen(true)}
-              onBlur={() => window.setTimeout(() => setPartnerSuggestOpen(false), 180)}
+              value={customPartnerDraft}
+              placeholder={t('carForm.partnerOtherPlaceholder')}
+              onChange={(e) => setCustomPartnerDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  commitCustomPartner()
+                }
+              }}
             />
-            {partnerSuggestOpen && partnerHintMatches.length > 0 ? (
-              <ul className="partner-suggest-list" role="listbox">
-                {partnerHintMatches.map((hint) => (
-                  <li key={hint} role="presentation">
-                    <button
-                      type="button"
-                      className="partner-suggest-item"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => {
-                        setForm((f) => ({ ...f, partner_name: hint }))
-                        setPartnerSuggestOpen(false)
-                      }}
-                    >
-                      {hint}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+            <button type="button" className="btn secondary partner-add-btn" onClick={commitCustomPartner} aria-label={t('legalPartner.addPartner')}>
+              +
+            </button>
           </div>
         </div>
         {field('partner_contact', t('carForm.partnerContactLabel'), 'text', { placeholder: t('carForm.partnerContactPlaceholder') })}

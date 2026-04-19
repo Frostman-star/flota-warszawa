@@ -1,3 +1,5 @@
+import { normalizePartnerNames } from './partnerApps'
+
 /**
  * Сумісність БД: до міграції — `assigned_driver_id`, після — `driver_id`.
  * PostgREST: embed без `!constraint_name`, щоб не ламалося при різних назвах FK у кеші схеми.
@@ -11,11 +13,13 @@ export function normalizeCarRow(row) {
   const { assigned_driver_id: _a, ...rest } = r
   const apps = Array.isArray(r.apps_available) ? r.apps_available.map(String) : []
   const regCity = String(r.registration_city ?? '').trim() || 'Warszawa'
+  const partner_names = normalizePartnerNames(r.partner_names, r.partner_name)
 
   return {
     ...rest,
     apps_available: apps,
     registration_city: regCity,
+    partner_names,
     driver_id,
     driver_name:
       (r.driver_profile && typeof r.driver_profile === 'object' && r.driver_profile.full_name) ||
