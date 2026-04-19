@@ -2426,3 +2426,255 @@ tr.tier-row-none td:first-child {
   font-size: 0.92rem;
   line-height: 1.45;
 }
+
+/* —— Marketplace driver catalog (rental-style) —— */
+.market-catalog-page {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.market-catalog-header {
+  margin-bottom: 1rem;
+}
+
+.market-catalog-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.market-catalog-title {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  margin: 0;
+  flex: 1;
+}
+
+.market-catalog-count {
+  flex-shrink: 0;
+  min-width: 2.25rem;
+  height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.market-chip-scroll {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 0 1rem;
+  margin: 0 -0.25rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.market-chip-scroll::-webkit-scrollbar {
+  height: 4px;
+}
+
+.market-chip {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.market-chip--active {
+  border-color: var(--accent-strong);
+  background: rgba(14, 165, 233, 0.12);
+  color: var(--accent);
+}
+
+.market-catalog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.market-catalog-card {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-card);
+  box-shadow: var(--shadow);
+}
+
+.market-catalog-photo-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.market-catalog-photo {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  background: #0f141d;
+}
+
+.market-catalog-photo--ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  color: var(--muted);
+}
+
+.market-status-badge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
+  background: rgba(100, 116, 139, 0.85);
+  color: #e2e8f0;
+}
+
+.market-status-badge--ok {
+  background: rgba(34, 197, 94, 0.92);
+  color: #052e16;
+}
+
+.market-catalog-body {
+  padding: 1rem 1rem 1.1rem;
+}
+
+.market-catalog-model {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+  line-height: 1.25;
+}
+
+.market-catalog-price {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--green);
+  line-height: 1.2;
+}
+
+.market-catalog-deposit {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+}
+
+.market-catalog-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+  font-size: 1.15rem;
+}
+
+.market-catalog-features {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+}
+
+.market-catalog-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.market-check {
+  color: var(--green);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.market-catalog-reqs {
+  border-top: 1px solid var(--border);
+  padding-top: 0.65rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.market-req-line {
+  margin: 0.25rem 0;
+}
+
+.market-catalog-cta {
+  width: 100%;
+}
+
+.market-empty-lg {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  font-size: 1.05rem;
+}
+
+.market-contact-bigbtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.market-contact-bigbtn:hover {
+  text-decoration: none;
+  border-color: var(--accent);
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.market-contact-bigbtn-sub {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--muted);
+  word-break: break-all;
+}
+
+.market-contact-company {
+  margin-bottom: 0.75rem;
+}
+
+.market-contact-close {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.market-feature-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.market-listing-heading {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 1rem;
+  grid-column: 1 / -1;
+}

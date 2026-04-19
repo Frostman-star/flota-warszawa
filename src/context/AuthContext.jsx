@@ -124,9 +124,11 @@ export function AuthProvider({ children }) {
 
   const value = useMemo(() => {
     const roleNorm = normalizeProfileRole(profile?.role)
-    const isDriver = roleNorm === 'driver'
+    const hasProfile = Boolean(profile)
+    const isDriver = hasProfile && roleNorm === 'driver'
     // Panel / flota: owner i admin (legacy) — jak w public.is_admin(). Tylko jawny „driver” = marketplace / widok kierowcy.
-    const isAdmin = Boolean(session?.user) && roleNorm !== 'driver'
+    // Gdy profile == null (np. chwilowo po logowaniu), nie traktuj użytkownika jako admin — unika fałszywego widoku właściciela dla kierowcy.
+    const isAdmin = Boolean(session?.user) && hasProfile && roleNorm !== 'driver'
     return {
       session,
       user: session?.user ?? null,

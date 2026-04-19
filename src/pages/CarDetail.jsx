@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
@@ -8,6 +8,7 @@ import { useCar } from '../hooks/useCars'
 import { useCarHistory } from '../hooks/useCarHistory'
 import { useDriverCar } from '../hooks/useDriverCar'
 import { CarFormModal } from '../components/CarFormModal'
+import { MarketplaceListingFields } from '../components/MarketplaceListingFields'
 import { CarStatusBadge } from '../components/CarStatusBadge'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { NoteModal } from '../components/NoteModal'
@@ -34,6 +35,31 @@ export function CarDetail() {
   const [noteOpen, setNoteOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [formErr, setFormErr] = useState(null)
+  const [listingForm, setListingForm] = useState(null)
+  const [listingBusy, setListingBusy] = useState(false)
+
+  useEffect(() => {
+    if (!car) {
+      setListingForm(null)
+      return
+    }
+    setListingForm({
+      marketplace_description: String(car.marketplace_description ?? ''),
+      marketplace_location: String(car.marketplace_location ?? 'Warszawa'),
+      marketplace_photo_url: String(car.marketplace_photo_url ?? ''),
+      deposit_amount: String(car.deposit_amount ?? '0'),
+      fuel_type: String(car.fuel_type ?? 'benzyna'),
+      transmission: String(car.transmission ?? 'automat'),
+      seats: String(car.seats ?? '5'),
+      consumption: String(car.consumption ?? ''),
+      marketplace_features: Array.isArray(car.marketplace_features) ? car.marketplace_features.map(String) : [],
+      min_driver_age: String(car.min_driver_age ?? '25'),
+      min_experience_years: String(car.min_experience_years ?? '3'),
+      min_rental_months: String(car.min_rental_months ?? '1'),
+      owner_phone: String(car.owner_phone ?? ''),
+      owner_telegram: String(car.owner_telegram ?? ''),
+    })
+  }, [car?.id, car?.updated_at])
 
   const docKeys = useMemo(
     () => [
@@ -124,6 +150,34 @@ export function CarDetail() {
     const { error: u } = await mq
     if (u) throw u
     await refresh()
+  }
+
+  async function saveListingBlock() {
+    if (!listingForm) return
+    setListingBusy(true)
+    setFormErr(null)
+    try {
+      await saveMarketplace({
+        marketplace_description: listingForm.marketplace_description.trim() || null,
+        marketplace_location: listingForm.marketplace_location.trim() || 'Warszawa',
+        marketplace_photo_url: listingForm.marketplace_photo_url.trim() || null,
+        deposit_amount: Number(listingForm.deposit_amount) || 0,
+        fuel_type: listingForm.fuel_type || 'benzyna',
+        transmission: listingForm.transmission || 'automat',
+        seats: Number(listingForm.seats) || 5,
+        consumption: listingForm.consumption.trim() || null,
+        marketplace_features: Array.isArray(listingForm.marketplace_features) ? listingForm.marketplace_features : [],
+        min_driver_age: Number(listingForm.min_driver_age) || 25,
+        min_experience_years: Number(listingForm.min_experience_years) || 3,
+        min_rental_months: Number(listingForm.min_rental_months) || 1,
+        owner_phone: listingForm.owner_phone.trim() || null,
+        owner_telegram: listingForm.owner_telegram.trim() || null,
+      })
+    } catch (err) {
+      setFormErr(err.message ?? t('errors.generic'))
+    } finally {
+      setListingBusy(false)
+    }
   }
 
   const hasDriver = Boolean(car.driver_id)
@@ -226,63 +280,12 @@ export function CarDetail() {
               <span className="toggle-switch-ui" aria-hidden />
               <span className="toggle-switch-text">{t('carDetail.listedToggle')}</span>
             </label>
-            {listed && canTurnListingOn ? (
+            {listed && canTurnListingOn && listingForm ? (
               <div className="stack-gap" style={{ marginTop: '1rem' }} key={`mk-${car.id}-${listed}`}>
-                <label className="field">
-                  <span className="field-label">{t('carDetail.marketplaceDescription')}</span>
-                  <textarea
-                    className="input"
-                    rows={3}
-                    defaultValue={car.marketplace_description != null ? String(car.marketplace_description) : ''}
-                    key={`md-${car.id}-${car.updated_at}`}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim()
-                      if (v !== String(car.marketplace_description ?? '').trim()) {
-                        setFormErr(null)
-                        saveMarketplace({ marketplace_description: v || null }).catch((err) => {
-                          setFormErr(err.message ?? t('errors.generic'))
-                        })
-                      }
-                    }}
-                  />
-                </label>
-                <label className="field">
-                  <span className="field-label">{t('carDetail.marketplaceLocation')}</span>
-                  <input
-                    className="input"
-                    type="text"
-                    defaultValue={car.marketplace_location != null ? String(car.marketplace_location) : ''}
-                    key={`ml-${car.id}-${car.updated_at}`}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim()
-                      if (v !== String(car.marketplace_location ?? '').trim()) {
-                        setFormErr(null)
-                        saveMarketplace({ marketplace_location: v || 'Warszawa' }).catch((err) => {
-                          setFormErr(err.message ?? t('errors.generic'))
-                        })
-                      }
-                    }}
-                  />
-                </label>
-                <label className="field">
-                  <span className="field-label">{t('carDetail.marketplacePhotoUrl')}</span>
-                  <input
-                    className="input"
-                    type="url"
-                    placeholder="https://"
-                    defaultValue={car.marketplace_photo_url != null ? String(car.marketplace_photo_url) : ''}
-                    key={`mp-${car.id}-${car.updated_at}`}
-                    onBlur={(e) => {
-                      const v = e.target.value.trim()
-                      if (v !== String(car.marketplace_photo_url ?? '').trim()) {
-                        setFormErr(null)
-                        saveMarketplace({ marketplace_photo_url: v || null }).catch((err) => {
-                          setFormErr(err.message ?? t('errors.generic'))
-                        })
-                      }
-                    }}
-                  />
-                </label>
+                <MarketplaceListingFields form={listingForm} setForm={setListingForm} />
+                <button type="button" className="btn btn-huge primary" disabled={listingBusy} onClick={saveListingBlock}>
+                  {listingBusy ? t('carDetail.savingListing') : t('carDetail.saveListing')}
+                </button>
               </div>
             ) : null}
           </section>

@@ -17,6 +17,7 @@ export function Settings() {
   const [alertDays, setAlertDays] = useState([30, 14, 7, 3, 1])
   const [contactEmail, setContactEmail] = useState('')
   const [contactPhone, setContactPhone] = useState('')
+  const [contactTelegram, setContactTelegram] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [msg, setMsg] = useState(null)
@@ -31,10 +32,15 @@ export function Settings() {
     setLoading(true)
     setErr(null)
     try {
-      const { data: comp } = await supabase.from('company_settings').select('company_name, contact_email, contact_phone').eq('id', 1).maybeSingle()
+      const { data: comp } = await supabase
+        .from('company_settings')
+        .select('company_name, contact_email, contact_phone, contact_telegram')
+        .eq('id', 1)
+        .maybeSingle()
       if (comp?.company_name) setCompanyName(comp.company_name)
       if (comp?.contact_email != null) setContactEmail(comp.contact_email)
       if (comp?.contact_phone != null) setContactPhone(comp.contact_phone)
+      if (comp?.contact_telegram != null) setContactTelegram(comp.contact_telegram)
 
       if (user?.id) {
         const { data: prefs } = await supabase
@@ -72,6 +78,7 @@ export function Settings() {
           company_name: companyName,
           contact_email: contactEmail.trim() || null,
           contact_phone: contactPhone.trim() || null,
+          contact_telegram: contactTelegram.trim() || null,
         })
         .eq('id', 1)
       if (cErr) throw cErr
@@ -180,6 +187,15 @@ export function Settings() {
             value={contactPhone}
             onChange={(e) => setContactPhone(e.target.value)}
             placeholder={t('settings.contactPhonePlaceholder')}
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">{t('settings.contactTelegram')}</span>
+          <input
+            className="input"
+            value={contactTelegram}
+            onChange={(e) => setContactTelegram(e.target.value)}
+            placeholder={t('settings.contactTelegramPlaceholder')}
           />
         </label>
 

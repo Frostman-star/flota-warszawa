@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { shouldUseLegacyAssignedDriverColumn, toLegacyCarWritePayload } from '../utils/carDriverSchema'
 import { Modal } from './Modal'
+import { MarketplaceListingFields } from './MarketplaceListingFields'
 
 const emptyForm = {
   plate_number: '',
@@ -22,6 +23,17 @@ const emptyForm = {
   marketplace_description: '',
   marketplace_location: 'Warszawa',
   marketplace_photo_url: '',
+  deposit_amount: '0',
+  fuel_type: 'benzyna',
+  transmission: 'automat',
+  seats: '5',
+  consumption: '',
+  marketplace_features: [],
+  min_driver_age: '25',
+  min_experience_years: '3',
+  min_rental_months: '1',
+  owner_phone: '',
+  owner_telegram: '',
   oc_cost: '0',
   ac_cost: '0',
   service_cost: '0',
@@ -64,6 +76,19 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         marketplace_description: String(car.marketplace_description ?? ''),
         marketplace_location: String(car.marketplace_location ?? 'Warszawa'),
         marketplace_photo_url: String(car.marketplace_photo_url ?? ''),
+        deposit_amount: String(car.deposit_amount ?? '0'),
+        fuel_type: String(car.fuel_type ?? 'benzyna'),
+        transmission: String(car.transmission ?? 'automat'),
+        seats: String(car.seats ?? '5'),
+        consumption: String(car.consumption ?? ''),
+        marketplace_features: Array.isArray(car.marketplace_features)
+          ? car.marketplace_features.map(String)
+          : [],
+        min_driver_age: String(car.min_driver_age ?? '25'),
+        min_experience_years: String(car.min_experience_years ?? '3'),
+        min_rental_months: String(car.min_rental_months ?? '1'),
+        owner_phone: String(car.owner_phone ?? ''),
+        owner_telegram: String(car.owner_telegram ?? ''),
         oc_cost: String(car.oc_cost ?? '0'),
         ac_cost: String(car.ac_cost ?? '0'),
         service_cost: String(car.service_cost ?? '0'),
@@ -112,6 +137,24 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
     setError(null)
     const hasDriver = Boolean(form.driver_id)
     const listed = hasDriver ? false : Boolean(form.marketplace_listed)
+    const listingExtras = listed
+      ? {
+          marketplace_photo_url: (form.marketplace_photo_url || '').trim() || null,
+          marketplace_description: (form.marketplace_description || '').trim() || null,
+          marketplace_location: (form.marketplace_location || '').trim() || 'Warszawa',
+          deposit_amount: Number(form.deposit_amount) || 0,
+          fuel_type: form.fuel_type || 'benzyna',
+          transmission: form.transmission || 'automat',
+          seats: Number(form.seats) || 5,
+          consumption: (form.consumption || '').trim() || null,
+          marketplace_features: Array.isArray(form.marketplace_features) ? form.marketplace_features : [],
+          min_driver_age: Number(form.min_driver_age) || 25,
+          min_experience_years: Number(form.min_experience_years) || 3,
+          min_rental_months: Number(form.min_rental_months) || 1,
+          owner_phone: (form.owner_phone || '').trim() || null,
+          owner_telegram: (form.owner_telegram || '').trim() || null,
+        }
+      : {}
     const payload = {
       plate_number: form.plate_number.trim(),
       model: form.model.trim(),
@@ -128,9 +171,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       last_service_date: form.last_service_date || null,
       notes: form.notes,
       marketplace_listed: listed,
-      marketplace_photo_url: (form.marketplace_photo_url || '').trim() || null,
-      marketplace_description: (form.marketplace_description || '').trim() || null,
-      marketplace_location: (form.marketplace_location || '').trim() || 'Warszawa',
+      ...listingExtras,
       show_in_marketplace: listed,
       marketplace_status: listed ? 'dostepne' : 'zajete',
       ...(editing
@@ -251,11 +292,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
           <span className="toggle-switch-text">{t('carForm.listedToggle')}</span>
         </label>
         {form.marketplace_listed && !form.driver_id ? (
-          <>
-            {field('marketplace_description', t('carForm.marketplaceDescription'), 'textarea', { rows: 3 })}
-            {field('marketplace_location', t('carForm.marketplaceLocation'))}
-            {field('marketplace_photo_url', t('carForm.marketplacePhotoUrl'), 'url', { placeholder: 'https://' })}
-          </>
+          <MarketplaceListingFields form={form} setForm={setForm} />
         ) : null}
         {editing ? (
           <>

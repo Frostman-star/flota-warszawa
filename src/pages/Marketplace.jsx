@@ -9,14 +9,58 @@ import { Modal } from '../components/Modal'
 import { localeTag } from '../utils/localeTag'
 import { carPath } from '../lib/carPaths'
 
-/** @param {unknown} model */
-function inferCarType(model) {
-  const m = String(model ?? '').toLowerCase()
-  if (/suv|x5|q7|teren|jeep|tucson|sportage|cr-v|rav4|kodiaq|qashqai/.test(m)) return 'suv'
-  if (/van|bus|transit|vivaro|ducato|sprinter|multivan|caravelle|boxer|master|expert|combo|dokker/.test(m)) return 'van'
-  if (/sedan|limousine|limo/.test(m)) return 'sedan'
-  if (/kombi|estate|wagon|avant|touring|variant|sw|sportwagon/.test(m)) return 'kombi'
-  return 'other'
+const DRIVER_SELECT = `
+  id, model, year, weekly_rent_pln, marketplace_photo_url, marketplace_description, marketplace_location,
+  marketplace_status, deposit_amount, fuel_type, transmission, seats, consumption, marketplace_features,
+  min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram
+`
+
+/** @param {unknown} ft */
+function fuelIcon(ft) {
+  switch (String(ft || '').toLowerCase()) {
+    case 'hybryda':
+      return '🔋'
+    case 'elektryczny':
+      return '⚡'
+    case 'gaz':
+      return '💨'
+    case 'diesel':
+      return '⛽'
+    default:
+      return '⛽'
+  }
+}
+
+/** @param {unknown} tr */
+function transmissionIcon(tr) {
+  return String(tr || '').toLowerCase() === 'manualna' ? '⚙️' : '🅰️'
+}
+
+/** @param {unknown} handle */
+function telegramHref(handle) {
+  const h = String(handle || '').trim().replace(/^@/, '')
+  return h ? `https://t.me/${encodeURIComponent(h)}` : ''
+}
+
+/** @param {Record<string, unknown>} car */
+function normalizeFeatures(car) {
+  const f = car.marketplace_features
+  if (!Array.isArray(f)) return []
+  return f.map((x) => String(x))
+}
+
+/**
+ * @param {Record<string, unknown>} car
+ * @param {string} chip
+ */
+function matchesChip(car, chip) {
+  if (chip === 'all') return true
+  if (chip === 'hybrid') return String(car.fuel_type || '').toLowerCase() === 'hybryda'
+  if (chip === 'automat') return String(car.transmission || '').toLowerCase() === 'automat'
+  if (chip === 'seats7')
+    return Number(car.seats) >= 7 || normalizeFeatures(car).includes('seats_7')
+  if (chip === 'price600') return Number(car.weekly_rent_pln ?? 0) <= 600
+  return true
 }
 
 export function Marketplace() {
@@ -30,16 +74,16 @@ export function Marketplace() {
   const [driverLoading, setDriverLoading] = useState(true)
   const [driverError, setDriverError] = useState(null)
 
-  const [company, setCompany] = useState({ company_name: '', contact_email: '', contact_phone: '' })
+  const [company, setCompany] = useState({
+    company_name: '',
+    contact_email: '',
+    contact_phone: '',
+    contact_telegram: '',
+  })
   const [interestCar, setInterestCar] = useState(null)
   const [openContact, setOpenContact] = useState(false)
 
-  const [typeFilter, setTypeFilter] = useState('all')
-  const [locFilter, setLocFilter] = useState('all')
-  const [priceMin, setPriceMin] = useState(0)
-  const [priceMax, setPriceMax] = useState(10_000)
-  const [sliderMax, setSliderMax] = useState(5000)
-  const boundsInit = useRef(false)
+  const [chipFilter, setChipFilter] = useState('all')
 
   const {
     cars: ownerCars,
@@ -49,30 +93,40 @@ export function Marketplace() {
   } = useCars({ enabled: isAdmin && Boolean(user?.id), ownerId: user?.id ?? null })
 
   const loadCompany = useCallback(async () => {
-    const { data } = await supabase.from('company_settings').select('company_name, contact_email, contact_phone').eq('id', 1).maybeSingle()
+    const { data } = await supabase
+      .from('company_settings')
+      .select('company_name, contact_email, contact_phone, contact_telegram')
+      .eq('id', 1)
+      .maybeSingle()
     setCompany({
       company_name: data?.company_name != null ? String(data.company_name) : '',
       contact_email: data?.contact_email != null ? String(data.contact_email) : '',
       contact_phone: data?.contact_phone != null ? String(data.contact_phone) : '',
+      contact_telegram: data?.contact_telegram != null ? String(data.contact_telegram) : '',
     })
   }, [])
 
   const loadDriverListings = useCallback(async () => {
     setDriverLoading(true)
     setDriverError(null)
-    const { data, error } = await supabase
-      .from('cars')
-      .select(
-        'id, model, year, weekly_rent_pln, marketplace_photo_url, marketplace_description, marketplace_location, plate_number'
-      )
-      .eq('marketplace_listed', true)
-      .is('driver_id', null)
-      .order('weekly_rent_pln', { ascending: true })
-    if (error) {
-      setDriverError(error.message)
-      setDriverCars([])
+    const rpc = await supabase.rpc('get_marketplace_listings')
+    if (!rpc.error) {
+      setDriverCars(Array.isArray(rpc.data) ? rpc.data : [])
+      setDriverError(null)
     } else {
-      setDriverCars(data ?? [])
+      const fb = await supabase
+        .from('cars')
+        .select(DRIVER_SELECT)
+        .eq('marketplace_listed', true)
+        .is('driver_id', null)
+        .order('weekly_rent_pln', { ascending: true })
+      if (fb.error) {
+        setDriverError(fb.error.message)
+        setDriverCars([])
+      } else {
+        setDriverCars(fb.data ?? [])
+        setDriverError(null)
+      }
     }
     setDriverLoading(false)
   }, [])
@@ -91,42 +145,15 @@ export function Marketplace() {
 
   useEffect(() => {
     if (searchParams.get('manage') !== '1' || !isAdmin || ownerLoading) return undefined
-    const t = window.setTimeout(() => {
+    const tmr = window.setTimeout(() => {
       ownerSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 100)
-    return () => window.clearTimeout(t)
+    return () => window.clearTimeout(tmr)
   }, [searchParams, isAdmin, ownerLoading])
 
-  const uniqueLocations = useMemo(() => {
-    const s = new Set()
-    for (const c of driverCars) {
-      const loc = c.marketplace_location != null ? String(c.marketplace_location).trim() : ''
-      if (loc) s.add(loc)
-    }
-    return Array.from(s).sort()
-  }, [driverCars])
-
-  useEffect(() => {
-    if (!isDriver || !driverCars.length || boundsInit.current) return
-    const rents = driverCars.map((c) => Number(c.weekly_rent_pln ?? 0)).filter((n) => Number.isFinite(n))
-    const hi = Math.max(...rents, 0)
-    const cap = hi > 0 ? Math.ceil(hi / 100) * 100 + 200 : 2000
-    setSliderMax(Math.max(500, cap))
-    setPriceMax(Math.max(500, cap))
-    setPriceMin(0)
-    boundsInit.current = true
-  }, [isDriver, driverCars])
-
   const filteredDriverCars = useMemo(() => {
-    return driverCars.filter((c) => {
-      const w = Number(c.weekly_rent_pln ?? 0)
-      if (!Number.isFinite(w) || w < priceMin || w > priceMax) return false
-      const loc = c.marketplace_location != null ? String(c.marketplace_location).trim() : ''
-      if (locFilter !== 'all' && loc !== locFilter) return false
-      if (typeFilter !== 'all' && inferCarType(c.model) !== typeFilter) return false
-      return true
-    })
-  }, [driverCars, priceMin, priceMax, locFilter, typeFilter])
+    return driverCars.filter((c) => matchesChip(c, chipFilter))
+  }, [driverCars, chipFilter])
 
   async function setOwnerListed(car, listed) {
     if (!user?.id) return
@@ -156,11 +183,35 @@ export function Marketplace() {
     }
   }
 
+  const chips = useMemo(
+    () => [
+      { id: 'all', label: t('marketplace.chipAll') },
+      { id: 'hybrid', label: t('marketplace.chipHybrid') },
+      { id: 'automat', label: t('marketplace.chipAutomat') },
+      { id: 'seats7', label: t('marketplace.chipSeats7') },
+      { id: 'price600', label: t('marketplace.chipPrice600') },
+    ],
+    [t]
+  )
+
+  const mergedPhone = interestCar
+    ? String(interestCar.owner_phone ?? '').trim() || company.contact_phone.trim()
+    : company.contact_phone.trim()
+  const mergedTelegram = interestCar
+    ? String(interestCar.owner_telegram ?? '').trim() || company.contact_telegram.trim()
+    : company.contact_telegram.trim()
+  const mergedEmail = company.contact_email.trim()
+
+  function formatWeekly(car) {
+    const n = Math.round(Number(car.weekly_rent_pln ?? 0))
+    return `${n.toLocaleString(lc)} zł / ${t('marketplace.weekShort')}`
+  }
+
   const showDriverBrowse = isDriver
   const showOwnerPanel = isAdmin
 
   return (
-    <div className="page-simple marketplace-page">
+    <div className="page-simple marketplace-page market-catalog-page">
       <p className="muted small">
         <Link to={isAdmin ? '/panel' : '/'} className="link">
           {isAdmin ? `← ${t('app.panel')}` : `← ${t('app.home')}`}
@@ -169,9 +220,13 @@ export function Marketplace() {
 
       {showDriverBrowse ? (
         <>
-          <header className="market-hero">
-            <h1 className="market-hero-title">{t('marketplace.driverHeader')}</h1>
-            <p className="muted market-hero-lead">{t('marketplace.driverLead')}</p>
+          <header className="market-catalog-header">
+            <div className="market-catalog-title-row">
+              <h1 className="market-catalog-title">{t('marketplace.driverHeader')}</h1>
+              <span className="market-catalog-count" aria-live="polite">
+                {filteredDriverCars.length}
+              </span>
+            </div>
           </header>
 
           {driverError ? <p className="form-error">{driverError}</p> : null}
@@ -180,115 +235,99 @@ export function Marketplace() {
             <LoadingSpinner />
           ) : (
             <>
-              <section className="market-filters" aria-label={t('marketplace.filtersAria')}>
-                <div className="market-filter-row">
-                  <label className="field market-field-compact">
-                    <span className="field-label">{t('marketplace.filterType')}</span>
-                    <select className="input" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-                      <option value="all">{t('marketplace.typeAll')}</option>
-                      <option value="sedan">{t('marketplace.typeSedan')}</option>
-                      <option value="suv">{t('marketplace.typeSuv')}</option>
-                      <option value="van">{t('marketplace.typeVan')}</option>
-                      <option value="kombi">{t('marketplace.typeKombi')}</option>
-                      <option value="other">{t('marketplace.typeOther')}</option>
-                    </select>
-                  </label>
-                  <label className="field market-field-compact">
-                    <span className="field-label">{t('marketplace.filterLocation')}</span>
-                    <select className="input" value={locFilter} onChange={(e) => setLocFilter(e.target.value)}>
-                      <option value="all">{t('marketplace.locAll')}</option>
-                      {uniqueLocations.map((loc) => (
-                        <option key={loc} value={loc}>
-                          {loc}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-                <div className="market-range-block">
-                  <p className="field-label">{t('marketplace.filterPrice')}</p>
-                  <div className="market-range-values muted small">
-                    <span>
-                      {priceMin.toLocaleString(lc)} — {priceMax.toLocaleString(lc)} PLN
-                    </span>
-                  </div>
-                  <div className="market-dual-range">
-                    <label className="market-range-label">
-                      <span className="muted small">{t('marketplace.priceMin')}</span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={sliderMax}
-                        step={50}
-                        value={Math.min(priceMin, priceMax)}
-                        onChange={(e) => {
-                          const v = Number(e.target.value)
-                          setPriceMin(Math.min(v, priceMax))
-                        }}
-                      />
-                    </label>
-                    <label className="market-range-label">
-                      <span className="muted small">{t('marketplace.priceMax')}</span>
-                      <input
-                        type="range"
-                        min={0}
-                        max={sliderMax}
-                        step={50}
-                        value={Math.max(priceMin, priceMax)}
-                        onChange={(e) => {
-                          const v = Number(e.target.value)
-                          setPriceMax(Math.max(v, priceMin))
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
-              </section>
+              <div className="market-chip-scroll" role="tablist" aria-label={t('marketplace.chipsAria')}>
+                {chips.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={chipFilter === c.id}
+                    className={`market-chip${chipFilter === c.id ? ' market-chip--active' : ''}`}
+                    onClick={() => setChipFilter(c.id)}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
 
-              {filteredDriverCars.length === 0 ? (
-                <p className="market-empty muted">{t('marketplace.emptyDriver')}</p>
+              {driverCars.length === 0 ? (
+                <p className="market-empty market-empty-lg">{t('marketplace.emptyDriver')}</p>
+              ) : filteredDriverCars.length === 0 ? (
+                <p className="market-empty muted">{t('marketplace.filteredEmpty')}</p>
               ) : (
-                <div className="market-grid market-grid--mobile-two">
+                <div className="market-catalog-list">
                   {filteredDriverCars.map((car) => {
                     const title = [car.model || t('marketplace.car'), car.year != null ? String(car.year) : '']
                       .filter(Boolean)
                       .join(' ')
                     const photo = car.marketplace_photo_url ? String(car.marketplace_photo_url).trim() : ''
-                    const loc = car.marketplace_location != null ? String(car.marketplace_location).trim() : t('marketplace.locationDefault')
+                    const available = String(car.marketplace_status || '') === 'dostepne'
+                    const feats = normalizeFeatures(car)
+                    const dep = Number(car.deposit_amount ?? 0)
                     return (
-                      <article key={car.id} className="market-card market-card-lg">
-                        <div className="market-photo market-photo-lg">
+                      <article key={car.id} className="market-catalog-card">
+                        <div className="market-catalog-photo-wrap">
                           {photo ? (
-                            <img src={photo} alt="" className="market-photo-img" loading="lazy" />
+                            <img src={photo} alt="" className="market-catalog-photo" loading="lazy" />
                           ) : (
-                            <span aria-hidden>🚕</span>
+                            <div className="market-catalog-photo market-catalog-photo--ph" aria-hidden>
+                              <span>🚗</span>
+                            </div>
                           )}
-                        </div>
-                        <h2 className="market-card-title">{title}</h2>
-                        <p className="market-price market-price-lg">
-                          {Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}
-                          <span className="muted small"> {t('marketplace.week')}</span>
-                        </p>
-                        <div className="market-card-meta">
-                          <span className="location-badge">{loc}</span>
-                          <span className="market-stars" aria-label={t('marketplace.ratingPlaceholderAria')}>
-                            ★★★★★
+                          <span className={`market-status-badge${available ? ' market-status-badge--ok' : ''}`}>
+                            {available ? t('marketplace.badgeAvailable') : t('marketplace.badgeTaken')}
                           </span>
                         </div>
-                        {car.marketplace_description ? (
-                          <p className="muted small market-card-desc">{String(car.marketplace_description)}</p>
-                        ) : null}
-                        <button
-                          type="button"
-                          className="btn btn-huge primary market-card-cta"
-                          onClick={() => {
-                            setInterestCar(car)
-                            setOpenContact(true)
-                            loadCompany()
-                          }}
-                        >
-                          {t('marketplace.interest')}
-                        </button>
+                        <div className="market-catalog-body">
+                          <h2 className="market-catalog-model">{title}</h2>
+                          <p className="market-catalog-price">{formatWeekly(car)}</p>
+                          {dep > 0 ? (
+                            <p className="market-catalog-deposit muted">
+                              {t('marketplace.deposit', { amount: dep.toLocaleString(lc) })}
+                            </p>
+                          ) : null}
+                          <div className="market-catalog-icons" aria-label={t('marketplace.iconsAria')}>
+                            <span title={String(car.fuel_type ?? '')}>{fuelIcon(car.fuel_type)}</span>
+                            <span title={String(car.transmission ?? '')}>{transmissionIcon(car.transmission)}</span>
+                            <span title={t('marketplace.seatsTitle')}>🪑 {car.seats ?? '—'}</span>
+                          </div>
+                          {feats.length > 0 ? (
+                            <ul className="market-catalog-features">
+                              {feats.map((key) => (
+                                <li key={key}>
+                                  <span className="market-check" aria-hidden>
+                                    ✓
+                                  </span>
+                                  {t(`marketplace.feature.${key}`)}
+                                </li>
+                              ))}
+                            </ul>
+                          ) : null}
+                          <div className="market-catalog-reqs">
+                            <p className="market-req-line">
+                              <strong>{t('marketplace.reqAge')}</strong> {car.min_driver_age ?? '—'}
+                            </p>
+                            <p className="market-req-line">
+                              <strong>{t('marketplace.reqExp')}</strong> {car.min_experience_years ?? '—'}{' '}
+                              {t('marketplace.reqExpUnit')}
+                            </p>
+                            <p className="market-req-line">
+                              <strong>{t('marketplace.reqRent')}</strong> {car.min_rental_months ?? '—'}{' '}
+                              {t('marketplace.reqRentUnit')}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            className="btn btn-huge primary market-catalog-cta"
+                            onClick={() => {
+                              setInterestCar(car)
+                              setOpenContact(true)
+                              loadCompany()
+                            }}
+                          >
+                            {t('marketplace.contactCta')}
+                          </button>
+                        </div>
                       </article>
                     )
                   })}
@@ -356,30 +395,44 @@ export function Marketplace() {
         }}
       >
         <div className="market-contact-block">
-          <p>
+          <p className="market-contact-company">
             <strong>{t('marketplace.contactCompany')}</strong> {company.company_name || '—'}
           </p>
-          <p>
-            <strong>{t('marketplace.contactEmail')}</strong>{' '}
-            {company.contact_email ? (
-              <a href={`mailto:${company.contact_email}`} className="link-strong">
-                {company.contact_email}
-              </a>
-            ) : (
-              <span className="muted">{t('marketplace.noEmail')}</span>
-            )}
-          </p>
-          {company.contact_phone ? (
-            <p>
-              <strong>{t('marketplace.contactPhone')}</strong>{' '}
-              <a href={`tel:${company.contact_phone.replace(/\s+/g, '')}`} className="link-strong">
-                {company.contact_phone}
-              </a>
-            </p>
+          {mergedPhone ? (
+            <a className="market-contact-bigbtn" href={`tel:${mergedPhone.replace(/\s+/g, '')}`}>
+              <span aria-hidden>📞</span> {t('marketplace.btnCall')}
+              <span className="market-contact-bigbtn-sub">{mergedPhone}</span>
+            </a>
           ) : null}
+          {mergedTelegram ? (
+            <a
+              className="market-contact-bigbtn market-contact-bigbtn--tg"
+              href={telegramHref(mergedTelegram)}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span aria-hidden>✈️</span> {t('marketplace.btnTelegram')}
+              <span className="market-contact-bigbtn-sub">{mergedTelegram}</span>
+            </a>
+          ) : null}
+          {mergedEmail ? (
+            <a className="market-contact-bigbtn market-contact-bigbtn--mail" href={`mailto:${mergedEmail}`}>
+              <span aria-hidden>📧</span> {t('marketplace.btnEmail')}
+              <span className="market-contact-bigbtn-sub">{mergedEmail}</span>
+            </a>
+          ) : (
+            <p className="muted">{t('marketplace.noEmail')}</p>
+          )}
         </div>
-        <button type="button" className="btn btn-huge primary" onClick={() => { setOpenContact(false); setInterestCar(null) }}>
-          {t('app.ok')}
+        <button
+          type="button"
+          className="btn btn-huge ghost market-contact-close"
+          onClick={() => {
+            setOpenContact(false)
+            setInterestCar(null)
+          }}
+        >
+          {t('app.close')}
         </button>
       </Modal>
     </div>

@@ -33,6 +33,17 @@ const CAR_SELECT_NEW = `
         marketplace_photo_url,
         marketplace_description,
         marketplace_location,
+        deposit_amount,
+        fuel_type,
+        transmission,
+        seats,
+        consumption,
+        marketplace_features,
+        min_driver_age,
+        min_experience_years,
+        min_rental_months,
+        owner_phone,
+        owner_telegram,
         ${CAR_EMBED}
       `
 
@@ -64,6 +75,17 @@ const CAR_SELECT_LEGACY = `
         marketplace_photo_url,
         marketplace_description,
         marketplace_location,
+        deposit_amount,
+        fuel_type,
+        transmission,
+        seats,
+        consumption,
+        marketplace_features,
+        min_driver_age,
+        min_experience_years,
+        min_rental_months,
+        owner_phone,
+        owner_telegram,
         ${CAR_EMBED}
       `
 
