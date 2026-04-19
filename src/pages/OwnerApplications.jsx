@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { DriverProfileCard } from '../components/DriverProfileCard'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 
 async function notifyApplicationEmail(session, payload) {
@@ -46,7 +47,17 @@ export function OwnerApplications() {
         driver_phone,
         car_id,
         car:cars ( plate_number, model, year ),
-        driver:profiles!driver_id ( full_name, phone, experience_years )
+        driver:profiles!driver_id (
+          full_name,
+          phone,
+          experience_years,
+          bio,
+          gender,
+          birth_year,
+          poland_status,
+          poland_status_doc_url,
+          avatar_url
+        )
       `
       )
       .eq('owner_id', user.id)
@@ -144,25 +155,29 @@ export function OwnerApplications() {
               <ul className="owner-apps-cards">
                 {g.apps.map((app) => {
                   const d = app.driver
-                  const name = String(app.driver_name || d?.full_name || '—')
                   const phone = String(app.driver_phone || d?.phone || '').trim()
-                  const exp = d?.experience_years != null ? Number(d.experience_years) : null
+                  const profileForCard = {
+                    full_name: app.driver_name || d?.full_name,
+                    phone,
+                    experience_years: d?.experience_years,
+                    bio: d?.bio,
+                    gender: d?.gender,
+                    birth_year: d?.birth_year,
+                    poland_status: d?.poland_status,
+                    poland_status_doc_url: d?.poland_status_doc_url,
+                    avatar_url: d?.avatar_url,
+                  }
                   return (
                     <li key={app.id} className="owner-app-card">
-                      <div className="owner-app-card-top">
-                        <div>
-                          <div className="owner-app-name">{name}</div>
-                          {phone ? (
-                            <a className="owner-app-phone" href={`tel:${phone.replace(/\s+/g, '')}`}>
-                              {phone}
-                            </a>
-                          ) : (
-                            <span className="muted small">—</span>
-                          )}
-                        </div>
-                        {exp != null && !Number.isNaN(exp) ? (
-                          <span className="exp-badge">{t('ownerApplications.expBadge', { n: exp })}</span>
-                        ) : null}
+                      <DriverProfileCard profile={profileForCard} showDocVerified className="owner-app-driver-card" />
+                      <div className="owner-app-card-top owner-app-card-phone-row">
+                        {phone ? (
+                          <a className="owner-app-phone" href={`tel:${phone.replace(/\s+/g, '')}`}>
+                            {phone}
+                          </a>
+                        ) : (
+                          <span className="muted small">—</span>
+                        )}
                       </div>
                       {app.driver_message ? <p className="owner-app-msg">{String(app.driver_message)}</p> : null}
                       <p className="muted tiny">

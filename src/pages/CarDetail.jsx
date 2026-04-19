@@ -14,6 +14,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { NoteModal } from '../components/NoteModal'
 import { HandoverSection } from '../components/HandoverSection'
 import { useDrivers } from '../hooks/useDrivers'
+import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { expiryStatusLabel, serviceStatusLabel } from '../utils/docLabels'
 import { localeTag } from '../utils/localeTag'
 
@@ -62,15 +63,15 @@ export function CarDetail() {
     })
   }, [car?.id, car?.updated_at])
 
-  const docKeys = useMemo(
-    () => [
-      { key: 'oc_expiry', label: t('docs.oc_expiry') },
-      { key: 'ac_expiry', label: t('docs.ac_expiry') },
-      { key: 'przeglad_expiry', label: t('docs.przeglad_expiry') },
-      { key: 'last_service_date', label: t('docs.last_service_date') },
-    ],
-    [t]
-  )
+  const docRows = useMemo(() => {
+    if (!car) return []
+    const ins = effectiveInsuranceExpiryIso(car)
+    return [
+      { key: 'insurance', label: t('docs.insurance_expiry'), date: ins, service: false },
+      { key: 'przeglad_expiry', label: t('docs.przeglad_expiry'), date: car.przeglad_expiry, service: false },
+      { key: 'last_service_date', label: t('docs.last_service_date'), date: car.last_service_date, service: true },
+    ]
+  }, [car, t])
 
   if (!isAdmin && assignedCarId && id && id !== assignedCarId) {
     return <Navigate to={carPath(assignedCarId, false)} replace />
@@ -214,12 +215,10 @@ export function CarDetail() {
       <section className="detail-block">
         <h2>{t('carDetail.documents')}</h2>
         <ul className="doc-simple-list">
-          {docKeys.map(({ key, label }) => {
-            const date = car[key]
-            const st =
-              key === 'last_service_date'
-                ? serviceStatusLabel(typeof date === 'string' ? date : null)
-                : expiryStatusLabel(typeof date === 'string' ? date : null)
+          {docRows.map(({ key, label, date, service }) => {
+            const st = service
+              ? serviceStatusLabel(typeof date === 'string' ? date : null)
+              : expiryStatusLabel(typeof date === 'string' ? date : null)
             return (
               <li key={key} className="doc-simple-row">
                 <div>

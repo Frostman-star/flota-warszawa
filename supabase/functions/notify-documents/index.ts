@@ -16,9 +16,17 @@ const cors = {
 }
 
 const DOC_LABELS: Record<string, string> = {
-  oc_expiry: 'OC',
-  ac_expiry: 'AC',
+  insurance_expiry: 'OC/AC',
   przeglad_expiry: 'Przegląd techniczny',
+}
+
+function effectiveInsuranceExpiry(car: Record<string, unknown>): string | null {
+  const ins = car.insurance_expiry
+  if (typeof ins === 'string' && ins.trim()) return ins.trim()
+  const oc = typeof car.oc_expiry === 'string' && car.oc_expiry.trim() ? car.oc_expiry.trim() : null
+  const ac = typeof car.ac_expiry === 'string' && car.ac_expiry.trim() ? car.ac_expiry.trim() : null
+  if (oc && ac) return oc < ac ? oc : ac
+  return oc || ac
 }
 
 function daysUntilUtc(iso: string): number | null {
@@ -76,7 +84,9 @@ Deno.serve(async (req) => {
     const { data: profile } = await userClient.from('profiles').select('role, email').eq('id', user.id).maybeSingle()
     const isAdmin = profile?.role === 'admin'
 
-    let carsQuery = userClient.from('cars').select('id, plate_number, oc_expiry, ac_expiry, przeglad_expiry, driver_id')
+    let carsQuery = userClient
+      .from('cars')
+      .select('id, plate_number, insurance_expiry, oc_expiry, ac_expiry, przeglad_expiry, driver_id')
     if (!isAdmin) {
       carsQuery = carsQuery.eq('driver_id', user.id)
     }
@@ -107,9 +117,14 @@ Deno.serve(async (req) => {
       const plate = String((car as { plate_number?: string }).plate_number ?? '')
       const carId = (car as { id: string }).id
 
-      for (const docKey of ['oc_expiry', 'ac_expiry', 'przeglad_expiry'] as const) {
-        const raw = (car as Record<string, unknown>)[docKey]
-        if (typeof raw !== 'string' || !raw) continue
+      const carRec = car as Record<string, unknown>
+      const docChecks: Array<{ docKey: 'insurance_expiry' | 'przeglad_expiry'; raw: string }> = []
+      const insEff = effectiveInsuranceExpiry(carRec)
+      if (insEff) docChecks.push({ docKey: 'insurance_expiry', raw: insEff })
+      const prz = carRec.przeglad_expiry
+      if (typeof prz === 'string' && prz.trim()) docChecks.push({ docKey: 'przeglad_expiry', raw: prz.trim() })
+
+      for (const { docKey, raw } of docChecks) {
         const days = daysUntilUtc(raw)
         if (days === null) continue
 

@@ -1,4 +1,5 @@
 ﻿import i18next from 'i18next'
+import { effectiveInsuranceExpiryIso } from './carInsurance'
 import { daysUntil, flattenDocumentAlerts, isUrgentExpiry, worstDocumentTier } from './documents'
 
 export function computeWeeklyRentTotal(cars) {
@@ -8,7 +9,11 @@ export function countActiveCars(cars) { return cars.filter((c) => c.driver_id).l
 export function countCarsWithoutDriver(cars) { return cars.filter((c) => !c.driver_id).length }
 export function countUrgentDocumentAlerts(cars) {
   let n = 0
-  for (const car of cars) for (const key of ['oc_expiry', 'ac_expiry', 'przeglad_expiry']) if (typeof car[key] === 'string' && isUrgentExpiry(car[key])) n += 1
+  for (const car of cars) {
+    const ins = effectiveInsuranceExpiryIso(car)
+    if (typeof ins === 'string' && isUrgentExpiry(ins)) n += 1
+    if (typeof car.przeglad_expiry === 'string' && isUrgentExpiry(car.przeglad_expiry)) n += 1
+  }
   return n
 }
 export function monthlyRentForecast(cars) { return computeWeeklyRentTotal(cars) * 4 }

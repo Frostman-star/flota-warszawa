@@ -80,8 +80,10 @@ export function Marketplace() {
   const [blockedApplyCars, setBlockedApplyCars] = useState({})
 
   const [chipFilter, setChipFilter] = useState('all')
+  const [contactCar, setContactCar] = useState(null)
 
   const profileApplyReady = isDriverProfileCompleteForApply(profile)
+  const showCatalog = Boolean(user?.id)
 
   const loadMyApplications = useCallback(async () => {
     if (!isDriver || !user?.id) {
@@ -134,12 +136,12 @@ export function Marketplace() {
   }, [])
 
   useEffect(() => {
-    if (isDriver) loadDriverListings()
+    if (showCatalog) void loadDriverListings()
     else {
       setDriverCars([])
       setDriverLoading(false)
     }
-  }, [isDriver, loadDriverListings])
+  }, [showCatalog, loadDriverListings])
 
   useEffect(() => {
     void loadMyApplications()
@@ -197,7 +199,7 @@ export function Marketplace() {
   )
 
   const submitApplication = useCallback(async () => {
-    if (!applyCar || !user?.id || !profile) return
+    if (!isDriver || !applyCar || !user?.id || !profile) return
     const ownerId = applyCar.owner_id
     if (!ownerId) {
       setApplyError('missing_owner')
@@ -236,15 +238,20 @@ export function Marketplace() {
     setApplyStep('success')
     setBlockedApplyCars((prev) => ({ ...prev, [String(applyCar.id)]: true }))
     void loadMyApplications()
-  }, [applyCar, user?.id, profile, applyMessage, session?.access_token, loadMyApplications])
+  }, [isDriver, applyCar, user?.id, profile, applyMessage, session?.access_token, loadMyApplications])
 
   function formatWeekly(car) {
     const n = Math.round(Number(car.weekly_rent_pln ?? 0))
     return `${n.toLocaleString(lc)} zł / ${t('marketplace.weekShort')}`
   }
 
-  const showDriverBrowse = isDriver
   const showOwnerPanel = isAdmin
+
+  function telegramHref(handle) {
+    const h = String(handle || '').trim().replace(/^@+/, '')
+    if (!h) return null
+    return `https://t.me/${encodeURIComponent(h)}`
+  }
 
   return (
     <div className="page-simple marketplace-page market-catalog-page">
@@ -254,18 +261,18 @@ export function Marketplace() {
         </Link>
       </p>
 
-      {showDriverBrowse ? (
+      {showCatalog ? (
         <>
           <header className="market-catalog-header">
             <div className="market-catalog-title-row">
-              <h1 className="market-catalog-title">{t('marketplace.driverHeader')}</h1>
+              <h1 className="market-catalog-title">{t('marketplace.catalogTitle')}</h1>
               <span className="market-catalog-count" aria-live="polite">
                 {filteredDriverCars.length}
               </span>
             </div>
           </header>
 
-          {!profileApplyReady ? (
+          {isDriver && !profileApplyReady ? (
             <div className="profile-banner warn" role="status">
               {t('marketplace.profileIncompleteBanner')}{' '}
               <Link to="/profil" className="link-strong">
@@ -361,23 +368,33 @@ export function Marketplace() {
                               {t('marketplace.reqRentUnit')}
                             </p>
                           </div>
-                          <button
-                            type="button"
-                            className="btn btn-huge primary market-catalog-cta"
-                            disabled={!profileApplyReady || Boolean(blockedApplyCars[String(car.id)])}
-                            onClick={() => {
-                              if (!profileApplyReady || blockedApplyCars[String(car.id)]) return
-                              setApplyCar(car)
-                              setApplyOpen(true)
-                              setApplyStep('form')
-                              setApplyMessage('')
-                              setApplyError(null)
-                            }}
-                          >
-                            {blockedApplyCars[String(car.id)]
-                              ? t('marketplace.applicationSentWait')
-                              : t('marketplace.applyCta')}
-                          </button>
+                          {isDriver ? (
+                            <button
+                              type="button"
+                              className="btn btn-huge primary market-catalog-cta"
+                              disabled={!profileApplyReady || Boolean(blockedApplyCars[String(car.id)])}
+                              onClick={() => {
+                                if (!profileApplyReady || blockedApplyCars[String(car.id)]) return
+                                setApplyCar(car)
+                                setApplyOpen(true)
+                                setApplyStep('form')
+                                setApplyMessage('')
+                                setApplyError(null)
+                              }}
+                            >
+                              {blockedApplyCars[String(car.id)]
+                                ? t('marketplace.applicationSentWait')
+                                : t('marketplace.applyCta')}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="btn btn-huge secondary market-catalog-cta"
+                              onClick={() => setContactCar(car)}
+                            >
+                              {t('marketplace.contactCta')}
+                            </button>
+                          )}
                         </div>
                       </article>
                     )
@@ -433,9 +450,51 @@ export function Marketplace() {
         </section>
       ) : null}
 
-      {!isDriver && !isAdmin ? (
-        <p className="muted">{t('marketplace.roleUnsupported')}</p>
-      ) : null}
+      <Modal
+        open={Boolean(contactCar)}
+        title={
+          contactCar
+            ? t('marketplace.contact', { plate: String(contactCar.plate_number ?? '').trim() || t('marketplace.car') })
+            : ''
+        }
+        onClose={() => setContactCar(null)}
+        footer={
+          <button type="button" className="btn primary" onClick={() => setContactCar(null)}>
+            {t('app.close')}
+          </button>
+        }
+      >
+        {contactCar ? (
+          <div className="stack-form">
+            {String(contactCar.owner_phone ?? '').trim() ? (
+              <p>
+                <a className="link-strong" href={`tel:${String(contactCar.owner_phone).replace(/\s+/g, '')}`}>
+                  {String(contactCar.owner_phone).trim()}
+                </a>
+              </p>
+            ) : null}
+            {String(contactCar.owner_telegram ?? '').trim() ? (
+              <p>
+                {telegramHref(contactCar.owner_telegram) ? (
+                  <a
+                    className="link-strong"
+                    href={telegramHref(contactCar.owner_telegram) ?? undefined}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {String(contactCar.owner_telegram).trim()}
+                  </a>
+                ) : (
+                  <span className="link-strong">{String(contactCar.owner_telegram).trim()}</span>
+                )}
+              </p>
+            ) : null}
+            {!String(contactCar.owner_phone ?? '').trim() && !String(contactCar.owner_telegram ?? '').trim() ? (
+              <p className="muted">{t('marketplace.contactEmpty')}</p>
+            ) : null}
+          </div>
+        ) : null}
+      </Modal>
 
       <Modal
         open={applyOpen && Boolean(applyCar)}

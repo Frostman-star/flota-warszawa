@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import { effectiveInsuranceExpiryIso } from './carInsurance'
 
 /** @typedef {'red' | 'orange' | 'yellow' | 'green'} AlertTier */
 
@@ -69,21 +70,33 @@ function startOfLocalDay(date) {
 export function flattenDocumentAlerts(car) {
   /** @type {Array<{ key: string, label: string, date: string, days: number, tier: AlertTier }>} */
   const out = []
-  const keys = ['oc_expiry', 'ac_expiry', 'przeglad_expiry']
-  for (const key of keys) {
-    const date = car[key]
-    if (typeof date !== 'string' || !date) continue
-    const days = daysUntil(date)
-    if (days === null) continue
-    if (!isWithinAlertWindow(date)) continue
-    const tier = tierForExpiry(date) ?? 'yellow'
-    out.push({
-      key,
-      label: i18next.t(`docs.${key}`),
-      date,
-      days,
-      tier,
-    })
+  const insDate = effectiveInsuranceExpiryIso(car)
+  if (typeof insDate === 'string' && insDate) {
+    const days = daysUntil(insDate)
+    if (days !== null && isWithinAlertWindow(insDate)) {
+      const tier = tierForExpiry(insDate) ?? 'yellow'
+      out.push({
+        key: 'insurance_expiry',
+        label: i18next.t('docs.insurance_expiry'),
+        date: insDate,
+        days,
+        tier,
+      })
+    }
+  }
+  const prz = car.przeglad_expiry
+  if (typeof prz === 'string' && prz) {
+    const days = daysUntil(prz)
+    if (days !== null && isWithinAlertWindow(prz)) {
+      const tier = tierForExpiry(prz) ?? 'yellow'
+      out.push({
+        key: 'przeglad_expiry',
+        label: i18next.t('docs.przeglad_expiry'),
+        date: prz,
+        days,
+        tier,
+      })
+    }
   }
   return out
 }
@@ -96,9 +109,9 @@ export function flattenDocumentAlerts(car) {
 export function worstDocumentTier(car) {
   const order = { red: 0, orange: 1, yellow: 2, green: 3 }
   let best = null
-  for (const key of ['oc_expiry', 'ac_expiry', 'przeglad_expiry']) {
-    const date = car[key]
-    const tier = tierForExpiry(typeof date === 'string' ? date : null)
+  const ins = effectiveInsuranceExpiryIso(car)
+  for (const date of [ins, typeof car.przeglad_expiry === 'string' ? car.przeglad_expiry : null]) {
+    const tier = tierForExpiry(date)
     if (!tier) continue
     if (best === null || order[tier] < order[best]) best = tier
   }
@@ -133,8 +146,9 @@ export function tierForServiceDot(isoDate) {
  * @param {Record<string, unknown>} car
  */
 export function isPilne14(car) {
-  for (const key of ['oc_expiry', 'ac_expiry', 'przeglad_expiry']) {
-    const d = daysUntil(car[key])
+  const ins = effectiveInsuranceExpiryIso(car)
+  for (const date of [ins, car.przeglad_expiry]) {
+    const d = daysUntil(typeof date === 'string' ? date : null)
     if (d !== null && d <= 14) return true
   }
   return false

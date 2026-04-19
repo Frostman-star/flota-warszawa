@@ -21,8 +21,7 @@ export function AddCarWizard() {
   const [model, setModel] = useState('')
   const [driverId, setDriverId] = useState('')
   const [rent, setRent] = useState('')
-  const [oc, setOc] = useState('')
-  const [ac, setAc] = useState('')
+  const [insurance, setInsurance] = useState('')
   const [prz, setPrz] = useState('')
   const [svc, setSvc] = useState('')
 
@@ -47,8 +46,9 @@ export function AddCarWizard() {
         mileage_km: 0,
         weekly_rent_pln: Number(rent) || 0,
         fines_count: 0,
-        oc_expiry: oc || null,
-        ac_expiry: ac || null,
+        insurance_expiry: insurance || null,
+        oc_expiry: insurance || null,
+        ac_expiry: insurance || null,
         przeglad_expiry: prz || null,
         last_service_date: svc || null,
         notes: '',
@@ -160,12 +160,8 @@ export function AddCarWizard() {
         <div className="wizard-fields">
           <p className="muted small">{t('wizard.docHint')}</p>
           <label className="field">
-            <span className="field-label-lg">{t('wizard.ocLabel')}</span>
-            <input className="input input-xl" type="date" value={oc} onChange={(e) => setOc(e.target.value)} />
-          </label>
-          <label className="field">
-            <span className="field-label-lg">{t('wizard.acLabel')}</span>
-            <input className="input input-xl" type="date" value={ac} onChange={(e) => setAc(e.target.value)} />
+            <span className="field-label-lg">{t('wizard.insuranceLabel')}</span>
+            <input className="input input-xl" type="date" value={insurance} onChange={(e) => setInsurance(e.target.value)} />
           </label>
           <label className="field">
             <span className="field-label-lg">{t('wizard.przLabel')}</span>

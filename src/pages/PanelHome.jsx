@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { daysUntil } from '../utils/documents'
+import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { localeTag } from '../utils/localeTag'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
@@ -10,8 +11,9 @@ import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplica
 function countCriticalSoon(cars) {
   let n = 0
   for (const car of cars) {
-    for (const key of ['oc_expiry', 'ac_expiry', 'przeglad_expiry']) {
-      const d = daysUntil(car[key])
+    const ins = effectiveInsuranceExpiryIso(car)
+    for (const date of [ins, car.przeglad_expiry]) {
+      const d = daysUntil(typeof date === 'string' ? date : null)
       if (d !== null && d <= 7) n += 1
     }
   }

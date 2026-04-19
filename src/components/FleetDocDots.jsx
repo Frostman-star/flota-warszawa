@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { tierForExpiry, tierForServiceDot } from '../utils/documents'
 
 /**
@@ -6,22 +7,21 @@ import { tierForExpiry, tierForServiceDot } from '../utils/documents'
  */
 export function FleetDocDots({ car }) {
   const { t } = useTranslation()
+  const insDate = effectiveInsuranceExpiryIso(car)
   const keys = [
-    { k: 'oc_expiry', label: 'OC', service: false },
-    { k: 'ac_expiry', label: 'AC', service: false },
-    { k: 'przeglad_expiry', label: t('fleetDoc.abbrPrz'), service: false },
-    { k: 'last_service_date', label: t('fleetDoc.abbrSvc'), service: true },
+    { date: insDate, label: t('fleetDoc.abbrIns'), service: false },
+    { date: car.przeglad_expiry, label: t('fleetDoc.abbrPrz'), service: false },
+    { date: car.last_service_date, label: t('fleetDoc.abbrSvc'), service: true },
   ]
   return (
     <div className="fleet-dots fleet-doc-dots-mobile" title={t('fleetDoc.legend')}>
-      {keys.map(({ k, label, service }, idx) => {
-        const date = car[k]
+      {keys.map(({ date, label, service }, idx) => {
         const tier = service
           ? tierForServiceDot(typeof date === 'string' ? date : null)
           : tierForExpiry(typeof date === 'string' ? date : null)
         const cls = tier ? `tier-bg-${tier}` : 'doc-dot-none'
         return (
-          <span key={k} className="fleet-doc-dot-item">
+          <span key={`${label}-${idx}`} className="fleet-doc-dot-item">
             {idx > 0 ? (
               <span className="fleet-doc-dot-sep" aria-hidden="true">
                 ·

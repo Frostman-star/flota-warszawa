@@ -1,4 +1,5 @@
 import i18next from 'i18next'
+import { effectiveInsuranceExpiryIso } from './carInsurance'
 import { daysUntil } from './documents'
 
 /**
@@ -11,9 +12,14 @@ export function collectDocRemindersForCar(car, thresholds) {
   const set = new Set([...thresholds, 0])
   /** @type {Array<{ carId: string, plate: string, docKey: string, label: string, days: number, threshold: number }>} */
   const out = []
-  for (const docKey of ['oc_expiry', 'ac_expiry', 'przeglad_expiry']) {
-    const date = car[docKey]
-    if (typeof date !== 'string' || !date) continue
+  const insuranceDate = effectiveInsuranceExpiryIso(car)
+  const docPairs = [
+    ['insurance_expiry', insuranceDate],
+    ['przeglad_expiry', car.przeglad_expiry],
+  ]
+  for (const [docKey, dateRaw] of docPairs) {
+    const date = typeof dateRaw === 'string' ? dateRaw : ''
+    if (!date) continue
     const days = daysUntil(date)
     if (days === null) continue
     const th = [...set].find((t) => t === days)

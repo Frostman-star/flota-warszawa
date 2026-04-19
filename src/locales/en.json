@@ -116,12 +116,14 @@
     "title": "Marketplace",
     "lead": "Cars available for rent (basic version).",
     "driverHeader": "Available cars — Warsaw",
+    "catalogTitle": "Available cars — Warsaw",
     "driverLead": "Browse listings and contact the fleet.",
     "car": "Car",
     "week": "/ week",
     "weekShort": "week",
     "interest": "I'm interested",
-    "contactCta": "Contact us",
+    "contactCta": "Contact",
+    "contactEmpty": "The owner did not add a phone or Telegram to the listing.",
     "applyCta": "Apply",
     "applicationSentWait": "Application sent ⏳",
     "applyTitle": "Application — {{plate}}",
@@ -214,6 +216,7 @@
     "ok": "OK"
   },
   "docs": {
+    "insurance_expiry": "OC/AC insurance",
     "oc_expiry": "Third-party liability (OC)",
     "ac_expiry": "Comprehensive (AC)",
     "przeglad_expiry": "Technical inspection",
@@ -235,7 +238,8 @@
     "alertHint": "Check upcoming deadlines"
   },
   "fleetDoc": {
-    "legend": "OC · AC · Inspection · Service — colour by days / service",
+    "legend": "OC/AC · Inspection · Service — colour by days / service",
+    "abbrIns": "OC/AC",
     "abbrPrz": "Inspection",
     "abbrSvc": "Service",
     "noTier": "none",
@@ -316,8 +320,7 @@
     "rentPh": "e.g. 800",
     "backBtn": "Back",
     "docHint": "Document dates — you can fill them in later when editing the car.",
-    "ocLabel": "Liability insurance — valid until",
-    "acLabel": "Comprehensive — valid until",
+    "insuranceLabel": "OC/AC insurance — valid until",
     "przLabel": "Technical inspection",
     "svcLabel": "Last service",
     "save": "Save",
@@ -417,8 +420,7 @@
     "mileage": "Mileage (km)",
     "rent": "Weekly rent (PLN)",
     "fines": "Number of fines",
-    "oc": "Liability — expiry date",
-    "ac": "Comprehensive — expiry date",
+    "insurance": "OC/AC insurance — expiry date",
     "prz": "Technical inspection",
     "service": "Last service",
     "notes": "Notes",
@@ -461,8 +463,7 @@
     "statusOptionTaken": "Taken",
     "statusOptionAvailable": "Available",
     "monthlyCostsHeading": "Monthly costs (PLN)",
-    "ocCostMonth": "Liability insurance (OC) per month",
-    "acCostMonth": "Comprehensive (AC) per month",
+    "insuranceCostMonth": "OC/AC insurance cost (per month)",
     "serviceCostMonth": "Last service cost (monthly)",
     "otherCostsMonth": "Other monthly costs"
   },
@@ -498,10 +499,11 @@
     "idleCostCard": "Cars without a driver cost you {{amount}} per month (estimate).",
     "addToMarketplace": "Add to Marketplace",
     "forecastTitle": "Expected costs — next 30 days",
-    "forecastEmpty": "No OC, AC, or technical inspection due in the next 30 days.",
+    "forecastEmpty": "No OC/AC insurance or technical inspection due in the next 30 days.",
     "enterCostHint": "Enter cost",
     "forecastSum": "Estimated total:",
     "docType": {
+      "insurance_oc_ac": "OC/AC insurance",
       "oc": "OC (liability)",
       "ac": "AC (comprehensive)",
       "prz": "Technical inspection"
@@ -522,7 +524,30 @@
     "fullName": "Full name",
     "phone": "Phone",
     "experienceYears": "Experience (years)",
-    "bio": "Short bio / message (optional)"
+    "bio": "Short bio / message (optional)",
+    "avatarUploadAria": "Upload profile photo",
+    "avatarPlaceholder": "+",
+    "avatarHint": "Tap to add a photo from your gallery or camera.",
+    "genderLabel": "Gender",
+    "gender": {
+      "male": "Male",
+      "female": "Female"
+    },
+    "birthYear": "Year of birth",
+    "ageDisplay": "Age: {{age}}",
+    "polandStatusLabel": "Legal status in Poland",
+    "polandStatus": {
+      "karta_pobytu": "Residence card (karta pobytu)",
+      "eu_passport": "EU passport / EU citizen",
+      "visa": "Visa",
+      "work_permit": "Work permit (zezwolenie na pracę)",
+      "other": "Other"
+    },
+    "docPhotoButton": "Add document photo",
+    "docPhotoVisibility": "The photo is only visible to the fleet owner after your application is accepted.",
+    "previewTitle": "Profile card preview (what the owner sees)",
+    "previewHint": "After saving, your data will update in applications.",
+    "docVerifiedTitle": "Document photo uploaded"
   },
   "driverApplications": {
     "title": "My applications",

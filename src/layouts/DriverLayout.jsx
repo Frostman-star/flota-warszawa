@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { AppLayout } from '../components/AppLayout'
 import { DriverMobileBottomNav } from '../components/DriverMobileBottomNav'
+import { MobileBottomNav } from '../components/MobileBottomNav'
 import { useAuth } from '../context/AuthContext'
 import { useCars } from '../hooks/useCars'
 
@@ -27,6 +28,7 @@ export function DriverLayout() {
         extraTopLinkLabel={extraTopLinkLabel}
       />
       {isDriver ? <DriverMobileBottomNav /> : null}
+      {isAdmin && !isDriver ? <MobileBottomNav /> : null}
     </>
   )
 }

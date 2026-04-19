@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { shouldUseLegacyAssignedDriverColumn, toLegacyCarWritePayload } from '../utils/carDriverSchema'
+import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { Modal } from './Modal'
 import { MarketplaceListingFields } from './MarketplaceListingFields'
 
@@ -14,8 +15,7 @@ const emptyForm = {
   mileage_km: '0',
   weekly_rent_pln: '0',
   fines_count: '0',
-  oc_expiry: '',
-  ac_expiry: '',
+  insurance_expiry: '',
   przeglad_expiry: '',
   last_service_date: '',
   notes: '',
@@ -34,8 +34,7 @@ const emptyForm = {
   min_rental_months: '1',
   owner_phone: '',
   owner_telegram: '',
-  oc_cost: '0',
-  ac_cost: '0',
+  insurance_cost: '0',
   service_cost: '0',
   other_costs: '0',
 }
@@ -67,8 +66,12 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         mileage_km: String(car.mileage_km ?? '0'),
         weekly_rent_pln: String(car.weekly_rent_pln ?? '0'),
         fines_count: String(car.fines_count ?? '0'),
-        oc_expiry: car.oc_expiry ? String(car.oc_expiry) : '',
-        ac_expiry: car.ac_expiry ? String(car.ac_expiry) : '',
+        insurance_expiry: (() => {
+          const raw = car.insurance_expiry ? String(car.insurance_expiry) : ''
+          if (raw) return raw
+          const eff = effectiveInsuranceExpiryIso(car)
+          return eff ? String(eff) : ''
+        })(),
         przeglad_expiry: car.przeglad_expiry ? String(car.przeglad_expiry) : '',
         last_service_date: car.last_service_date ? String(car.last_service_date) : '',
         notes: String(car.notes ?? ''),
@@ -89,8 +92,11 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         min_rental_months: String(car.min_rental_months ?? '1'),
         owner_phone: String(car.owner_phone ?? ''),
         owner_telegram: String(car.owner_telegram ?? ''),
-        oc_cost: String(car.oc_cost ?? '0'),
-        ac_cost: String(car.ac_cost ?? '0'),
+        insurance_cost: (() => {
+          if (car.insurance_cost != null && car.insurance_cost !== '') return String(car.insurance_cost)
+          const sum = Number(car.oc_cost ?? 0) + Number(car.ac_cost ?? 0)
+          return String(sum || '0')
+        })(),
         service_cost: String(car.service_cost ?? '0'),
         other_costs: String(car.other_costs ?? '0'),
       })
@@ -155,6 +161,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
           owner_telegram: (form.owner_telegram || '').trim() || null,
         }
       : {}
+    const ins = form.insurance_expiry || null
     const payload = {
       plate_number: form.plate_number.trim(),
       model: form.model.trim(),
@@ -165,8 +172,9 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       mileage_km: Number(form.mileage_km) || 0,
       weekly_rent_pln: Number(form.weekly_rent_pln) || 0,
       fines_count: Number(form.fines_count) || 0,
-      oc_expiry: form.oc_expiry || null,
-      ac_expiry: form.ac_expiry || null,
+      insurance_expiry: ins,
+      oc_expiry: ins,
+      ac_expiry: ins,
       przeglad_expiry: form.przeglad_expiry || null,
       last_service_date: form.last_service_date || null,
       notes: form.notes,
@@ -176,8 +184,9 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       marketplace_status: listed ? 'dostepne' : 'zajete',
       ...(editing
         ? {
-            oc_cost: Number(form.oc_cost) || 0,
-            ac_cost: Number(form.ac_cost) || 0,
+            insurance_cost: Number(form.insurance_cost) || 0,
+            oc_cost: 0,
+            ac_cost: 0,
             service_cost: Number(form.service_cost) || 0,
             other_costs: Number(form.other_costs) || 0,
           }
@@ -275,8 +284,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         {field('mileage_km', t('carForm.mileage'), 'number', { min: 0, step: 1 })}
         {field('weekly_rent_pln', t('carForm.rent'), 'number', { min: 0, step: 0.01 })}
         {field('fines_count', t('carForm.fines'), 'number', { min: 0, step: 1 })}
-        {field('oc_expiry', t('carForm.oc'), 'date')}
-        {field('ac_expiry', t('carForm.ac'), 'date')}
+        {field('insurance_expiry', t('carForm.insurance'), 'date')}
         {field('przeglad_expiry', t('carForm.prz'), 'date')}
         {field('last_service_date', t('carForm.service'), 'date')}
         {field('notes', t('carForm.notes'), 'textarea', { rows: 4 })}
@@ -299,8 +307,7 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
             <div className="field-span-heading">
               <h3 className="stats-form-cost-heading">{t('carForm.monthlyCostsHeading')}</h3>
             </div>
-            {field('oc_cost', t('carForm.ocCostMonth'), 'number', { min: 0, step: 1 })}
-            {field('ac_cost', t('carForm.acCostMonth'), 'number', { min: 0, step: 1 })}
+            {field('insurance_cost', t('carForm.insuranceCostMonth'), 'number', { min: 0, step: 1 })}
             {field('service_cost', t('carForm.serviceCostMonth'), 'number', { min: 0, step: 1 })}
             {field('other_costs', t('carForm.otherCostsMonth'), 'number', { min: 0, step: 1 })}
           </>

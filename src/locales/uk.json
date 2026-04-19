@@ -116,12 +116,14 @@
     "title": "Marketplace",
     "lead": "Доступні авто для оренди (базова версія).",
     "driverHeader": "Доступні авто — Варшава",
+    "catalogTitle": "Доступні авто — Варшава",
     "driverLead": "Переглядайте оголошення та зв’яжіться з автопарком.",
     "car": "Авто",
     "week": "/ тиждень",
     "weekShort": "тиждень",
     "interest": "Я зацікавлений",
-    "contactCta": "Зв’язатися",
+    "contactCta": "Контакт",
+    "contactEmpty": "Власник не вказав телефон чи Telegram в оголошенні.",
     "applyCta": "Подати заявку",
     "applicationSentWait": "Заявку надіслано ⏳",
     "applyTitle": "Заявка — {{plate}}",
@@ -214,6 +216,7 @@
     "ok": "OK"
   },
   "docs": {
+    "insurance_expiry": "Страхування OC/AC",
     "oc_expiry": "ОСЦП (OC)",
     "ac_expiry": "КАСКО (AC)",
     "przeglad_expiry": "Техогляд",
@@ -235,7 +238,8 @@
     "alertHint": "Потрібно перевірити терміни"
   },
   "fleetDoc": {
-    "legend": "OC · AC · Огляд · Сервіс — колір за днями / сервісом",
+    "legend": "OC/AC · Огляд · Сервіс — колір за днями / сервісом",
+    "abbrIns": "OC/AC",
     "abbrPrz": "Огляд",
     "abbrSvc": "Сервіс",
     "noTier": "немає",
@@ -316,8 +320,7 @@
     "rentPh": "напр. 800",
     "backBtn": "Назад",
     "docHint": "Дати документів — можна доповнити пізніше в редагуванні авто.",
-    "ocLabel": "OC — дійсне до",
-    "acLabel": "AC — дійсне до",
+    "insuranceLabel": "Страхування OC/AC — дійсне до",
     "przLabel": "Техогляд",
     "svcLabel": "Останній сервіс",
     "save": "Зберегти",
@@ -417,8 +420,7 @@
     "mileage": "Пробіг (км)",
     "rent": "Тижнева оренда (PLN)",
     "fines": "Кількість штрафів",
-    "oc": "OC — дата закінчення",
-    "ac": "AC — дата закінчення",
+    "insurance": "Страхування OC/AC — дата закінчення",
     "prz": "Техогляд",
     "service": "Останній сервіс",
     "notes": "Нотатки",
@@ -461,8 +463,7 @@
     "statusOptionTaken": "Зайняте",
     "statusOptionAvailable": "Доступне",
     "monthlyCostsHeading": "Щомісячні витрати (PLN)",
-    "ocCostMonth": "OC на місяць",
-    "acCostMonth": "AC на місяць",
+    "insuranceCostMonth": "Вартість страхування OC/AC (на місяць)",
     "serviceCostMonth": "Вартість останнього сервісу",
     "otherCostsMonth": "Інші щомісячні витрати"
   },
@@ -498,10 +499,11 @@
     "idleCostCard": "Авто без водія коштують вам близько {{amount}} на місяць (оцінка).",
     "addToMarketplace": "Додати на Marketplace",
     "forecastTitle": "Прогноз витрат — наступні 30 днів",
-    "forecastEmpty": "Немає ОСЦ, КАСКО чи техогляду в найближчі 30 днів.",
+    "forecastEmpty": "Немає страхування OC/AC чи техогляду в найближчі 30 днів.",
     "enterCostHint": "Вкажіть вартість",
     "forecastSum": "Орієнтовна сума:",
     "docType": {
+      "insurance_oc_ac": "Страхування OC/AC",
       "oc": "ОСЦ (ЦВ)",
       "ac": "КАСКО",
       "prz": "Техогляд"
@@ -522,7 +524,30 @@
     "fullName": "Ім’я та прізвище",
     "phone": "Телефон",
     "experienceYears": "Стаж (роки)",
-    "bio": "Коротке повідомлення / біо (необов’язково)"
+    "bio": "Коротке повідомлення / біо (необов’язково)",
+    "avatarUploadAria": "Завантажити фото профілю",
+    "avatarPlaceholder": "+",
+    "avatarHint": "Торкніться, щоб додати фото з галереї або камери.",
+    "genderLabel": "Стать",
+    "gender": {
+      "male": "Чоловік",
+      "female": "Жінка"
+    },
+    "birthYear": "Рік народження",
+    "ageDisplay": "Вік: {{age}} років",
+    "polandStatusLabel": "Правовий статус у Польщі",
+    "polandStatus": {
+      "karta_pobytu": "Karta pobytu (карта побуту)",
+      "eu_passport": "Paszport UE (паспорт ЄС / громадянин ЄС)",
+      "visa": "Wiza (віза)",
+      "work_permit": "Zezwolenie na pracę (дозвіл на роботу)",
+      "other": "Inne (інше)"
+    },
+    "docPhotoButton": "Додати фото документа",
+    "docPhotoVisibility": "Фото видно лише власнику автопарку після прийняття заявки.",
+    "previewTitle": "Попередній перегляд картки (так вас бачить власник)",
+    "previewHint": "Після збереження профілю дані оновляться у заявках.",
+    "docVerifiedTitle": "Додано фото документа"
   },
   "driverApplications": {
     "title": "Мої заявки",

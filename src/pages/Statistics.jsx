@@ -3,6 +3,7 @@ import { Link, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { localeTag } from '../utils/localeTag'
+import { effectiveInsuranceExpiryIso, monthlyInsuranceCostPln } from '../utils/carInsurance'
 import { daysUntil, parseLocalDate } from '../utils/documents'
 
 function num(v) {
@@ -15,7 +16,7 @@ function monthlyIncome(car) {
 }
 
 function monthlyCosts(car) {
-  return num(car.oc_cost) + num(car.ac_cost) + num(car.service_cost) + num(car.other_costs)
+  return monthlyInsuranceCostPln(car) + num(car.service_cost) + num(car.other_costs)
 }
 
 function netProfit(car) {
@@ -61,23 +62,20 @@ function activeWeeklyRentTotal(carsList) {
 function collectUpcomingDocCosts(carsList, t) {
   /** @type {Array<{ plate: string, docKey: string, docLabel: string, date: string, cost: number, missing: boolean }>} */
   const out = []
-  const defs = [
-    { expiryKey: 'oc_expiry', costKey: 'oc_cost', docKey: 'oc' },
-    { expiryKey: 'ac_expiry', costKey: 'ac_cost', docKey: 'ac' },
-    { expiryKey: 'przeglad_expiry', costKey: 'service_cost', docKey: 'prz' },
-  ]
+  const defs = [{ kind: 'insurance' }, { expiryKey: 'przeglad_expiry', costKey: 'service_cost', docKey: 'prz' }]
   for (const car of carsList) {
     const plate = String(car.plate_number ?? '—')
     for (const def of defs) {
-      const date = car[def.expiryKey]
+      const date = def.kind === 'insurance' ? effectiveInsuranceExpiryIso(car) : car[def.expiryKey]
       if (typeof date !== 'string' || !date) continue
       const d = daysUntil(date)
       if (d === null || d < 0 || d > 30) continue
-      const cost = num(car[def.costKey])
+      const cost = def.kind === 'insurance' ? monthlyInsuranceCostPln(car) : num(car[def.costKey])
+      const docKey = def.kind === 'insurance' ? 'insurance_oc_ac' : def.docKey
       out.push({
         plate,
-        docKey: def.docKey,
-        docLabel: t(`stats.docType.${def.docKey}`),
+        docKey,
+        docLabel: t(`stats.docType.${docKey}`),
         date,
         cost,
         missing: cost <= 0,

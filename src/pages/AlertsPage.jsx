@@ -27,7 +27,7 @@ export function AlertsPage() {
       ) : (
         <ul className="alert-card-list">
           {rows.map((r) => (
-            <li key={`${r.carId}-${r.docLabel}-${r.date}`}>
+            <li key={`${r.carId}-${r.docKey}-${r.date}`}>
               <Link to={carPath(r.carId, true)} className={`alert-big-card tier-border-${r.tier}`}>
                 <div className="alert-big-top"><span className={`alert-dot tier-bg-${r.tier}`} aria-hidden /><span className="alert-plate">{r.plate}</span></div>
                 <p className="alert-doc">{r.docLabel}</p>

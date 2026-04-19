@@ -10,13 +10,15 @@ import { useDrivers } from '../hooks/useDrivers'
 import { useAuth } from '../context/AuthContext'
 import { localeTag } from '../utils/localeTag'
 import { tierForExpiry, tierForServiceDot } from '../utils/documents'
+import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 
 function isAllOk(car) {
   const parts = []
-  for (const key of ['oc_expiry', 'ac_expiry', 'przeglad_expiry']) {
-    const t = tierForExpiry(car[key])
-    if (t) parts.push(t)
-  }
+  const ins = effectiveInsuranceExpiryIso(car)
+  const ti = tierForExpiry(typeof ins === 'string' ? ins : null)
+  if (ti) parts.push(ti)
+  const tp = tierForExpiry(typeof car.przeglad_expiry === 'string' ? car.przeglad_expiry : null)
+  if (tp) parts.push(tp)
   const st = tierForServiceDot(typeof car.last_service_date === 'string' ? car.last_service_date : null)
   if (st) parts.push(st)
   if (!parts.length) return false

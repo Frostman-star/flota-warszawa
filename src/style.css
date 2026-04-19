@@ -2842,12 +2842,159 @@ tr.tier-row-none td:first-child {
   min-width: 28%;
   min-height: 56px;
 }
+
+.mob-nav--seven {
+  flex-wrap: wrap;
+  row-gap: 0.25rem;
+}
+.mob-nav--seven .mob-nav-item {
+  flex: 1 1 28%;
+  min-width: 26%;
+  min-height: 56px;
+}
 .mob-nav--driver .mob-nav-item {
   min-height: 56px;
 }
 .mob-nav-item--badge-wrap {
   position: relative;
 }
+.driver-avatar-hint {
+  text-align: center;
+}
+.driver-avatar-hit {
+  display: block;
+  margin: 0 auto 0.5rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+}
+.driver-avatar-lg {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  border: 3px solid var(--border, #ddd);
+}
+.driver-avatar-lg--ph {
+  display: grid;
+  place-items: center;
+  background: var(--surface-2, #f0f0f0);
+  color: var(--muted, #666);
+  font-size: 2rem;
+  font-weight: 700;
+}
+.driver-gender-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.driver-poland-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.driver-radio-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+.driver-doc-upload-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+.driver-doc-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border, #ddd);
+}
+.driver-preview-section {
+  margin-top: 1.5rem;
+}
+.driver-preview-title {
+  font-size: 1.1rem;
+  margin: 0 0 0.35rem;
+}
+.driver-profile-card {
+  border: 1px solid var(--border, #e0e0e0);
+  border-radius: 12px;
+  padding: 1rem;
+  background: var(--card, #fff);
+}
+.driver-profile-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.driver-profile-card-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.driver-profile-card-avatar--ph {
+  display: grid;
+  place-items: center;
+  background: var(--surface-2, #eee);
+  font-weight: 700;
+  color: var(--muted, #666);
+}
+.driver-profile-card-name {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.driver-profile-card-meta {
+  margin: 0.15rem 0 0;
+}
+.driver-profile-doc-check {
+  color: var(--green, #2a9d3a);
+  font-weight: 800;
+}
+.driver-profile-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+.driver-poland-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  color: #fff;
+}
+.driver-poland-badge--eu {
+  background: #2a9d3a;
+}
+.driver-poland-badge--karta {
+  background: #1d6fb8;
+}
+.driver-poland-badge--visa {
+  background: #c9a227;
+  color: #1a1a1a;
+}
+.driver-poland-badge--work {
+  background: #6b5b95;
+}
+.driver-poland-badge--other {
+  background: #666;
+}
+.owner-app-driver-card {
+  margin-bottom: 0.75rem;
+}
+.owner-app-card-phone-row {
+  justify-content: flex-start;
+  margin-bottom: 0.5rem;
+}
+
 .mob-nav-item-badge {
   position: absolute;
   top: 2px;

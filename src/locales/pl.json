@@ -116,12 +116,14 @@
     "title": "Marketplace",
     "lead": "Auta dostępne do wynajmu (wersja podstawowa).",
     "driverHeader": "Dostępne auta — Warszawa",
+    "catalogTitle": "Dostępne auta — Warszawa",
     "driverLead": "Przeglądaj oferty i skontaktuj się z flotą.",
     "car": "Auto",
     "week": "/ tydzień",
     "weekShort": "tydzień",
     "interest": "Jestem zainteresowany",
-    "contactCta": "Skontaktuj się",
+    "contactCta": "Kontakt",
+    "contactEmpty": "Właściciel nie podał telefonu ani Telegramu w ogłoszeniu.",
     "applyCta": "Złóż wniosek",
     "applicationSentWait": "Wniosek wysłany ⏳",
     "applyTitle": "Wniosek — {{plate}}",
@@ -214,6 +216,7 @@
     "ok": "OK"
   },
   "docs": {
+    "insurance_expiry": "Ubezpieczenie OC/AC",
     "oc_expiry": "OC (NNW)",
     "ac_expiry": "AC (Autocasco)",
     "przeglad_expiry": "Przegląd techniczny",
@@ -235,7 +238,8 @@
     "alertHint": "Wymagana uwaga na terminy"
   },
   "fleetDoc": {
-    "legend": "OC · AC · Przegląd · Serwis — kolor wg dni / serwisu",
+    "legend": "OC/AC · Przegląd · Serwis — kolor wg dni / serwisu",
+    "abbrIns": "OC/AC",
     "abbrPrz": "Przegląd",
     "abbrSvc": "Serwis",
     "noTier": "brak",
@@ -316,8 +320,7 @@
     "rentPh": "np. 800",
     "backBtn": "Wstecz",
     "docHint": "Daty dokumentów — możesz uzupełnić później w edycji auta.",
-    "ocLabel": "OC — ważne do",
-    "acLabel": "AC — ważne do",
+    "insuranceLabel": "Ubezpieczenie OC/AC — ważne do",
     "przLabel": "Przegląd techniczny",
     "svcLabel": "Ostatni serwis",
     "save": "Zapisz",
@@ -417,8 +420,7 @@
     "mileage": "Przebieg (km)",
     "rent": "Czynsz tygodniowy (PLN)",
     "fines": "Liczba mandatów",
-    "oc": "OC — data ważności",
-    "ac": "AC — data ważności",
+    "insurance": "Ubezpieczenie OC/AC — data ważności",
     "prz": "Przegląd techniczny",
     "service": "Ostatni serwis",
     "notes": "Notatki",
@@ -461,8 +463,7 @@
     "statusOptionTaken": "Zajęte",
     "statusOptionAvailable": "Dostępne",
     "monthlyCostsHeading": "Miesięczne koszty (PLN)",
-    "ocCostMonth": "OC miesięcznie",
-    "acCostMonth": "AC miesięcznie",
+    "insuranceCostMonth": "Koszt ubezpieczenia OC/AC (miesięcznie)",
     "serviceCostMonth": "Ostatni serwis (koszt)",
     "otherCostsMonth": "Inne koszty miesięczne"
   },
@@ -498,10 +499,11 @@
     "idleCostCard": "Auta bez kierowcy kosztują Cię {{amount}} miesięcznie",
     "addToMarketplace": "Dodaj do Marketplace",
     "forecastTitle": "Przewidywane koszty — następne 30 dni",
-    "forecastEmpty": "Brak OC, AC lub przeglądu w ciągu najbliższych 30 dni.",
+    "forecastEmpty": "Brak ubezpieczenia OC/AC lub przeglądu w ciągu najbliższych 30 dni.",
     "enterCostHint": "Wpisz koszt",
     "forecastSum": "Szacowany sumaryczny koszt:",
     "docType": {
+      "insurance_oc_ac": "Ubezpieczenie OC/AC",
       "oc": "OC",
       "ac": "AC",
       "prz": "Przegląd techniczny"
@@ -522,7 +524,30 @@
     "fullName": "Imię i nazwisko",
     "phone": "Telefon",
     "experienceYears": "Staż (lata)",
-    "bio": "Krótka wiadomość / bio (opcjonalnie)"
+    "bio": "Krótka wiadomość / bio (opcjonalnie)",
+    "avatarUploadAria": "Wgraj zdjęcie profilowe",
+    "avatarPlaceholder": "+",
+    "avatarHint": "Dotknij, aby dodać zdjęcie z galerii lub aparatu.",
+    "genderLabel": "Płeć",
+    "gender": {
+      "male": "Mężczyzna",
+      "female": "Kobieta"
+    },
+    "birthYear": "Rok urodzenia",
+    "ageDisplay": "Wiek: {{age}} lata",
+    "polandStatusLabel": "Status prawny w Polsce",
+    "polandStatus": {
+      "karta_pobytu": "Karta pobytu (карта побуту)",
+      "eu_passport": "Paszport UE (паспорт ЄС / громадянин ЄС)",
+      "visa": "Wiza (віза)",
+      "work_permit": "Zezwolenie na pracę (дозвіл на роботу)",
+      "other": "Inne (інше)"
+    },
+    "docPhotoButton": "Dodaj zdjęcie dokumentu",
+    "docPhotoVisibility": "Zdjęcie jest widoczne tylko dla właściciela floty po przyjęciu wniosku.",
+    "previewTitle": "Podgląd karty (tak widzi Cię właściciel)",
+    "previewHint": "Po zapisaniu profilu dane zostaną zaktualizowane we wnioskach.",
+    "docVerifiedTitle": "Dodano zdjęcie dokumentu"
   },
   "driverApplications": {
     "title": "Moje wnioski",
