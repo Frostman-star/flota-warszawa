@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { normalizeProfileRole } from '../utils/profileRole'
 
 /** @typedef {'admin' | 'driver' | 'owner'} UserRole */
 
@@ -15,17 +16,25 @@ export function AuthProvider({ children }) {
       setProfile(null)
       return
     }
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, email, full_name, role')
-      .eq('id', userId)
-      .maybeSingle()
-    if (error) {
-      console.error(error)
-      setProfile(null)
-      return
+    const delaysMs = [0, 200, 400, 700]
+    for (let i = 0; i < delaysMs.length; i++) {
+      if (delaysMs[i] > 0) await new Promise((r) => setTimeout(r, delaysMs[i]))
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, email, full_name, role')
+        .eq('id', userId)
+        .maybeSingle()
+      if (error) {
+        console.error(error)
+        setProfile(null)
+        return
+      }
+      if (data) {
+        setProfile(data)
+        return
+      }
     }
-    setProfile(data)
+    setProfile(null)
   }, [])
 
   useEffect(() => {
@@ -114,10 +123,10 @@ export function AuthProvider({ children }) {
   }, [loadProfile, session?.user?.id])
 
   const value = useMemo(() => {
-    const roleLower = String(profile?.role ?? '').toLowerCase()
-    const isDriver = roleLower === 'driver'
-    // UI / routing: tylko jawny „driver” idzie na marketplace. Brak wiersza profiles lub brak roli → jak właściciel (/panel).
-    const isAdmin = Boolean(session) && !isDriver
+    const roleNorm = normalizeProfileRole(profile?.role)
+    const isDriver = roleNorm === 'driver'
+    // Panel / flota: owner i admin (legacy) — jak w public.is_admin(). Tylko jawny „driver” = marketplace / widok kierowcy.
+    const isAdmin = Boolean(session?.user) && roleNorm !== 'driver'
     return {
       session,
       user: session?.user ?? null,

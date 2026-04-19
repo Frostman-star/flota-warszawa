@@ -1,10 +1,11 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { normalizeProfileRole } from '../utils/profileRole'
 
 export function HomeRedirect() {
   const { session, loading, role } = useAuth()
-  const roleLower = String(role ?? '').toLowerCase()
+  const roleNorm = normalizeProfileRole(role)
 
   if (!loading && !session) {
     return <Navigate to="/login" replace />
@@ -18,7 +19,7 @@ export function HomeRedirect() {
     )
   }
 
-  if (roleLower === 'driver') {
+  if (roleNorm === 'driver') {
     return <Navigate to="/marketplace" replace />
   }
 

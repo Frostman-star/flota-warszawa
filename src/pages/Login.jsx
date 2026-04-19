@@ -2,13 +2,14 @@
 import { Link, Navigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
+import { normalizeProfileRole } from '../utils/profileRole'
 
 /** @param {string | null | undefined} profileRole */
 function postLoginPath(profileRole, fromState) {
-  const roleLower = String(profileRole ?? '').toLowerCase()
-  const fallback = roleLower === 'driver' ? '/marketplace' : '/panel'
+  const roleNorm = normalizeProfileRole(profileRole)
+  const fallback = roleNorm === 'driver' ? '/marketplace' : '/panel'
   if (!fromState || fromState === '/login') return fallback
-  if (roleLower === 'driver' && /^\/(panel|dodaj|flota|alerty|ustawienia)(\/|$)/.test(fromState)) return fallback
+  if (roleNorm === 'driver' && /^\/(panel|dodaj|flota|alerty|ustawienia)(\/|$)/.test(fromState)) return fallback
   return fromState
 }
 
