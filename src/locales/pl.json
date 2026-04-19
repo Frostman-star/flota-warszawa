@@ -286,7 +286,31 @@
     "idleCars": "Auta bez kierowcy:",
     "estimatedLostIncome": "Szac. utracony przychód / mies.:",
     "chartTitle": "Marża zysku (słupki)",
-    "chartHint": "Szerokość słupka = marża % (ujemne — krótki czerwony pasek)."
+    "chartHint": "Szerokość słupka = marża % (ujemne — krótki czerwony pasek).",
+    "trendAria": "Trend dochodów tygodniowych",
+    "trendTitle": "Trend dochodów — ostatnie 8 tygodni",
+    "trendNote": "Każdy słupek = aktualna suma czynszu tygodniowego aut z przypisanym kierowcą (brak historii tygodniowej w bazie).",
+    "trendYLabel": "Dochód (PLN / tydzień)",
+    "weekShort": "Tydz {{n}}",
+    "trendAvgLine": "Średni dochód tygodniowy: {{value}}",
+    "trendCurrentWeekly": "Auta aktywne — suma tygodniowa: {{value}}",
+    "idleCostCard": "Auta bez kierowcy kosztują Cię {{amount}} miesięcznie",
+    "addToMarketplace": "Dodaj do Marketplace",
+    "forecastTitle": "Przewidywane koszty — następne 30 dni",
+    "forecastEmpty": "Brak OC, AC lub przeglądu w ciągu najbliższych 30 dni.",
+    "enterCostHint": "Wpisz koszt",
+    "forecastSum": "Szacowany sumaryczny koszt:",
+    "docType": {
+      "oc": "OC",
+      "ac": "AC",
+      "prz": "Przegląd techniczny"
+    },
+    "insightsTitle": "Szybkie wskazówki",
+    "insightsEmpty": "Brak wskazówek dla obecnych danych.",
+    "insightNoCost": "⚠️ {{plate}} — brak danych kosztowych. Uzupełnij koszty aby zobaczyć rentowność.",
+    "insightIdle": "💡 Masz {{n}} aut bez kierowcy. Dodaj je do Marketplace i zarabiaj dodatkowe {{amount}}/mies.",
+    "insightLowMargin": "🔴 {{plate}} ma niską marżę {{pct}}%. Rozważ podwyżkę czynszu lub redukcję kosztów.",
+    "insightAllProfitable": "🎉 Wszystkie auta generują zysk! Świetne zarządzanie flotą."
   },
   "noteModal": {
     "title": "Notatka",

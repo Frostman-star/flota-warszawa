@@ -286,7 +286,31 @@
     "idleCars": "Idle cars (no driver):",
     "estimatedLostIncome": "Estimated lost income / month:",
     "chartTitle": "Profit margin (bars)",
-    "chartHint": "Bar width reflects margin % (negative margins show as short red bars)."
+    "chartHint": "Bar width reflects margin % (negative margins show as short red bars).",
+    "trendAria": "Weekly income trend",
+    "trendTitle": "Income trend — last 8 weeks",
+    "trendNote": "Each column uses the current fleet: sum of weekly rent for cars with a driver (no historical data yet).",
+    "trendYLabel": "Income (PLN / week)",
+    "weekShort": "Wk {{n}}",
+    "trendAvgLine": "Average weekly income: {{value}}",
+    "trendCurrentWeekly": "Active cars — weekly total: {{value}}",
+    "idleCostCard": "Cars without a driver cost you {{amount}} per month (estimate).",
+    "addToMarketplace": "Add to Marketplace",
+    "forecastTitle": "Expected costs — next 30 days",
+    "forecastEmpty": "No OC, AC, or technical inspection due in the next 30 days.",
+    "enterCostHint": "Enter cost",
+    "forecastSum": "Estimated total:",
+    "docType": {
+      "oc": "OC (liability)",
+      "ac": "AC (comprehensive)",
+      "prz": "Technical inspection"
+    },
+    "insightsTitle": "Quick insights",
+    "insightsEmpty": "No tips for the current data.",
+    "insightNoCost": "⚠️ {{plate}} — no cost data. Fill in costs to see profitability.",
+    "insightIdle": "💡 You have {{n}} car(s) without a driver. List them on the Marketplace and earn about {{amount}}/month extra.",
+    "insightLowMargin": "🔴 {{plate}} has a low margin ({{pct}}%). Consider raising rent or cutting costs.",
+    "insightAllProfitable": "🎉 All cars are profitable — great fleet management."
   },
   "noteModal": {
     "title": "Note",
