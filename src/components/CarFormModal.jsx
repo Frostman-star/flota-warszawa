@@ -124,16 +124,29 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
     }
 
     try {
+      const {
+        data: { user: authUser },
+        error: authErr,
+      } = await supabase.auth.getUser()
+      if (authErr) throw authErr
+      if (!authUser?.id) throw new Error('Brak sesji')
+
       if (editing) {
-        let { error: upErr } = await supabase.from('cars').update(payload).eq('id', car.id)
+        let up = supabase.from('cars').update(payload).eq('id', car.id).eq('owner_id', authUser.id)
+        let { error: upErr } = await up
         if (upErr && shouldUseLegacyAssignedDriverColumn(upErr)) {
-          ;({ error: upErr } = await supabase.from('cars').update(toLegacyCarWritePayload(payload)).eq('id', car.id))
+          ;({ error: upErr } = await supabase
+            .from('cars')
+            .update(toLegacyCarWritePayload(payload))
+            .eq('id', car.id)
+            .eq('owner_id', authUser.id))
         }
         if (upErr) throw upErr
       } else {
-        let { error: insErr } = await supabase.from('cars').insert(payload)
+        const insertPayload = { ...payload, owner_id: authUser.id }
+        let { error: insErr } = await supabase.from('cars').insert(insertPayload)
         if (insErr && shouldUseLegacyAssignedDriverColumn(insErr)) {
-          ;({ error: insErr } = await supabase.from('cars').insert(toLegacyCarWritePayload(payload)))
+          ;({ error: insErr } = await supabase.from('cars').insert(toLegacyCarWritePayload(insertPayload)))
         }
         if (insErr) throw insErr
       }

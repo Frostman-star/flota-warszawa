@@ -52,10 +52,10 @@ const CAR_SELECT_LEGACY = `
       `
 
 /**
- * @param {{ enabled?: boolean }} [opts]
+ * @param {{ enabled?: boolean, ownerId?: string | null }} [opts]
  */
 export function useCars(opts = {}) {
-  const { enabled = true } = opts
+  const { enabled = true, ownerId = null } = opts
   const [cars, setCars] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -69,10 +69,13 @@ export function useCars(opts = {}) {
     setLoading(true)
     setError(null)
     let q = supabase.from('cars').select(CAR_SELECT_NEW).order('plate_number', { ascending: true })
+    if (ownerId) q = q.eq('owner_id', ownerId)
     let { data, error: qErr } = await q
 
     if (qErr && shouldUseLegacyAssignedDriverColumn(qErr)) {
-      const r2 = await supabase.from('cars').select(CAR_SELECT_LEGACY).order('plate_number', { ascending: true })
+      let r2q = supabase.from('cars').select(CAR_SELECT_LEGACY).order('plate_number', { ascending: true })
+      if (ownerId) r2q = r2q.eq('owner_id', ownerId)
+      const r2 = await r2q
       data = r2.data
       qErr = r2.error
     }
@@ -84,7 +87,7 @@ export function useCars(opts = {}) {
       setCars((data ?? []).map((row) => normalizeCarRow(row)))
     }
     setLoading(false)
-  }, [enabled])
+  }, [enabled, ownerId])
 
   useEffect(() => {
     refresh()
@@ -95,10 +98,10 @@ export function useCars(opts = {}) {
 
 /**
  * @param {string | null} carId
- * @param {{ userId?: string | null }} [opts]
+ * @param {{ userId?: string | null, ownerId?: string | null }} [opts]
  */
 export function useCar(carId, opts = {}) {
-  const { userId } = opts
+  const { userId, ownerId } = opts
   const [car, setCar] = useState(null)
   const [loading, setLoading] = useState(!!carId)
   const [error, setError] = useState(null)
@@ -115,6 +118,7 @@ export function useCar(carId, opts = {}) {
     async function fetchOne(selectStr, driverEqKey) {
       let q = supabase.from('cars').select(selectStr).eq('id', carId)
       if (userId) q = q.eq(driverEqKey, userId)
+      if (ownerId) q = q.eq('owner_id', ownerId)
       return q.maybeSingle()
     }
 
@@ -137,7 +141,7 @@ export function useCar(carId, opts = {}) {
       setError(null)
     }
     setLoading(false)
-  }, [carId, userId])
+  }, [carId, userId, ownerId])
 
   useEffect(() => {
     refresh()

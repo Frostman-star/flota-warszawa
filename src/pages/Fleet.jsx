@@ -27,8 +27,8 @@ export function Fleet() {
   const { t, i18n } = useTranslation()
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const { cars, loading, error, refresh } = useOutletContext()
-  const { isAdmin } = useAuth()
-  const { drivers } = useDrivers(isAdmin)
+  const { isAdmin, user } = useAuth()
+  const { drivers } = useDrivers(isAdmin, user?.id)
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [q, setQ] = useState('')
@@ -45,7 +45,8 @@ export function Fleet() {
 
   async function handleDelete(car) {
     if (!window.confirm(t('fleet.confirmDelete', { plate: car.plate_number }))) return
-    const { error: delErr } = await supabase.from('cars').delete().eq('id', car.id)
+    if (!user?.id) return
+    const { error: delErr } = await supabase.from('cars').delete().eq('id', car.id).eq('owner_id', user.id)
     if (delErr) return alert(delErr.message)
     refresh?.()
   }

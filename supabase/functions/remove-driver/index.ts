@@ -33,8 +33,9 @@ Deno.serve(async (req) => {
     }
 
     const { data: profile } = await userClient.from('profiles').select('role').eq('id', user.id).maybeSingle()
-    if (profile?.role !== 'admin') {
-      return new Response(JSON.stringify({ error: 'Tylko admin' }), { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } })
+    const role = profile?.role as string | undefined
+    if (role !== 'admin' && role !== 'owner') {
+      return new Response(JSON.stringify({ error: 'Tylko właściciel floty lub admin' }), { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } })
     }
 
     const body = (await req.json()) as { user_id?: string }
@@ -44,7 +45,16 @@ Deno.serve(async (req) => {
     }
 
     const admin = createClient(supabaseUrl, serviceKey, { auth: { autoRefreshToken: false, persistSession: false } })
-    await admin.from('cars').update({ driver_id: null }).eq('driver_id', targetId)
+    const { data: targetProfile, error: targetErr } = await admin.from('profiles').select('id, role, owner_id').eq('id', targetId).maybeSingle()
+    if (targetErr) throw targetErr
+    if (!targetProfile || targetProfile.role !== 'driver') {
+      return new Response(JSON.stringify({ error: 'Nie znaleziono kierowcy' }), { status: 400, headers: { ...cors, 'Content-Type': 'application/json' } })
+    }
+    if (String(targetProfile.owner_id ?? '') !== user.id) {
+      return new Response(JSON.stringify({ error: 'Brak uprawnień do tego kierowcy' }), { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } })
+    }
+
+    await admin.from('cars').update({ driver_id: null }).eq('driver_id', targetId).eq('owner_id', user.id)
 
     const { error } = await admin.auth.admin.deleteUser(targetId)
     if (error) throw error

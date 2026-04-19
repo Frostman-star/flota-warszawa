@@ -6,8 +6,8 @@ import { useCars } from '../hooks/useCars'
 import { useAuth } from '../context/AuthContext'
 
 export function AdminLayout() {
-  const { isAdmin } = useAuth()
-  const { cars, loading, error, refresh } = useCars({ enabled: isAdmin })
+  const { isAdmin, user } = useAuth()
+  const { cars, loading, error, refresh } = useCars({ enabled: isAdmin && Boolean(user?.id), ownerId: user?.id ?? null })
 
   return (
     <>

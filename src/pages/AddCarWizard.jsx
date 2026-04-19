@@ -10,8 +10,8 @@ export function AddCarWizard() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { refresh } = useOutletContext() ?? {}
-  const { isAdmin } = useAuth()
-  const { drivers } = useDrivers(isAdmin)
+  const { isAdmin, user } = useAuth()
+  const { drivers } = useDrivers(isAdmin, user?.id)
   const [step, setStep] = useState(1)
   const [done, setDone] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -30,6 +30,13 @@ export function AddCarWizard() {
     setSaving(true)
     setErr(null)
     try {
+      const {
+        data: { user: authUser },
+        error: authErr,
+      } = await supabase.auth.getUser()
+      if (authErr) throw authErr
+      if (!authUser?.id) throw new Error('Brak sesji')
+
       const row = {
         plate_number: plate.trim(),
         model: model.trim(),
@@ -47,6 +54,7 @@ export function AddCarWizard() {
         notes: '',
         show_in_marketplace: false,
         marketplace_status: 'zajete',
+        owner_id: authUser.id,
       }
       let { error } = await supabase.from('cars').insert(row)
       if (error && shouldUseLegacyAssignedDriverColumn(error)) {

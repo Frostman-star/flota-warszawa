@@ -11,7 +11,7 @@ const DAY_OPTIONS = [30, 14, 7, 3, 1]
 export function Settings() {
   const { t } = useTranslation()
   const { session, user } = useAuth()
-  const { drivers, refresh: refreshDrivers } = useDrivers(true)
+  const { drivers, refresh: refreshDrivers } = useDrivers(true, user?.id)
   const [companyName, setCompanyName] = useState('Flota Warszawa')
   const [emailEnabled, setEmailEnabled] = useState(false)
   const [alertDays, setAlertDays] = useState([30, 14, 7, 3, 1])

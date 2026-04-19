@@ -33,8 +33,9 @@ Deno.serve(async (req) => {
     }
 
     const { data: profile } = await userClient.from('profiles').select('role').eq('id', user.id).maybeSingle()
-    if (profile?.role !== 'admin') {
-      return new Response(JSON.stringify({ error: 'Tylko admin' }), { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } })
+    const role = profile?.role as string | undefined
+    if (role !== 'admin' && role !== 'owner') {
+      return new Response(JSON.stringify({ error: 'Tylko właściciel floty lub admin' }), { status: 403, headers: { ...cors, 'Content-Type': 'application/json' } })
     }
 
     const body = (await req.json()) as { email?: string; password?: string; full_name?: string }
@@ -53,7 +54,11 @@ Deno.serve(async (req) => {
       email,
       password,
       email_confirm: true,
-      user_metadata: { full_name: full_name || email.split('@')[0] },
+      user_metadata: {
+        full_name: full_name || email.split('@')[0],
+        signup_role: 'driver',
+        fleet_owner_id: user.id,
+      },
     })
     if (error) throw error
 

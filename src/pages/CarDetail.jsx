@@ -20,11 +20,12 @@ export function CarDetail() {
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
   const { isAdmin, user } = useAuth()
-  const { drivers } = useDrivers(isAdmin)
+  const { drivers } = useDrivers(isAdmin, user?.id)
   const { carId: assignedCarId } = useDriverCar(!isAdmin ? user?.id : null)
 
   const { car, loading, error, refresh } = useCar(id ?? null, {
     userId: isAdmin ? null : user?.id,
+    ownerId: isAdmin ? user?.id ?? null : null,
   })
   const { entries, loading: histLoading, refresh: refreshHist } = useCarHistory(car?.id ?? null)
 
@@ -77,7 +78,9 @@ export function CarDetail() {
     setFormErr(null)
     const prev = Number(car.mileage_km ?? 0)
     try {
-      const { error: u } = await supabase.from('cars').update({ mileage_km: next }).eq('id', car.id)
+      let uq = supabase.from('cars').update({ mileage_km: next }).eq('id', car.id)
+      if (isAdmin && user?.id) uq = uq.eq('owner_id', user.id)
+      const { error: u } = await uq
       if (u) throw u
       const { error: h } = await supabase.from('car_history').insert({
         car_id: car.id,
@@ -102,13 +105,17 @@ export function CarDetail() {
     const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
     const stamp = new Date().toLocaleString(lc)
     const next = `${car.notes ? `${car.notes.trim()}\n\n` : ''}[${stamp}] ${text.trim()}`
-    const { error: u } = await supabase.from('cars').update({ notes: next }).eq('id', car.id)
+    let nq = supabase.from('cars').update({ notes: next }).eq('id', car.id)
+    if (isAdmin && user?.id) nq = nq.eq('owner_id', user.id)
+    const { error: u } = await nq
     if (u) throw u
     await refresh()
   }
 
   async function saveMarketplace(patch) {
-    const { error: u } = await supabase.from('cars').update(patch).eq('id', car.id)
+    let mq = supabase.from('cars').update(patch).eq('id', car.id)
+    if (isAdmin && user?.id) mq = mq.eq('owner_id', user.id)
+    const { error: u } = await mq
     if (u) throw u
     await refresh()
   }
