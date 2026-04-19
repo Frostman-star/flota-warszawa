@@ -2599,6 +2599,24 @@ tr.tier-row-none td:first-child {
   color: var(--muted);
 }
 
+.market-catalog-photo--hero {
+  height: 200px;
+}
+
+.market-catalog-photo-count {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  z-index: 2;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.45rem;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.82);
+  color: #e2e8f0;
+  pointer-events: none;
+}
+
 .market-status-badge {
   position: absolute;
   top: 0.65rem;
@@ -4210,4 +4228,192 @@ tr.tier-row-none td:first-child {
   .services-toast {
     bottom: 2rem;
   }
+}
+
+/* —— Marketplace vehicle photos (owner slots + driver gallery) —— */
+.mvp-section .mvp-tip {
+  margin-bottom: 1rem;
+  padding: 0.75rem 0.85rem;
+  text-align: left;
+}
+.mvp-tip-title {
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+}
+.mvp-tip-list {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.mvp-subhead {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+.mvp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+.mvp-grid--opt {
+  margin-top: 0.5rem;
+}
+.mvp-expand {
+  width: 100%;
+  justify-content: flex-start;
+  margin-bottom: 0.35rem;
+  text-align: left;
+}
+.mvp-slot {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.45rem 0.55rem;
+  background: var(--bg-card);
+}
+.mvp-slot--done {
+  border-color: rgba(34, 197, 94, 0.45);
+}
+.mvp-slot-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+.mvp-slot-icon {
+  text-align: center;
+  margin-bottom: 0.25rem;
+  min-height: 1.5rem;
+}
+.mvp-slot-diag {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+.mvp-slot-body {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.35rem;
+  cursor: pointer;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  color: inherit;
+  font: inherit;
+  position: relative;
+}
+.mvp-slot-body:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.mvp-slot-ph {
+  font-size: 2rem;
+  opacity: 0.65;
+}
+.mvp-slot-thumb {
+  width: 100%;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.mvp-slot-check {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  background: rgba(34, 197, 94, 0.95);
+  color: #052e16;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+.mvp-slot-cta {
+  font-weight: 600;
+}
+.mvp-slot-busy {
+  text-align: center;
+  margin-top: 0.2rem;
+}
+
+.mvp-gallery {
+  margin-bottom: 1.25rem;
+}
+.mvp-gallery-main {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #0f141d;
+  touch-action: pan-y;
+}
+.mvp-gallery-main-img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  background: #0f141d;
+}
+.mvp-gallery-main-ph {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  color: var(--muted);
+}
+.mvp-gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(15, 23, 42, 0.65);
+  color: #fff;
+  font-size: 1.35rem;
+  cursor: pointer;
+  line-height: 1;
+}
+.mvp-gallery-nav--prev {
+  left: 0.35rem;
+}
+.mvp-gallery-nav--next {
+  right: 0.35rem;
+}
+.mvp-gallery-caption {
+  margin: 0.4rem 0 0.35rem;
+  text-align: center;
+}
+.mvp-gallery-thumbs {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  padding: 0.35rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+.mvp-gallery-thumb {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 42px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+}
+.mvp-gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mvp-gallery-thumb--on {
+  border-color: var(--accent-strong);
 }

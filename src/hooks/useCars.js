@@ -33,6 +33,7 @@ const CAR_SELECT_NEW = `
         marketplace_status,
         marketplace_listed,
         marketplace_photo_url,
+        primary_photo_url,
         marketplace_description,
         marketplace_location,
         deposit_amount,
@@ -51,6 +52,7 @@ const CAR_SELECT_NEW = `
         partner_contact,
         apps_available,
         registration_city,
+        owner_id,
         ${CAR_EMBED}
       `
 
@@ -82,6 +84,7 @@ const CAR_SELECT_LEGACY = `
         marketplace_status,
         marketplace_listed,
         marketplace_photo_url,
+        primary_photo_url,
         marketplace_description,
         marketplace_location,
         deposit_amount,
@@ -100,6 +103,7 @@ const CAR_SELECT_LEGACY = `
         partner_contact,
         apps_available,
         registration_city,
+        owner_id,
         ${CAR_EMBED}
       `
 

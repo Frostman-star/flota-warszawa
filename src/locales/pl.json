@@ -157,6 +157,36 @@
     "submitRate": "Wyślij ocenę",
     "reviewCount": "{{count}} opinii"
   },
+  "marketplacePhotos": {
+    "sectionTitle": "Zdjęcia do Marketplace",
+    "requiredHeading": "Wymagane zdjęcia ({{done}}/{{total}})",
+    "optionalHeading": "Dodatkowe zdjęcia",
+    "addPhoto": "Dodaj zdjęcie",
+    "change": "Zmień",
+    "tipsTitle": "Wskazówki do zdjęć",
+    "tip1": "Fotografuj przy dobrym świetle (w ciągu dnia)",
+    "tip2": "Ustaw auto na czystym tle",
+    "tip3": "Pierwsze zdjęcie (przód lewy) będzie miniaturą ogłoszenia",
+    "tip4": "Czyste auto = więcej zapytań od kierowców",
+    "photoCount": "{{count}} zdjęć",
+    "quality": {
+      "ready": "🟢 Gotowe",
+      "partial": "🟡 Prawie",
+      "none": "🔴 Brak zdjęć"
+    },
+    "qualityTipNone": "Dodaj zdjęcia aby przyciągnąć więcej kierowców",
+    "angle": {
+      "front_left": "Przód lewy",
+      "rear_right": "Tył prawy",
+      "interior_front": "Wnętrze przód",
+      "interior_rear": "Wnętrze tył",
+      "dashboard": "Deska rozdzielcza",
+      "trunk": "Bagażnik",
+      "wheels": "Felgi / koła",
+      "sunroof": "Szyberdach",
+      "detail": "Detal / inne"
+    }
+  },
   "marketplace": {
     "title": "Marketplace",
     "lead": "Auta dostępne do wynajmu (wersja podstawowa).",

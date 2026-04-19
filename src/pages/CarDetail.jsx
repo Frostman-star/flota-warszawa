@@ -18,6 +18,8 @@ import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { expiryStatusLabel, serviceStatusLabel } from '../utils/docLabels'
 import { localeTag } from '../utils/localeTag'
 import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
+import { MarketplaceVehiclePhotos } from '../components/MarketplaceVehiclePhotos'
+import { MarketplaceCarPhotoGallery } from '../components/MarketplaceCarPhotoGallery'
 
 export function CarDetail() {
   const { id } = useParams()
@@ -215,6 +217,13 @@ export function CarDetail() {
         <CarStatusBadge car={car} />
       </header>
 
+      {!isAdmin ? (
+        <MarketplaceCarPhotoGallery
+          carId={String(car.id)}
+          primaryFallback={String(car.primary_photo_url || car.marketplace_photo_url || '')}
+        />
+      ) : null}
+
       <section className="detail-block">
         <h2>{t('carDetail.legalPartnerTitle')}</h2>
         <p className="detail-line legal-partner-line">
@@ -298,6 +307,7 @@ export function CarDetail() {
 
           <section className="detail-block">
             <h2>{t('carDetail.marketplace')}</h2>
+            {user?.id ? <MarketplaceVehiclePhotos car={car} userId={user.id} onUpdated={() => refresh()} /> : null}
             {hasDriver ? <p className="muted small">{t('carDetail.marketplaceDriverHint')}</p> : null}
             <label className="toggle-switch toggle-switch--block">
               <input

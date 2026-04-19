@@ -157,6 +157,36 @@
     "submitRate": "Submit rating",
     "reviewCount": "{{count}} reviews"
   },
+  "marketplacePhotos": {
+    "sectionTitle": "Marketplace photos",
+    "requiredHeading": "Required photos ({{done}}/{{total}})",
+    "optionalHeading": "Additional photos",
+    "addPhoto": "Add photo",
+    "change": "Replace",
+    "tipsTitle": "Photo tips",
+    "tip1": "Shoot in good daylight",
+    "tip2": "Place the car on a clean, simple background",
+    "tip3": "The first shot (front-left) will be the listing thumbnail",
+    "tip4": "A clean car gets more enquiries from drivers",
+    "photoCount": "{{count}} photos",
+    "quality": {
+      "ready": "🟢 Ready",
+      "partial": "🟡 Almost",
+      "none": "🔴 No photos"
+    },
+    "qualityTipNone": "Add photos to attract more drivers",
+    "angle": {
+      "front_left": "Front left",
+      "rear_right": "Rear right",
+      "interior_front": "Interior (front)",
+      "interior_rear": "Interior (rear)",
+      "dashboard": "Dashboard",
+      "trunk": "Trunk",
+      "wheels": "Wheels / rims",
+      "sunroof": "Sunroof",
+      "detail": "Detail / other"
+    }
+  },
   "marketplace": {
     "title": "Marketplace",
     "lead": "Cars available for rent (basic version).",

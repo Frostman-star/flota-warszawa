@@ -11,9 +11,10 @@ import { carPath } from '../lib/carPaths'
 import { isDriverProfileCompleteForApply } from '../utils/driverProfile'
 import { AppPlatformPills } from '../components/AppPlatformPills'
 import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
+import { VEHICLE_REQUIRED_KEYS } from '../utils/vehiclePhotoAngles'
 
 const DRIVER_SELECT = `
-  id, model, year, weekly_rent_pln, marketplace_photo_url, marketplace_description, marketplace_location,
+  id, model, year, weekly_rent_pln, marketplace_photo_url, primary_photo_url, marketplace_description, marketplace_location,
   marketplace_status, deposit_amount, fuel_type, transmission, seats, consumption, marketplace_features,
   min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram,
   plate_number, owner_id,
@@ -84,6 +85,8 @@ export function Marketplace() {
 
   const [chipFilter, setChipFilter] = useState('all')
   const [contactCar, setContactCar] = useState(null)
+  /** @type {[Record<string, number>, import('react').Dispatch<import('react').SetStateAction<Record<string, number>>>]} */
+  const [ownerRequiredPhotoCount, setOwnerRequiredPhotoCount] = useState({})
 
   const profileApplyReady = isDriverProfileCompleteForApply(profile)
   const showCatalog = Boolean(user?.id)
@@ -116,8 +119,6 @@ export function Marketplace() {
   const loadDriverListings = useCallback(async () => {
     setDriverLoading(true)
     setDriverError(null)
-    // Read catalog via RLS on public.cars (not RPC-first): empty RPC success skipped the
-    // .from('cars') fallback before, so drivers never saw other owners' listings.
     const { data, error } = await supabase
       .from('cars')
       .select(DRIVER_SELECT)
@@ -128,7 +129,22 @@ export function Marketplace() {
       setDriverError(error.message)
       setDriverCars([])
     } else {
-      setDriverCars(data ?? [])
+      let list = data ?? []
+      if (list.length > 0) {
+        const ids = list.map((c) => c.id)
+        const { data: phRows } = await supabase.from('vehicle_photos').select('vehicle_id, angle_key').in('vehicle_id', ids)
+        const total = {}
+        for (const id of ids) total[id] = 0
+        for (const row of phRows ?? []) {
+          const vid = String(row.vehicle_id)
+          total[vid] = (total[vid] ?? 0) + 1
+        }
+        list = list.map((c) => ({
+          ...c,
+          _photoCount: total[c.id] ?? 0,
+        }))
+      }
+      setDriverCars(list)
       setDriverError(null)
     }
     setDriverLoading(false)
@@ -145,6 +161,32 @@ export function Marketplace() {
   useEffect(() => {
     void loadMyApplications()
   }, [loadMyApplications])
+
+  useEffect(() => {
+    if (!ownerCars.length) {
+      setOwnerRequiredPhotoCount({})
+      return
+    }
+    let cancelled = false
+    const ids = ownerCars.map((c) => c.id)
+    void supabase
+      .from('vehicle_photos')
+      .select('vehicle_id, angle_key')
+      .in('vehicle_id', ids)
+      .then(({ data }) => {
+        if (cancelled) return
+        const req = {}
+        for (const id of ids) req[id] = 0
+        for (const row of data ?? []) {
+          const vid = String(row.vehicle_id)
+          if (VEHICLE_REQUIRED_KEYS.has(String(row.angle_key))) req[vid] = (req[vid] ?? 0) + 1
+        }
+        setOwnerRequiredPhotoCount(req)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [ownerCars])
 
   useEffect(() => {
     if (searchParams.get('manage') !== '1' || !isAdmin || ownerLoading) return undefined
@@ -311,7 +353,9 @@ export function Marketplace() {
                     const title = [car.model || t('marketplace.car'), car.year != null ? String(car.year) : '']
                       .filter(Boolean)
                       .join(' ')
-                    const photo = car.marketplace_photo_url ? String(car.marketplace_photo_url).trim() : ''
+                    const photo = String(car.primary_photo_url || car.marketplace_photo_url || '')
+                      .trim()
+                    const photoCount = Number(car._photoCount ?? 0)
                     const available = String(car.marketplace_status || '') === 'dostepne'
                     const feats = normalizeFeatures(car)
                     const dep = Number(car.deposit_amount ?? 0)
@@ -319,12 +363,17 @@ export function Marketplace() {
                       <article key={car.id} className="market-catalog-card">
                         <div className="market-catalog-photo-wrap">
                           {photo ? (
-                            <img src={photo} alt="" className="market-catalog-photo" loading="lazy" />
+                            <img src={photo} alt="" className="market-catalog-photo market-catalog-photo--hero" loading="lazy" />
                           ) : (
                             <div className="market-catalog-photo market-catalog-photo--ph" aria-hidden>
                               <span>🚗</span>
                             </div>
                           )}
+                          {photoCount > 0 ? (
+                            <span className="market-catalog-photo-count">
+                              📸 {t('marketplacePhotos.photoCount', { count: photoCount })}
+                            </span>
+                          ) : null}
                           <span className={`market-status-badge${available ? ' market-status-badge--ok' : ''}`}>
                             {available ? t('marketplace.badgeAvailable') : t('marketplace.badgeTaken')}
                           </span>
@@ -446,6 +495,17 @@ export function Marketplace() {
                     <span className="muted small">
                       {car.model || '—'} · {car.year ?? '—'}
                     </span>
+                    {(() => {
+                      const req = ownerRequiredPhotoCount[car.id] ?? 0
+                      const listed = Boolean(car.marketplace_listed)
+                      const q = req <= 0 ? 'none' : req >= 4 && listed ? 'ready' : 'partial'
+                      return (
+                        <p className="market-owner-photo-q muted small">
+                          {t(`marketplacePhotos.quality.${q}`)}
+                          {q === 'none' ? <> — {t('marketplacePhotos.qualityTipNone')}</> : null}
+                        </p>
+                      )
+                    })()}
                   </div>
                   <label className="toggle-switch toggle-switch--inline">
                     <input
