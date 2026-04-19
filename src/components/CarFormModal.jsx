@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { shouldUseLegacyAssignedDriverColumn, toLegacyCarWritePayload } from '../utils/carDriverSchema'
 import { Modal } from './Modal'
 
 const emptyForm = {
@@ -41,7 +42,10 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         model: String(car.model ?? ''),
         year: car.year != null ? String(car.year) : '',
         color_label: String(car.color_label ?? ''),
-        driver_id: car.driver_id ? String(car.driver_id) : '',
+        driver_id: (() => {
+          const d = car.driver_id ?? car.assigned_driver_id
+          return d ? String(d) : ''
+        })(),
         mileage_km: String(car.mileage_km ?? '0'),
         weekly_rent_pln: String(car.weekly_rent_pln ?? '0'),
         fines_count: String(car.fines_count ?? '0'),
@@ -121,10 +125,16 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
 
     try {
       if (editing) {
-        const { error: upErr } = await supabase.from('cars').update(payload).eq('id', car.id)
+        let { error: upErr } = await supabase.from('cars').update(payload).eq('id', car.id)
+        if (upErr && shouldUseLegacyAssignedDriverColumn(upErr)) {
+          ;({ error: upErr } = await supabase.from('cars').update(toLegacyCarWritePayload(payload)).eq('id', car.id))
+        }
         if (upErr) throw upErr
       } else {
-        const { error: insErr } = await supabase.from('cars').insert(payload)
+        let { error: insErr } = await supabase.from('cars').insert(payload)
+        if (insErr && shouldUseLegacyAssignedDriverColumn(insErr)) {
+          ;({ error: insErr } = await supabase.from('cars').insert(toLegacyCarWritePayload(payload)))
+        }
         if (insErr) throw insErr
       }
       onSaved()

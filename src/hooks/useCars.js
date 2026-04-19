@@ -1,28 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import i18next from 'i18next'
 import { supabase } from '../lib/supabase'
+import { normalizeCarRow, shouldUseLegacyAssignedDriverColumn } from '../utils/carDriverSchema'
 
-/**
- * @param {{ enabled?: boolean }} [opts]
- */
-export function useCars(opts = {}) {
-  const { enabled = true } = opts
-  const [cars, setCars] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+const CAR_EMBED = 'driver_profile:profiles ( full_name )'
 
-  const refresh = useCallback(async () => {
-    if (!enabled) {
-      setCars([])
-      setLoading(false)
-      return
-    }
-    setLoading(true)
-    setError(null)
-    const { data, error: qErr } = await supabase
-      .from('cars')
-      .select(
-        `
+const CAR_SELECT_NEW = `
         id,
         plate_number,
         model,
@@ -42,21 +25,63 @@ export function useCars(opts = {}) {
         driver_label,
         show_in_marketplace,
         marketplace_status,
-        driver_profile:profiles!cars_driver_id_fkey ( full_name )
+        ${CAR_EMBED}
       `
-      )
-      .order('plate_number', { ascending: true })
+
+const CAR_SELECT_LEGACY = `
+        id,
+        plate_number,
+        model,
+        year,
+        color_label,
+        assigned_driver_id,
+        mileage_km,
+        weekly_rent_pln,
+        fines_count,
+        oc_expiry,
+        ac_expiry,
+        przeglad_expiry,
+        last_service_date,
+        notes,
+        created_at,
+        updated_at,
+        driver_label,
+        show_in_marketplace,
+        marketplace_status,
+        ${CAR_EMBED}
+      `
+
+/**
+ * @param {{ enabled?: boolean }} [opts]
+ */
+export function useCars(opts = {}) {
+  const { enabled = true } = opts
+  const [cars, setCars] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const refresh = useCallback(async () => {
+    if (!enabled) {
+      setCars([])
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    setError(null)
+    let q = supabase.from('cars').select(CAR_SELECT_NEW).order('plate_number', { ascending: true })
+    let { data, error: qErr } = await q
+
+    if (qErr && shouldUseLegacyAssignedDriverColumn(qErr)) {
+      const r2 = await supabase.from('cars').select(CAR_SELECT_LEGACY).order('plate_number', { ascending: true })
+      data = r2.data
+      qErr = r2.error
+    }
 
     if (qErr) {
       setError(qErr.message)
       setCars([])
     } else {
-      setCars(
-        (data ?? []).map((row) => ({
-          ...row,
-          driver_name: row.driver_profile?.full_name || (row.driver_label && String(row.driver_label).trim() ? row.driver_label : null),
-        }))
-      )
+      setCars((data ?? []).map((row) => normalizeCarRow(row)))
     }
     setLoading(false)
   }, [enabled])
@@ -86,39 +111,20 @@ export function useCar(carId, opts = {}) {
     }
     setLoading(true)
     setError(null)
-    let q = supabase
-      .from('cars')
-      .select(
-        `
-        id,
-        plate_number,
-        model,
-        year,
-        color_label,
-        driver_id,
-        mileage_km,
-        weekly_rent_pln,
-        fines_count,
-        oc_expiry,
-        ac_expiry,
-        przeglad_expiry,
-        last_service_date,
-        notes,
-        created_at,
-        updated_at,
-        driver_label,
-        show_in_marketplace,
-        marketplace_status,
-        driver_profile:profiles!cars_driver_id_fkey ( full_name )
-      `
-      )
-      .eq('id', carId)
 
-    if (userId) {
-      q = q.eq('driver_id', userId)
+    async function fetchOne(selectStr, driverEqKey) {
+      let q = supabase.from('cars').select(selectStr).eq('id', carId)
+      if (userId) q = q.eq(driverEqKey, userId)
+      return q.maybeSingle()
     }
 
-    const { data, error: qErr } = await q.maybeSingle()
+    let { data, error: qErr } = await fetchOne(CAR_SELECT_NEW, 'driver_id')
+
+    if (qErr && shouldUseLegacyAssignedDriverColumn(qErr)) {
+      const r2 = await fetchOne(CAR_SELECT_LEGACY, 'assigned_driver_id')
+      data = r2.data
+      qErr = r2.error
+    }
 
     if (qErr) {
       setError(qErr.message)
@@ -127,10 +133,7 @@ export function useCar(carId, opts = {}) {
       setError(i18next.t('errors.carNotFound'))
       setCar(null)
     } else {
-      setCar({
-        ...data,
-        driver_name: data.driver_profile?.full_name || (data.driver_label && String(data.driver_label).trim() ? data.driver_label : null),
-      })
+      setCar(normalizeCarRow(data))
       setError(null)
     }
     setLoading(false)

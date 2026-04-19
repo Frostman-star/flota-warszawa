@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { shouldUseLegacyAssignedDriverColumn } from '../utils/carDriverSchema'
 
 /**
  * Pojazd przypisany do zalogowanego kierowcy (pierwszy znaleziony).
@@ -18,13 +19,26 @@ export function useDriverCar(userId) {
     }
     setLoading(true)
     setError(null)
-    const { data, error: qErr } = await supabase
+
+    let { data, error: qErr } = await supabase
       .from('cars')
       .select('id')
       .eq('driver_id', userId)
       .order('plate_number', { ascending: true })
       .limit(1)
       .maybeSingle()
+
+    if (qErr && shouldUseLegacyAssignedDriverColumn(qErr)) {
+      const r2 = await supabase
+        .from('cars')
+        .select('id')
+        .eq('assigned_driver_id', userId)
+        .order('plate_number', { ascending: true })
+        .limit(1)
+        .maybeSingle()
+      data = r2.data
+      qErr = r2.error
+    }
 
     if (qErr) {
       setError(qErr.message)

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { shouldUseLegacyAssignedDriverColumn } from '../utils/carDriverSchema'
 
 /**
  * Lista kierowców (profile z rolą driver) — tylko dla admina.
@@ -19,10 +20,13 @@ export function useDrivers(enabled) {
     }
     setLoading(true)
     setError(null)
-    const [profRes, carsRes] = await Promise.all([
-      supabase.from('profiles').select('id, full_name, email').eq('role', 'driver').order('full_name', { ascending: true }),
-      supabase.from('cars').select('id, driver_id').not('driver_id', 'is', null),
-    ])
+
+    let carsRes = await supabase.from('cars').select('id, driver_id').not('driver_id', 'is', null)
+    if (carsRes.error && shouldUseLegacyAssignedDriverColumn(carsRes.error)) {
+      carsRes = await supabase.from('cars').select('id, assigned_driver_id').not('assigned_driver_id', 'is', null)
+    }
+
+    const profRes = await supabase.from('profiles').select('id, full_name, email').eq('role', 'driver').order('full_name', { ascending: true })
 
     if (profRes.error) {
       setError(profRes.error.message)
@@ -37,10 +41,10 @@ export function useDrivers(enabled) {
       return
     }
 
-    /** @type {Map<string, string>} */
     const driverToCar = new Map()
     for (const row of carsRes.data ?? []) {
-      if (row.driver_id) driverToCar.set(String(row.driver_id), String(row.id))
+      const did = row.driver_id ?? row.assigned_driver_id
+      if (did) driverToCar.set(String(did), String(row.id))
     }
 
     setDrivers(

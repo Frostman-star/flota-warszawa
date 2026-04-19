@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useDrivers } from '../hooks/useDrivers'
+import { shouldUseLegacyAssignedDriverColumn, toLegacyCarWritePayload } from '../utils/carDriverSchema'
 
 export function AddCarWizard() {
   const { t } = useTranslation()
@@ -29,7 +30,7 @@ export function AddCarWizard() {
     setSaving(true)
     setErr(null)
     try {
-      const { error } = await supabase.from('cars').insert({
+      const row = {
         plate_number: plate.trim(),
         model: model.trim(),
         year: null,
@@ -46,7 +47,11 @@ export function AddCarWizard() {
         notes: '',
         show_in_marketplace: false,
         marketplace_status: 'zajete',
-      })
+      }
+      let { error } = await supabase.from('cars').insert(row)
+      if (error && shouldUseLegacyAssignedDriverColumn(error)) {
+        ;({ error } = await supabase.from('cars').insert(toLegacyCarWritePayload(row)))
+      }
       if (error) throw error
       if (typeof refresh === 'function') {
         await refresh()
