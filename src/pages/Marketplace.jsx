@@ -20,7 +20,7 @@ const DRIVER_SELECT = `
   marketplace_status, deposit_amount, fuel_type, transmission, seats, consumption, marketplace_features,
   min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram,
   plate_number, owner_id,
-  partner_names, partner_contact, apps_available, registration_city
+  partner_names, partner_name, partner_contact, apps_available, registration_city
 `
 
 /**
@@ -77,8 +77,7 @@ export function Marketplace() {
   const [blockedApplyCars, setBlockedApplyCars] = useState({})
 
   const [chipFilter, setChipFilter] = useState('all')
-  /** @type {[string[], import('react').Dispatch<import('react').SetStateAction<string[]>>]} */
-  const [activePartners, setActivePartners] = useState([])
+  const [selectedPartner, setSelectedPartner] = useState('all')
   const [contactCar, setContactCar] = useState(null)
   const [catalogPhotoZoom, setCatalogPhotoZoom] = useState(null)
   /** @type {[Record<string, number>, import('react').Dispatch<import('react').SetStateAction<Record<string, number>>>]} */
@@ -142,6 +141,7 @@ export function Marketplace() {
       }
       setDriverCars(list)
       setDriverError(null)
+      console.log('All cars:', list)
     }
     setDriverLoading(false)
   }, [])
@@ -195,23 +195,36 @@ export function Marketplace() {
   const filteredDriverCars = useMemo(() => {
     return driverCars.filter((c) => {
       if (!matchesChip(c, chipFilter)) return false
-      if (activePartners.length === 0) return true
-      const names = partnerNamesFromValue(c.partner_names)
-      return activePartners.some((p) => names.includes(p))
+      if (selectedPartner === 'all') return true
+      const names = [
+        ...partnerNamesFromValue(c.partner_names),
+        ...partnerNamesFromValue(typeof c.partner_name === 'string' ? c.partner_name : ''),
+      ]
+      return names.includes(selectedPartner)
     })
-  }, [driverCars, chipFilter, activePartners])
+  }, [driverCars, chipFilter, selectedPartner])
 
   const partnerOptions = useMemo(() => {
-    const uniq = new Set()
+    const allPartners = []
     for (const car of driverCars) {
-      for (const name of partnerNamesFromValue(car.partner_names)) {
-        uniq.add(name)
+      if (Array.isArray(car.partner_names)) {
+        for (const p of car.partner_names) {
+          const name = String(p ?? '').trim()
+          if (name && !allPartners.includes(name)) allPartners.push(name)
+        }
+      } else {
+        const legacy = String(car.partner_name ?? '').trim()
+        if (legacy && !allPartners.includes(legacy)) allPartners.push(legacy)
       }
     }
-    return [...uniq].sort((a, b) => a.localeCompare(b, lc))
+    console.log('All partners found:', allPartners)
+    return allPartners.sort((a, b) => a.localeCompare(b, lc))
   }, [driverCars, lc])
+  const hasPartnerFilter = selectedPartner !== 'all'
 
-  const hasPartnerFilter = activePartners.length > 0
+  useEffect(() => {
+    console.log('Selected partner:', selectedPartner)
+  }, [selectedPartner])
 
   async function setOwnerListed(car, listed) {
     if (!user?.id) return
@@ -355,49 +368,48 @@ export function Marketplace() {
                     {c.label}
                   </button>
                 ))}
-                {partnerOptions.length > 0 ? (
+              </div>
+              {partnerOptions.length > 0 ? (
+                <>
+                  <p className="muted small">{t('marketplace.partnerLabel')}:</p>
+                  <div className="market-chip-scroll" role="tablist" aria-label={t('marketplace.partnerFilterLabel')}>
                   <button
                     type="button"
                     role="tab"
-                    aria-selected={!hasPartnerFilter}
-                    className={`market-chip${!hasPartnerFilter ? ' market-chip--active' : ''}`}
-                    onClick={() => setActivePartners([])}
+                    aria-selected={selectedPartner === 'all'}
+                    className="market-chip"
+                    style={{
+                      background: selectedPartner === 'all' ? '#2563eb' : 'rgba(255,255,255,0.08)',
+                      color: selectedPartner === 'all' ? '#fff' : '#9ca3af',
+                    }}
+                    onClick={() => setSelectedPartner('all')}
                   >
                     {t('marketplace.allPartners')}
                   </button>
-                ) : null}
-                {partnerOptions.map((partner) => {
-                  const active = activePartners.includes(partner)
-                  return (
+                  {partnerOptions.map((partner) => (
                     <button
                       key={`partner-${partner}`}
                       type="button"
                       role="tab"
-                      aria-selected={active}
-                      className={`market-chip${active ? ' market-chip--active' : ''}`}
-                      onClick={() =>
-                        setActivePartners((prev) =>
-                          prev.includes(partner) ? prev.filter((p) => p !== partner) : [...prev, partner]
-                        )
-                      }
+                      aria-selected={selectedPartner === partner}
+                      className="market-chip"
+                      style={{
+                        background: selectedPartner === partner ? '#2563eb' : 'rgba(255,255,255,0.08)',
+                        color: selectedPartner === partner ? '#fff' : '#9ca3af',
+                      }}
+                      onClick={() => setSelectedPartner(partner)}
                     >
                       {partner}
                     </button>
-                  )
-                })}
-              </div>
+                  ))}
+                  </div>
+                </>
+              ) : null}
               {hasPartnerFilter ? (
                 <div className="market-chip-scroll" aria-label={t('marketplace.partnerFilterLabel')}>
-                  {activePartners.map((partner) => (
-                    <button
-                      key={`active-partner-${partner}`}
-                      type="button"
-                      className="market-chip market-chip--active"
-                      onClick={() => setActivePartners((prev) => prev.filter((p) => p !== partner))}
-                    >
-                      {t('marketplace.partnerLabel')}: {partner} ×
-                    </button>
-                  ))}
+                  <button type="button" className="market-chip market-chip--active" onClick={() => setSelectedPartner('all')}>
+                    {t('marketplace.partnerLabel')}: {selectedPartner} ×
+                  </button>
                 </div>
               ) : null}
 
