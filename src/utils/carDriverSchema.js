@@ -9,8 +9,13 @@ export function normalizeCarRow(row) {
   const r = /** @type {Record<string, unknown>} */ (row)
   const driver_id = r.driver_id ?? r.assigned_driver_id ?? null
   const { assigned_driver_id: _a, ...rest } = r
+  const apps = Array.isArray(r.apps_available) ? r.apps_available.map(String) : []
+  const regCity = String(r.registration_city ?? '').trim() || 'Warszawa'
+
   return {
     ...rest,
+    apps_available: apps,
+    registration_city: regCity,
     driver_id,
     driver_name:
       (r.driver_profile && typeof r.driver_profile === 'object' && r.driver_profile.full_name) ||

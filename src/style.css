@@ -3569,3 +3569,126 @@ tr.tier-row-none td:first-child {
   flex-shrink: 0;
   margin: 0;
 }
+
+/* Fleet legal partner + platform app pills */
+.partner-autocomplete-field {
+  position: relative;
+}
+
+.partner-autocomplete-wrap {
+  position: relative;
+}
+
+.partner-suggest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 30;
+  max-height: 220px;
+  overflow-y: auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.partner-suggest-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.partner-suggest-item:hover,
+.partner-suggest-item:focus-visible {
+  background: rgba(14, 165, 233, 0.12);
+}
+
+.app-platform-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0 0;
+}
+
+.app-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.app-pill--uber {
+  background: #111;
+  color: #fff;
+}
+
+.app-pill--bolt {
+  background: #34d186;
+  color: #052e1a;
+}
+
+.app-pill--freenow {
+  background: #f5d547;
+  color: #3a3200;
+}
+
+.app-pill--itaxi {
+  background: #2563eb;
+  color: #fff;
+}
+
+.app-pill--indrive {
+  background: #7c3aed;
+  color: #fff;
+}
+
+.app-pill--other {
+  background: var(--border);
+  color: var(--text);
+}
+
+.car-tile-app-pills {
+  margin: 0.4rem 0 0.25rem;
+}
+
+.market-catalog-app-pills {
+  margin: 0.45rem 0 0.25rem;
+}
+
+.market-legal-partner-block {
+  margin: 0.65rem 0 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.market-legal-partner-line {
+  margin: 0.15rem 0;
+  word-break: break-word;
+}
+
+.legal-partner-line {
+  word-break: break-word;
+}
+
+.legal-partner-sep {
+  font-weight: 400;
+  color: var(--muted);
+}

@@ -18,6 +18,20 @@
     "brandName": "Cario",
     "brandTagline": "Zarządzanie flotą"
   },
+  "legalPartner": {
+    "fleetPartner": "Partner flotowy",
+    "intermediaryCompany": "Firma pośrednicząca",
+    "registrationCity": "Miasto rejestracji",
+    "availableApps": "Dostępne aplikacje"
+  },
+  "taxiApp": {
+    "uber": "Uber",
+    "bolt": "Bolt",
+    "freenow": "FreeNow",
+    "itaxi": "iTaxi",
+    "indrive": "inDrive",
+    "other": "Inne"
+  },
   "nav": {
     "fleet": "Auta",
     "addCar": "Dodaj",
@@ -157,6 +171,9 @@
     "badgeAvailable": "DOSTĘPNE",
     "badgeTaken": "ZAJĘTE",
     "deposit": "Kaucja: {{amount}} zł",
+    "legalPartnerPartnerRow": "Partner: {{name}}",
+    "legalPartnerAppsRow": "Dostępne: {{apps}}",
+    "legalPartnerRegRow": "Rejestracja: {{city}}",
     "iconsAria": "Paliwo, skrzynia, miejsca",
     "seatsTitle": "Liczba miejsc",
     "reqAge": "Min. wiek:",
@@ -354,7 +371,12 @@
     "statusAvailable": "Dostępne",
     "statusTaken": "Zajęte",
     "history": "Ostatnie wpisy",
-    "mileageHistoryDetail": "Przebieg: {{prev}} → {{next}} km"
+    "mileageHistoryDetail": "Przebieg: {{prev}} → {{next}} km",
+    "legalPartnerTitle": "Partner i rejestracja",
+    "legalPartnerPartnerPrefix": "Partner:",
+    "legalPartnerContactPrefix": "Kontakt:",
+    "legalPartnerAppsPrefix": "Aplikacje:",
+    "legalPartnerRegistrationPrefix": "Rejestracja:"
   },
   "handover": {
     "sectionTitle": "Protokół zdania/odbioru",
@@ -465,7 +487,14 @@
     "monthlyCostsHeading": "Miesięczne koszty (PLN)",
     "insuranceCostMonth": "Koszt ubezpieczenia OC/AC (miesięcznie)",
     "serviceCostMonth": "Ostatni serwis (koszt)",
-    "otherCostsMonth": "Inne koszty miesięczne"
+    "otherCostsMonth": "Inne koszty miesięczne",
+    "partnerSectionHeading": "Partner i rejestracja",
+    "partnerCompanyLabel": "Partner flotowy (firma pośrednicząca)",
+    "partnerCompanyPlaceholder": "np. Promin, Qiwi, Spark…",
+    "partnerContactLabel": "Kontakt do partnera (opcjonalnie)",
+    "partnerContactPlaceholder": "telefon lub email",
+    "appsAvailableLabel": "Dostępne aplikacje przez tego partnera",
+    "registrationCityLabel": "Miasto rejestracji pojazdu"
   },
   "stats": {
     "title": "Statystyki",

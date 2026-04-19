@@ -9,12 +9,15 @@ import { Modal } from '../components/Modal'
 import { localeTag } from '../utils/localeTag'
 import { carPath } from '../lib/carPaths'
 import { isDriverProfileCompleteForApply } from '../utils/driverProfile'
+import { AppPlatformPills } from '../components/AppPlatformPills'
+import { formatAppsReadable } from '../utils/partnerApps'
 
 const DRIVER_SELECT = `
   id, model, year, weekly_rent_pln, marketplace_photo_url, marketplace_description, marketplace_location,
   marketplace_status, deposit_amount, fuel_type, transmission, seats, consumption, marketplace_features,
   min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram,
-  plate_number, owner_id
+  plate_number, owner_id,
+  partner_name, partner_contact, apps_available, registration_city
 `
 
 /** @param {unknown} ft */
@@ -338,6 +341,24 @@ export function Marketplace() {
                               {t('marketplace.deposit', { amount: dep.toLocaleString(lc) })}
                             </p>
                           ) : null}
+                          <div className="market-legal-partner-block" aria-label={t('carDetail.legalPartnerTitle')}>
+                            <p className="market-legal-partner-line">
+                              🏢 {t('marketplace.legalPartnerPartnerRow', {
+                                name: String(car.partner_name ?? '').trim() || '—',
+                              })}
+                            </p>
+                            <p className="market-legal-partner-line">
+                              📱 {t('marketplace.legalPartnerAppsRow', {
+                                apps: formatAppsReadable(car.apps_available, t) || '—',
+                              })}
+                            </p>
+                            <p className="market-legal-partner-line">
+                              📍 {t('marketplace.legalPartnerRegRow', {
+                                city: String(car.registration_city ?? '').trim() || 'Warszawa',
+                              })}
+                            </p>
+                          </div>
+                          <AppPlatformPills apps={car.apps_available} className="market-catalog-app-pills" />
                           <div className="market-catalog-icons" aria-label={t('marketplace.iconsAria')}>
                             <span title={String(car.fuel_type ?? '')}>{fuelIcon(car.fuel_type)}</span>
                             <span title={String(car.transmission ?? '')}>{transmissionIcon(car.transmission)}</span>

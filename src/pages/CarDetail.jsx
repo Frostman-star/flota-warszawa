@@ -17,6 +17,7 @@ import { useDrivers } from '../hooks/useDrivers'
 import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { expiryStatusLabel, serviceStatusLabel } from '../utils/docLabels'
 import { localeTag } from '../utils/localeTag'
+import { formatAppsReadable } from '../utils/partnerApps'
 
 export function CarDetail() {
   const { id } = useParams()
@@ -187,6 +188,8 @@ export function CarDetail() {
   const canTurnListingOn = !hasDriver
 
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
+  const partnerName = String(car.partner_name ?? '').trim()
+  const partnerContact = String(car.partner_contact ?? '').trim()
 
   return (
     <div className="page-simple car-detail-simple">
@@ -211,6 +214,37 @@ export function CarDetail() {
         </p>
         <CarStatusBadge car={car} />
       </header>
+
+      <section className="detail-block">
+        <h2>{t('carDetail.legalPartnerTitle')}</h2>
+        <p className="detail-line legal-partner-line">
+          {partnerName || partnerContact ? (
+            <>
+              {partnerName ? (
+                <>
+                  <strong>{t('carDetail.legalPartnerPartnerPrefix')}</strong> {partnerName}
+                </>
+              ) : null}
+              {partnerName && partnerContact ? <span className="legal-partner-sep"> | </span> : null}
+              {partnerContact ? (
+                <>
+                  <strong>{t('carDetail.legalPartnerContactPrefix')}</strong> {partnerContact}
+                </>
+              ) : null}
+            </>
+          ) : (
+            <span className="muted">—</span>
+          )}
+        </p>
+        <p className="detail-line">
+          <strong>{t('carDetail.legalPartnerAppsPrefix')}</strong>{' '}
+          {formatAppsReadable(car.apps_available, t) || <span className="muted">—</span>}
+        </p>
+        <p className="detail-line">
+          <strong>{t('carDetail.legalPartnerRegistrationPrefix')}</strong>{' '}
+          {String(car.registration_city ?? 'Warszawa')}
+        </p>
+      </section>
 
       <section className="detail-block">
         <h2>{t('carDetail.documents')}</h2>

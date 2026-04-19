@@ -18,6 +18,20 @@
     "brandName": "Cario",
     "brandTagline": "Fleet Management"
   },
+  "legalPartner": {
+    "fleetPartner": "Fleet Partner",
+    "intermediaryCompany": "Intermediary company",
+    "registrationCity": "Registration city",
+    "availableApps": "Available apps"
+  },
+  "taxiApp": {
+    "uber": "Uber",
+    "bolt": "Bolt",
+    "freenow": "FreeNow",
+    "itaxi": "iTaxi",
+    "indrive": "inDrive",
+    "other": "Other"
+  },
   "nav": {
     "fleet": "Cars",
     "addCar": "Add",
@@ -157,6 +171,9 @@
     "badgeAvailable": "AVAILABLE",
     "badgeTaken": "TAKEN",
     "deposit": "Deposit: {{amount}} PLN",
+    "legalPartnerPartnerRow": "Partner: {{name}}",
+    "legalPartnerAppsRow": "Available: {{apps}}",
+    "legalPartnerRegRow": "Registration: {{city}}",
     "iconsAria": "Fuel, transmission, seats",
     "seatsTitle": "Seat count",
     "reqAge": "Min. age:",
@@ -354,7 +371,12 @@
     "statusAvailable": "Available",
     "statusTaken": "Taken",
     "history": "Recent entries",
-    "mileageHistoryDetail": "Mileage: {{prev}} → {{next}} km"
+    "mileageHistoryDetail": "Mileage: {{prev}} → {{next}} km",
+    "legalPartnerTitle": "Partner & registration",
+    "legalPartnerPartnerPrefix": "Partner:",
+    "legalPartnerContactPrefix": "Contact:",
+    "legalPartnerAppsPrefix": "Apps:",
+    "legalPartnerRegistrationPrefix": "Registration:"
   },
   "handover": {
     "sectionTitle": "Car Handover Protocol",
@@ -465,7 +487,14 @@
     "monthlyCostsHeading": "Monthly costs (PLN)",
     "insuranceCostMonth": "OC/AC insurance cost (per month)",
     "serviceCostMonth": "Last service cost (monthly)",
-    "otherCostsMonth": "Other monthly costs"
+    "otherCostsMonth": "Other monthly costs",
+    "partnerSectionHeading": "Partner & registration",
+    "partnerCompanyLabel": "Fleet partner (intermediary company)",
+    "partnerCompanyPlaceholder": "e.g. Promin, Qiwi, Spark…",
+    "partnerContactLabel": "Partner contact (optional)",
+    "partnerContactPlaceholder": "phone or email",
+    "appsAvailableLabel": "Ride-hailing apps available through this partner",
+    "registrationCityLabel": "Vehicle registration city"
   },
   "stats": {
     "title": "Statistics",

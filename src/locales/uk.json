@@ -18,6 +18,20 @@
     "brandName": "Cario",
     "brandTagline": "Управління флотом"
   },
+  "legalPartner": {
+    "fleetPartner": "Партнер флоту",
+    "intermediaryCompany": "Посередницька фірма",
+    "registrationCity": "Місто реєстрації",
+    "availableApps": "Доступні додатки"
+  },
+  "taxiApp": {
+    "uber": "Uber",
+    "bolt": "Bolt",
+    "freenow": "FreeNow",
+    "itaxi": "iTaxi",
+    "indrive": "inDrive",
+    "other": "Інше"
+  },
   "nav": {
     "fleet": "Авто",
     "addCar": "Додати",
@@ -157,6 +171,9 @@
     "badgeAvailable": "ДОСТУПНО",
     "badgeTaken": "ЗАЙНЯТО",
     "deposit": "Завдаток: {{amount}} zł",
+    "legalPartnerPartnerRow": "Партнер: {{name}}",
+    "legalPartnerAppsRow": "Доступно: {{apps}}",
+    "legalPartnerRegRow": "Реєстрація: {{city}}",
     "iconsAria": "Паливо, коробка, місця",
     "seatsTitle": "Кількість місць",
     "reqAge": "Мін. вік:",
@@ -354,7 +371,12 @@
     "statusAvailable": "Доступне",
     "statusTaken": "Зайняте",
     "history": "Останні записи",
-    "mileageHistoryDetail": "Пробіг: {{prev}} → {{next}} км"
+    "mileageHistoryDetail": "Пробіг: {{prev}} → {{next}} км",
+    "legalPartnerTitle": "Партнер і реєстрація",
+    "legalPartnerPartnerPrefix": "Партнер:",
+    "legalPartnerContactPrefix": "Контакт:",
+    "legalPartnerAppsPrefix": "Додатки:",
+    "legalPartnerRegistrationPrefix": "Реєстрація:"
   },
   "handover": {
     "sectionTitle": "Протокол передачі авто",
@@ -465,7 +487,14 @@
     "monthlyCostsHeading": "Щомісячні витрати (PLN)",
     "insuranceCostMonth": "Вартість страхування OC/AC (на місяць)",
     "serviceCostMonth": "Вартість останнього сервісу",
-    "otherCostsMonth": "Інші щомісячні витрати"
+    "otherCostsMonth": "Інші щомісячні витрати",
+    "partnerSectionHeading": "Партнер і реєстрація",
+    "partnerCompanyLabel": "Партнер флоту (посередницька фірма)",
+    "partnerCompanyPlaceholder": "напр. Promin, Qiwi, Spark…",
+    "partnerContactLabel": "Контакт партнера (необов’язково)",
+    "partnerContactPlaceholder": "телефон або email",
+    "appsAvailableLabel": "Доступні додатки через цього партнера",
+    "registrationCityLabel": "Місто реєстрації ТЗ"
   },
   "stats": {
     "title": "Статистика",

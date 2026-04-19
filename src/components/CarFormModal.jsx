@@ -3,8 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { shouldUseLegacyAssignedDriverColumn, toLegacyCarWritePayload } from '../utils/carDriverSchema'
 import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
+import { TAXI_APP_ORDER, normalizeAppsAvailable } from '../utils/partnerApps'
 import { Modal } from './Modal'
 import { MarketplaceListingFields } from './MarketplaceListingFields'
+
+const PARTNER_NAME_HINTS = ['Promin', 'Qiwi', 'Spark', 'Fleet Partner', 'Inny']
 
 const emptyForm = {
   plate_number: '',
@@ -37,6 +40,10 @@ const emptyForm = {
   insurance_cost: '0',
   service_cost: '0',
   other_costs: '0',
+  partner_name: '',
+  partner_contact: '',
+  apps_available: [],
+  registration_city: 'Warszawa',
 }
 
 /**
@@ -49,9 +56,13 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
   const [form, setForm] = useState(emptyForm)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  const [partnerSuggestOpen, setPartnerSuggestOpen] = useState(false)
 
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      setPartnerSuggestOpen(false)
+      return
+    }
     setError(null)
     if (car) {
       setForm({
@@ -99,11 +110,21 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         })(),
         service_cost: String(car.service_cost ?? '0'),
         other_costs: String(car.other_costs ?? '0'),
+        partner_name: String(car.partner_name ?? ''),
+        partner_contact: String(car.partner_contact ?? ''),
+        apps_available: normalizeAppsAvailable(car.apps_available),
+        registration_city: String(car.registration_city ?? '').trim() || 'Warszawa',
       })
     } else {
       setForm(emptyForm)
     }
   }, [open, car])
+
+  const partnerHintMatches = useMemo(() => {
+    const q = String(form.partner_name ?? '').trim().toLowerCase()
+    if (!q) return PARTNER_NAME_HINTS
+    return PARTNER_NAME_HINTS.filter((h) => h.toLowerCase().includes(q))
+  }, [form.partner_name])
 
   const title = useMemo(() => (editing ? t('carForm.editTitle') : t('carForm.addTitle')), [editing, t])
 
@@ -182,6 +203,10 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
       ...listingExtras,
       show_in_marketplace: listed,
       marketplace_status: listed ? 'dostepne' : 'zajete',
+      partner_name: (form.partner_name || '').trim() || null,
+      partner_contact: (form.partner_contact || '').trim() || null,
+      apps_available: normalizeAppsAvailable(form.apps_available),
+      registration_city: (form.registration_city || '').trim() || 'Warszawa',
       ...(editing
         ? {
             insurance_cost: Number(form.insurance_cost) || 0,
@@ -288,6 +313,70 @@ export function CarFormModal({ open, onClose, car, drivers, onSaved }) {
         {field('przeglad_expiry', t('carForm.prz'), 'date')}
         {field('last_service_date', t('carForm.service'), 'date')}
         {field('notes', t('carForm.notes'), 'textarea', { rows: 4 })}
+        <div className="field-span-heading">
+          <h3 className="stats-form-cost-heading">{t('carForm.partnerSectionHeading')}</h3>
+        </div>
+        <div className="field partner-autocomplete-field">
+          <span className="field-label">{t('carForm.partnerCompanyLabel')}</span>
+          <div className="partner-autocomplete-wrap">
+            <input
+              className="input"
+              type="text"
+              name="partner_name"
+              autoComplete="off"
+              value={form.partner_name}
+              placeholder={t('carForm.partnerCompanyPlaceholder')}
+              onChange={(e) => setForm((f) => ({ ...f, partner_name: e.target.value }))}
+              onFocus={() => setPartnerSuggestOpen(true)}
+              onBlur={() => window.setTimeout(() => setPartnerSuggestOpen(false), 180)}
+            />
+            {partnerSuggestOpen && partnerHintMatches.length > 0 ? (
+              <ul className="partner-suggest-list" role="listbox">
+                {partnerHintMatches.map((hint) => (
+                  <li key={hint} role="presentation">
+                    <button
+                      type="button"
+                      className="partner-suggest-item"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        setForm((f) => ({ ...f, partner_name: hint }))
+                        setPartnerSuggestOpen(false)
+                      }}
+                    >
+                      {hint}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        </div>
+        {field('partner_contact', t('carForm.partnerContactLabel'), 'text', { placeholder: t('carForm.partnerContactPlaceholder') })}
+        <div className="field">
+          <span className="field-label">{t('carForm.appsAvailableLabel')}</span>
+          <div className="market-feature-grid">
+            {TAXI_APP_ORDER.map((key) => {
+              const apps = Array.isArray(form.apps_available) ? form.apps_available : []
+              return (
+                <label key={key} className="checkbox-line market-feature-check">
+                  <input
+                    type="checkbox"
+                    checked={apps.includes(key)}
+                    onChange={() =>
+                      setForm((f) => {
+                        const cur = Array.isArray(f.apps_available) ? f.apps_available : []
+                        const next = cur.includes(key) ? cur.filter((x) => x !== key) : [...cur, key]
+                        return { ...f, apps_available: next }
+                      })
+                    }
+                  />
+                  <span>{t(`taxiApp.${key}`)}</span>
+                </label>
+              )
+            })}
+          </div>
+        </div>
+        {field('registration_city', t('carForm.registrationCityLabel'), 'text')}
         {form.driver_id ? <p className="muted small">{t('carForm.marketplaceDriverHint')}</p> : null}
         <label className="toggle-switch toggle-switch--block">
           <input

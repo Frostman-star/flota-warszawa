@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext'
 import { localeTag } from '../utils/localeTag'
 import { tierForExpiry, tierForServiceDot } from '../utils/documents'
 import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
+import { AppPlatformPills } from '../components/AppPlatformPills'
 
 function isAllOk(car) {
   const parts = []
@@ -72,6 +73,7 @@ export function Fleet() {
                   <p className="car-tile-rent">{Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}<span className="car-tile-rent-suffix"> {t('fleet.rentSuffix')}</span></p>
                 </div>
                 <p className="car-mobile-meta">{car.model || '—'} · {car.driver_name ?? '—'}</p>
+                <AppPlatformPills apps={car.apps_available} className="car-tile-app-pills" />
                 <FleetDocDots car={car} />
                 <div className={`car-tile-badge ${ok ? 'ok' : 'warn'}`}>{ok ? t('fleet.ok') : t('fleet.check')}</div>
               </Link>

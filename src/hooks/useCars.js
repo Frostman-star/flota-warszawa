@@ -46,6 +46,10 @@ const CAR_SELECT_NEW = `
         min_rental_months,
         owner_phone,
         owner_telegram,
+        partner_name,
+        partner_contact,
+        apps_available,
+        registration_city,
         ${CAR_EMBED}
       `
 
@@ -90,6 +94,10 @@ const CAR_SELECT_LEGACY = `
         min_rental_months,
         owner_phone,
         owner_telegram,
+        partner_name,
+        partner_contact,
+        apps_available,
+        registration_city,
         ${CAR_EMBED}
       `
 
