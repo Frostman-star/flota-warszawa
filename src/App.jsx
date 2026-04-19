@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { AppLayout } from './components/AppLayout'
 import { AdminLayout } from './layouts/AdminLayout'
 import { CarPageShell } from './layouts/CarPageShell'
 import { ProtectedRoute } from './components/ProtectedRoute'
@@ -27,6 +28,16 @@ export default function App() {
         }
       />
       <Route
+        path="/marketplace"
+        element={
+          <ProtectedRoute>
+            <AppLayout showNav={false} outletContext={null} />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Marketplace />} />
+      </Route>
+      <Route
         element={
           <ProtectedRoute adminOnly>
             <AdminLayout />
@@ -37,7 +48,6 @@ export default function App() {
         <Route path="/dodaj" element={<AddCarWizard />} />
         <Route path="/flota" element={<Fleet />} />
         <Route path="/alerty" element={<AlertsPage />} />
-        <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/ustawienia" element={<Settings />} />
         <Route path="/flota/:id" element={<CarPageShell nestInAdminLayout />}>
           <Route index element={<CarDetail />} />

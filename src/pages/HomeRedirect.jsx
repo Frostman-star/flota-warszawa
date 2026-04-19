@@ -1,17 +1,16 @@
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { useDriverCar } from '../hooks/useDriverCar'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 
 export function HomeRedirect() {
-  const { session, loading, isAdmin, user } = useAuth()
-  const { carId, loading: carLoading } = useDriverCar(user?.id)
+  const { session, loading, role } = useAuth()
+  const roleLower = String(role ?? '').toLowerCase()
 
   if (!loading && !session) {
     return <Navigate to="/login" replace />
   }
 
-  if (loading || carLoading) {
+  if (loading) {
     return (
       <div className="center-page">
         <LoadingSpinner />
@@ -19,13 +18,9 @@ export function HomeRedirect() {
     )
   }
 
-  if (isAdmin) {
-    return <Navigate to="/panel" replace />
+  if (roleLower === 'driver') {
+    return <Navigate to="/marketplace" replace />
   }
 
-  if (carId) {
-    return <Navigate to={`/samochod/${carId}`} replace />
-  }
-
-  return <Navigate to="/brak-pojazdu" replace />
+  return <Navigate to="/panel" replace />
 }

@@ -1,11 +1,10 @@
 -- Flota Warszawa — uruchom w Supabase SQL Editor
--- Po utworzeniu pierwszego użytkownika ustaw rolę admina:
--- UPDATE public.profiles SET role = 'admin' WHERE email = 'twoj@email.pl';
+-- Właściciel floty: role = 'owner' | 'driver' (legacy: 'admin' traktowany jak owner w is_admin())
 
 create extension if not exists "pgcrypto";
 
--- Role użytkowników
-create type public.user_role as enum ('admin', 'driver');
+-- Role użytkowników (admin = legacy; owner = właściciel floty z rejestracji)
+create type public.user_role as enum ('admin', 'driver', 'owner');
 
 create table public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
@@ -101,18 +100,28 @@ create trigger profiles_role_guard
 
 -- Profil przy rejestracji
 create or replace function public.handle_new_user()
-returns trigger as $$
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r text;
 begin
+  r := lower(trim(coalesce(new.raw_user_meta_data->>'signup_role', 'driver')));
+  if r not in ('owner', 'driver') then
+    r := 'driver';
+  end if;
   insert into public.profiles (id, email, full_name, role)
   values (
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
-    'driver'
+    r::public.user_role
   );
   return new;
 end;
-$$ language plpgsql security definer set search_path = public;
+$$;
 
 create trigger on_auth_user_created
   after insert on auth.users
@@ -131,7 +140,8 @@ set search_path = public
 as $$
   select exists (
     select 1 from public.profiles p
-    where p.id = auth.uid() and p.role = 'admin'
+    where p.id = auth.uid()
+      and p.role in ('admin'::public.user_role, 'owner'::public.user_role)
   );
 $$;
 

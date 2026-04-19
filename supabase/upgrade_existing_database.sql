@@ -110,3 +110,61 @@ create policy cars_marketplace_select
     and marketplace_status = 'dostepne'
     and not public.is_admin()
   );
+
+-- --- Rola „owner” + signup_role (jak migrations/20260121000000 + 20260121000001) ---
+-- Jeśli UPDATE poniżej zwróci błąd enum: uruchom WYŁĄCZNIE blok DO $$ … END $$, zatwierdź, potem resztę od UPDATE.
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_enum e
+    join pg_type t on e.enumtypid = t.oid
+    where t.typname = 'user_role'
+      and e.enumlabel = 'owner'
+  ) then
+    alter type public.user_role add value 'owner';
+  end if;
+end $$;
+
+update public.profiles
+set role = 'owner'::public.user_role
+where role = 'admin'::public.user_role;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles p
+    where p.id = auth.uid()
+      and p.role in ('admin'::public.user_role, 'owner'::public.user_role)
+  );
+$$;
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  r text;
+begin
+  r := lower(trim(coalesce(new.raw_user_meta_data->>'signup_role', 'driver')));
+  if r not in ('owner', 'driver') then
+    r := 'driver';
+  end if;
+
+  insert into public.profiles (id, email, full_name, role)
+  values (
+    new.id,
+    new.email,
+    coalesce(new.raw_user_meta_data->>'full_name', split_part(new.email, '@', 1)),
+    r::public.user_role
+  );
+  return new;
+end;
+$$;

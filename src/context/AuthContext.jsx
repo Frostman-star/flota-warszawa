@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
-/** @typedef {'admin' | 'driver'} UserRole */
+/** @typedef {'admin' | 'driver' | 'owner'} UserRole */
 
 const AuthContext = createContext(null)
 
@@ -74,18 +74,34 @@ export function AuthProvider({ children }) {
   const signIn = useCallback(async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) throw error
+    if (data.session) {
+      setSession(data.session)
+      const uid = data.session.user?.id
+      if (uid) await loadProfile(uid)
+    }
     return data
-  }, [])
+  }, [loadProfile])
 
-  const signUp = useCallback(async (email, password, fullName) => {
+  const signUp = useCallback(async (email, password, fullName, signupRole) => {
+    const role = signupRole === 'owner' ? 'owner' : 'driver'
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: {
+        data: {
+          full_name: fullName,
+          signup_role: role,
+        },
+      },
     })
     if (error) throw error
+    if (data.session) {
+      setSession(data.session)
+      const uid = data.session.user?.id
+      if (uid) await loadProfile(uid)
+    }
     return data
-  }, [])
+  }, [loadProfile])
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut()
@@ -97,22 +113,25 @@ export function AuthProvider({ children }) {
     if (session?.user?.id) await loadProfile(session.user.id)
   }, [loadProfile, session?.user?.id])
 
-  const value = useMemo(
-    () => ({
+  const value = useMemo(() => {
+    const roleLower = String(profile?.role ?? '').toLowerCase()
+    const isDriver = roleLower === 'driver'
+    // UI / routing: tylko jawny „driver” idzie na marketplace. Brak wiersza profiles lub brak roli → jak właściciel (/panel).
+    const isAdmin = Boolean(session) && !isDriver
+    return {
       session,
       user: session?.user ?? null,
       profile,
       role: profile?.role ?? null,
-      isAdmin: String(profile?.role ?? '').toLowerCase() === 'admin',
-      isDriver: String(profile?.role ?? '').toLowerCase() === 'driver',
+      isAdmin,
+      isDriver,
       loading,
       signIn,
       signUp,
       signOut,
       refreshProfile,
-    }),
-    [session, profile, loading, signIn, signUp, signOut, refreshProfile]
-  )
+    }
+  }, [session, profile, loading, signIn, signUp, signOut, refreshProfile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

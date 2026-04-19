@@ -1,0 +1,77 @@
+﻿{
+  "app": {
+    "settings": "Settings",
+    "logout": "Log out",
+    "user": "User",
+    "home": "Home",
+    "panel": "Dashboard",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "refresh": "Refresh",
+    "search": "Search",
+    "close": "Close",
+    "loading": "Loading…",
+    "tryAgain": "Try again"
+  },
+  "nav": {
+    "fleet": "Cars",
+    "addCar": "Add",
+    "alerts": "Alerts"
+  },
+  "login": {
+    "title": "Flota Warszawa",
+    "lead": "Taxi fleet management — sign in to continue.",
+    "tabLogin": "Sign in",
+    "tabRegister": "Register",
+    "pickRole": "Choose your account type first:",
+    "owner": "I am a fleet owner",
+    "driver": "I am a driver",
+    "changeType": "← Change account type",
+    "fullName": "Full name",
+    "email": "E-mail",
+    "password": "Password",
+    "submitLogin": "Sign in",
+    "submitRegister": "Create account",
+    "processing": "Processing…",
+    "home": "Homepage"
+  },
+  "panel": {
+    "title": "Attention today",
+    "seeAlerts": "View alerts",
+    "summary": "Summary",
+    "cars": "cars in fleet",
+    "weekly": "total / week",
+    "toCheck": "to check (30 days)",
+    "quick": "Quick actions",
+    "myCars": "My cars",
+    "market": "Marketplace (beta)",
+    "addCar": "Add car"
+  },
+  "fleet": {
+    "title": "My cars",
+    "search": "Search by plate or driver…",
+    "rentSuffix": "/ week",
+    "ok": "🟢 OK",
+    "check": "🔴 Check",
+    "edit": "Edit",
+    "delete": "Delete",
+    "confirmDelete": "Delete {{plate}}?"
+  },
+  "alerts": {
+    "title": "Alerts",
+    "lead": "Documents due within 30 days — most urgent first.",
+    "emptyTitle": "All good! 🎉",
+    "emptyText": "No deadlines in the warning window."
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "lead": "Cars available for rent (basic version).",
+    "car": "Car",
+    "week": "/ week",
+    "interest": "I'm interested",
+    "contact": "Contact — {{plate}}",
+    "writeTo": "Write to:",
+    "noEmail": "Admin has not set a contact email yet (Settings → contact email)."
+  }
+}

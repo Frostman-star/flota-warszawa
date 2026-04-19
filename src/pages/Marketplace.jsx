@@ -1,10 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+﻿import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { Modal } from '../components/Modal'
 
 export function Marketplace() {
+  const { t } = useTranslation()
+  const { isAdmin } = useAuth()
   const [cars, setCars] = useState([])
   const [loading, setLoading] = useState(true)
   const [contact, setContact] = useState('')
@@ -15,93 +19,36 @@ export function Marketplace() {
     setLoading(true)
     const { data: c } = await supabase.from('company_settings').select('contact_email').eq('id', 1).maybeSingle()
     setContact(c?.contact_email ?? '')
-
-    const { data, error } = await supabase
-      .from('cars')
-      .select('id, plate_number, model, year, weekly_rent_pln')
-      .eq('show_in_marketplace', true)
-      .eq('marketplace_status', 'dostepne')
-      .order('weekly_rent_pln', { ascending: true })
-
+    const { data, error } = await supabase.from('cars').select('id, plate_number, model, year, weekly_rent_pln').eq('show_in_marketplace', true).eq('marketplace_status', 'dostepne').order('weekly_rent_pln', { ascending: true })
     if (!error) setCars(data ?? [])
     setLoading(false)
   }, [])
 
-  useEffect(() => {
-    load()
-  }, [load])
+  useEffect(() => { load() }, [load])
 
   return (
     <div className="page-simple">
-      <p className="muted small">
-        <Link to="/panel" className="link">
-          ← Panel
-        </Link>
-      </p>
-      <h1>Marketplace</h1>
-      <p className="muted lead">Auta dostępne do wynajmu (wersja podstawowa).</p>
-
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
+      <p className="muted small"><Link to={isAdmin ? '/panel' : '/'} className="link">{isAdmin ? `← ${t('app.panel')}` : `← ${t('app.home')}`}</Link></p>
+      <h1>{t('marketplace.title')}</h1>
+      <p className="muted lead">{t('marketplace.lead')}</p>
+      {loading ? <LoadingSpinner /> : (
         <div className="market-grid">
           {cars.map((car) => (
             <article key={car.id} className="market-card">
-              <div className="market-photo" aria-hidden>
-                🚕
-              </div>
-              <h2>{car.model || 'Auto'}</h2>
+              <div className="market-photo" aria-hidden>🚕</div>
+              <h2>{car.model || t('marketplace.car')}</h2>
               <p className="muted">{car.year ?? '—'}</p>
-              <p className="market-price">
-                {Number(car.weekly_rent_pln ?? 0).toLocaleString('pl-PL', {
-                  style: 'currency',
-                  currency: 'PLN',
-                })}
-                <span className="muted small"> / tydzień</span>
-              </p>
+              <p className="market-price">{Number(car.weekly_rent_pln ?? 0).toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' })}<span className="muted small"> {t('marketplace.week')}</span></p>
               <p className="muted">📍 Warszawa</p>
-              <button
-                type="button"
-                className="btn btn-huge primary"
-                onClick={() => {
-                  setInterestCar(car)
-                  setOpenContact(true)
-                }}
-              >
-                Jestem zainteresowany
-              </button>
+              <button type="button" className="btn btn-huge primary" onClick={() => { setInterestCar(car); setOpenContact(true) }}>{t('marketplace.interest')}</button>
             </article>
           ))}
         </div>
       )}
 
-      <Modal
-        open={openContact}
-        title={interestCar ? `Kontakt — ${interestCar.plate_number}` : 'Kontakt'}
-        onClose={() => {
-          setOpenContact(false)
-          setInterestCar(null)
-        }}
-      >
-        <p className="muted">
-          {contact ? (
-            <>
-              Napisz na: <strong>{contact}</strong>
-            </>
-          ) : (
-            'Administrator nie ustawił jeszcze adresu e-mail kontaktowego (Ustawienia → e-mail kontaktowy).'
-          )}
-        </p>
-        <button
-          type="button"
-          className="btn btn-huge primary"
-          onClick={() => {
-            setOpenContact(false)
-            setInterestCar(null)
-          }}
-        >
-          OK
-        </button>
+      <Modal open={openContact} title={interestCar ? t('marketplace.contact', { plate: interestCar.plate_number }) : t('marketplace.title')} onClose={() => { setOpenContact(false); setInterestCar(null) }}>
+        <p className="muted">{contact ? <>{t('marketplace.writeTo')} <strong>{contact}</strong></> : t('marketplace.noEmail')}</p>
+        <button type="button" className="btn btn-huge primary" onClick={() => { setOpenContact(false); setInterestCar(null) }}>OK</button>
       </Modal>
     </div>
   )

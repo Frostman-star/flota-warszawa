@@ -1,4 +1,5 @@
-import { Link, useOutletContext } from 'react-router-dom'
+﻿import { Link, useOutletContext } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { daysUntil } from '../utils/documents'
@@ -15,89 +16,48 @@ function countCriticalSoon(cars) {
 }
 
 export function PanelHome() {
+  const { t } = useTranslation()
   const { cars, loading, error, refresh } = useOutletContext()
   const weekly = computeWeeklyRentTotal(cars)
   const toCheck = buildAlertRows(cars).length
   const critical = countCriticalSoon(cars)
-  const showBanner = critical > 0
 
-  if (loading) {
-    return (
-      <div className="page-simple">
-        <LoadingSpinner />
-      </div>
-    )
-  }
-
+  if (loading) return <div className="page-simple"><LoadingSpinner /></div>
   if (error) {
     return (
       <div className="page-simple">
         <p className="form-error">{error}</p>
-        <button type="button" className="btn btn-huge primary" onClick={() => refresh?.()}>
-          Spróbuj ponownie
-        </button>
+        <button type="button" className="btn btn-huge primary" onClick={() => refresh?.()}>{t('app.tryAgain')}</button>
       </div>
     )
   }
 
   return (
     <div className="page-simple">
-      {showBanner ? (
+      {critical > 0 ? (
         <div className="urgent-banner" role="alert">
-          <strong>Uwaga na dziś</strong>
-          <p>Masz {critical} dokumentów wymagających pilnej uwagi (≤ 7 dni lub po terminie).</p>
-          <Link to="/alerty" className="btn btn-huge light">
-            Zobacz alerty
-          </Link>
+          <strong>{t('panel.title')}</strong>
+          <p>{critical}.</p>
+          <Link to="/alerty" className="btn btn-huge light">{t('panel.seeAlerts')}</Link>
         </div>
       ) : null}
 
-      <section className="hero-summary" aria-label="Podsumowanie">
-        <div className="hero-stat">
-          <span className="hero-stat-num">{cars.length}</span>
-          <span className="hero-stat-label">aut w flocie</span>
-        </div>
-        <div className="hero-stat">
-          <span className="hero-stat-num">
-            {weekly.toLocaleString('pl-PL', { maximumFractionDigits: 0 })} zł
-          </span>
-          <span className="hero-stat-label">łącznie / tydzień</span>
-        </div>
-        <div className="hero-stat">
-          <span className="hero-stat-num">{toCheck}</span>
-          <span className="hero-stat-label">do sprawdzenia (30 dni)</span>
-        </div>
+      <section className="hero-summary" aria-label={t('panel.summary')}>
+        <div className="hero-stat"><span className="hero-stat-num">{cars.length}</span><span className="hero-stat-label">{t('panel.cars')}</span></div>
+        <div className="hero-stat"><span className="hero-stat-num">{weekly.toLocaleString('pl-PL', { maximumFractionDigits: 0 })} zł</span><span className="hero-stat-label">{t('panel.weekly')}</span></div>
+        <div className="hero-stat"><span className="hero-stat-num">{toCheck}</span><span className="hero-stat-label">{t('panel.toCheck')}</span></div>
       </section>
 
-      <nav className="big-actions" aria-label="Szybkie akcje">
-        <Link to="/dodaj" className="big-action big-action-primary">
-          <span className="big-action-emoji" aria-hidden>
-            ➕
-          </span>
-          <span className="big-action-text">Dodaj auto</span>
-        </Link>
-        <Link to="/flota" className="big-action">
-          <span className="big-action-emoji" aria-hidden>
-            🚗
-          </span>
-          <span className="big-action-text">Moje auta</span>
-        </Link>
-        <Link to="/alerty" className="big-action">
-          <span className="big-action-emoji" aria-hidden>
-            🔔
-          </span>
-          <span className="big-action-text">Alerty</span>
-        </Link>
+      <nav className="big-actions" aria-label={t('panel.quick')}>
+        <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden>➕</span><span className="big-action-text">{t('panel.addCar')}</span></Link>
+        <Link to="/flota" className="big-action"><span className="big-action-emoji" aria-hidden>🚗</span><span className="big-action-text">{t('panel.myCars')}</span></Link>
+        <Link to="/alerty" className="big-action"><span className="big-action-emoji" aria-hidden>🔔</span><span className="big-action-text">{t('nav.alerts')}</span></Link>
       </nav>
 
       <p className="muted small footer-hint">
-        <Link to="/ustawienia" className="link">
-          Ustawienia
-        </Link>
+        <Link to="/ustawienia" className="link">{t('app.settings')}</Link>
         {' · '}
-        <Link to="/marketplace" className="link">
-          Marketplace (beta)
-        </Link>
+        <Link to="/marketplace" className="link">{t('panel.market')}</Link>
       </p>
     </div>
   )

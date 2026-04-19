@@ -1,0 +1,77 @@
+﻿{
+  "app": {
+    "settings": "Ustawienia",
+    "logout": "Wyloguj",
+    "user": "Użytkownik",
+    "home": "Start",
+    "panel": "Panel",
+    "back": "Wróć",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "refresh": "Odśwież",
+    "search": "Szukaj",
+    "close": "Zamknij",
+    "loading": "Ładowanie…",
+    "tryAgain": "Spróbuj ponownie"
+  },
+  "nav": {
+    "fleet": "Auta",
+    "addCar": "Dodaj",
+    "alerts": "Alerty"
+  },
+  "login": {
+    "title": "Flota Warszawa",
+    "lead": "Zarządzanie taksówkami — zaloguj się, aby kontynuować.",
+    "tabLogin": "Logowanie",
+    "tabRegister": "Rejestracja",
+    "pickRole": "Najpierw wybierz typ konta:",
+    "owner": "Właściciel floty",
+    "driver": "Kierowca szuka auta",
+    "changeType": "← Zmień typ konta",
+    "fullName": "Imię i nazwisko",
+    "email": "E-mail",
+    "password": "Hasło",
+    "submitLogin": "Zaloguj",
+    "submitRegister": "Utwórz konto",
+    "processing": "Przetwarzanie…",
+    "home": "Strona główna"
+  },
+  "panel": {
+    "title": "Uwaga na dziś",
+    "seeAlerts": "Zobacz alerty",
+    "summary": "Podsumowanie",
+    "cars": "aut w flocie",
+    "weekly": "łącznie / tydzień",
+    "toCheck": "do sprawdzenia (30 dni)",
+    "quick": "Szybkie akcje",
+    "myCars": "Moje auta",
+    "market": "Marketplace (beta)",
+    "addCar": "Dodaj auto"
+  },
+  "fleet": {
+    "title": "Moje auta",
+    "search": "Szukaj po rejestracji lub kierowcy…",
+    "rentSuffix": "/ tydz.",
+    "ok": "🟢 OK",
+    "check": "🔴 Sprawdź",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "confirmDelete": "Usunąć {{plate}}?"
+  },
+  "alerts": {
+    "title": "Alerty",
+    "lead": "Dokumenty w ciągu 30 dni — od najpilniejszych.",
+    "emptyTitle": "Wszystko w porządku! 🎉",
+    "emptyText": "Brak terminów w oknie ostrzeżeń."
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "lead": "Auta dostępne do wynajmu (wersja podstawowa).",
+    "car": "Auto",
+    "week": "/ tydzień",
+    "interest": "Jestem zainteresowany",
+    "contact": "Kontakt — {{plate}}",
+    "writeTo": "Napisz na:",
+    "noEmail": "Administrator nie ustawił jeszcze adresu e-mail kontaktowego (Ustawienia → e-mail kontaktowy)."
+  }
+}
