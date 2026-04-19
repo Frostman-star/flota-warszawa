@@ -384,6 +384,29 @@
     "inviteEdgeError": "Edge Function error (invite-driver)",
     "removeEdgeError": "Edge Function error (remove-driver)"
   },
+  "pwaInstall": {
+    "banner": {
+      "regionAria": "Install the Cario app",
+      "title": "Install Cario",
+      "subtitleIos": "Tap □↑ and choose “Add to Home Screen”",
+      "subtitleAndroid": "Tap ⋮ and choose “Add to Home screen”",
+      "subtitlePrompt": "Add to home screen",
+      "installButton": "Install",
+      "closeAria": "Close"
+    },
+    "settings": {
+      "link": "📱 Install the app",
+      "modalTitle": "Install the Cario app",
+      "iosStep1": "Open this page in Safari",
+      "iosStep2": "Tap the share icon (□↑) at the bottom of the screen",
+      "iosStep3": "Scroll down and choose “Add to Home Screen”",
+      "iosStep4": "Tap “Add” — done!",
+      "androidStep1": "Open this page in Chrome",
+      "androidStep2": "Tap the menu (⋮) in the top-right corner",
+      "androidStep3": "Choose “Add to Home screen”",
+      "androidStep4": "Tap “Add” — done!"
+    }
+  },
   "wizard": {
     "back": "← Back",
     "title": "New car",

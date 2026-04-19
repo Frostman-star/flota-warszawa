@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { useDrivers } from '../hooks/useDrivers'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { PwaInstallInstructionsModal } from '../components/PwaInstallInstructionsModal'
 
 const DAY_OPTIONS = [30, 14, 7, 3, 1]
 
@@ -27,6 +28,7 @@ export function Settings() {
   const [invitePass, setInvitePass] = useState('')
   const [inviteName, setInviteName] = useState('')
   const [inviteBusy, setInviteBusy] = useState(false)
+  const [pwaInstallOpen, setPwaInstallOpen] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -159,6 +161,11 @@ export function Settings() {
       </p>
       <h1>{t('settings.title')}</h1>
       <p className="muted">{t('settings.lead')}</p>
+      <p className="settings-pwa-install-wrap">
+        <button type="button" className="link settings-pwa-install-link" onClick={() => setPwaInstallOpen(true)}>
+          {t('pwaInstall.settings.link')}
+        </button>
+      </p>
 
       {err ? <p className="form-error">{err}</p> : null}
       {msg ? <p className="form-info">{msg}</p> : null}
@@ -253,6 +260,8 @@ export function Settings() {
           </button>
         </form>
       </section>
+
+      <PwaInstallInstructionsModal open={pwaInstallOpen} onClose={() => setPwaInstallOpen(false)} />
     </div>
   )
 }

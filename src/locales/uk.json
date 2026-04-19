@@ -384,6 +384,29 @@
     "inviteEdgeError": "Помилка Edge Function (invite-driver)",
     "removeEdgeError": "Помилка Edge Function (remove-driver)"
   },
+  "pwaInstall": {
+    "banner": {
+      "regionAria": "Встановити застосунок Cario",
+      "title": "Встанови Cario",
+      "subtitleIos": "Натисни □↑ і обери «На екран Home»",
+      "subtitleAndroid": "Натисни ⋮ і обери «На гол. екран»",
+      "subtitlePrompt": "Додати на головний екран",
+      "installButton": "Встановити",
+      "closeAria": "Закрити"
+    },
+    "settings": {
+      "link": "📱 Встановити застосунок",
+      "modalTitle": "Встановлення застосунку Cario",
+      "iosStep1": "Відкрий цю сторінку в браузері Safari",
+      "iosStep2": "Натисни іконку «Поділитися» (□↑) внизу екрана",
+      "iosStep3": "Прокрути вниз і обери «На екран Home»",
+      "iosStep4": "Натисни «Додати» — готово!",
+      "androidStep1": "Відкрий цю сторінку в браузері Chrome",
+      "androidStep2": "Натисни меню (⋮) у правому верхньому куті",
+      "androidStep3": "Обери «Додати на головний екран»",
+      "androidStep4": "Натисни «Додати» — готово!"
+    }
+  },
   "wizard": {
     "back": "← Назад",
     "title": "Нове авто",

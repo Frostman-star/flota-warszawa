@@ -1,5 +1,6 @@
 import { AppLayout } from '../components/AppLayout'
 import { MobileBottomNav } from '../components/MobileBottomNav'
+import { InstallAppBanner } from '../components/InstallAppBanner'
 import { PushBanner } from '../components/PushBanner'
 import { RemindersBootstrap } from '../components/RemindersBootstrap'
 import { useCars } from '../hooks/useCars'
@@ -19,6 +20,7 @@ export function AdminLayout() {
         notifCars={cars}
         useOwnerSidebar={isAdmin}
       />
+      <InstallAppBanner navVariant="admin" />
       {isAdmin ? <MobileBottomNav /> : null}
     </>
   )
