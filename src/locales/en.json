@@ -221,6 +221,8 @@
     "tip2": "Place the car on a clean, simple background",
     "tip3": "The first shot (front-left) will be the listing thumbnail",
     "tip4": "A clean car gets more enquiries from drivers",
+    "plateBlurCheckbox": "Blur the lower licence-plate area (estimate) before uploading",
+    "plateBlurHint": "Mainly for “Front left” and “Rear right” shots. It is approximate — the plate may still show with a different framing. Manual region tuning will come later; for now you can turn this off and re-upload if needed.",
     "photoCount": "{{count}} photos",
     "quality": {
       "ready": "🟢 Ready",

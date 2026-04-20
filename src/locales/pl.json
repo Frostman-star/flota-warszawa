@@ -221,6 +221,8 @@
     "tip2": "Ustaw auto na czystym tle",
     "tip3": "Pierwsze zdjęcie (przód lewy) będzie miniaturą ogłoszenia",
     "tip4": "Czyste auto = więcej zapytań od kierowców",
+    "plateBlurCheckbox": "Rozmyj dolną strefę tablicy (szacunek) przed wysłaniem zdjęcia",
+    "plateBlurHint": "Działa głównie na ujęciach „Przód lewy” i „Tył prawy”. To przybliżenie — numer może być nadal widoczny przy innym kadrze. Później dodamy ręczne dopasowanie obszaru; na razie możesz wyłączyć opcję i wgrać zdjęcie ponownie.",
     "photoCount": "{{count}} zdjęć",
     "quality": {
       "ready": "🟢 Gotowe",

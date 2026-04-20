@@ -4478,6 +4478,26 @@ tr.tier-row-none td:first-child {
   margin: 0;
   padding-left: 1.1rem;
 }
+.mvp-plate-blur {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+.mvp-plate-blur-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 0 0.35rem;
+}
+.mvp-plate-blur-row input {
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+.mvp-plate-blur-hint {
+  margin-top: 0;
+  line-height: 1.45;
+}
 .mvp-subhead {
   margin: 0 0 0.5rem;
   font-size: 1rem;

@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { compressImageToJpeg } from '../utils/imageCanvasCompress'
+import { applyHeuristicPlateBlurToJpegBlob, supportsHeuristicPlateBlur } from '../utils/imagePlateBlur'
 import {
   VEHICLE_PHOTO_LABELS_DB,
   VEHICLE_PHOTO_OPTIONAL,
@@ -9,6 +10,16 @@ import {
 } from '../utils/vehiclePhotoAngles'
 import { useVehiclePhotos } from '../hooks/useVehiclePhotos'
 import { PhotoFullscreenViewer } from './PhotoFullscreenViewer'
+
+const PLATE_BLUR_LS = 'flota_mvp_plate_blur_v1'
+
+function readPlateBlurPref() {
+  try {
+    return localStorage.getItem(PLATE_BLUR_LS) !== '0'
+  } catch {
+    return true
+  }
+}
 
 /**
  * @param {{
@@ -25,6 +36,7 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
   const [optOpen, setOptOpen] = useState(false)
   const [fsOpen, setFsOpen] = useState(false)
   const [fsIdx, setFsIdx] = useState(0)
+  const [blurPlate, setBlurPlate] = useState(() => readPlateBlurPref())
   const inputRef = useRef(null)
   const pendingAngleRef = useRef(null)
 
@@ -87,7 +99,10 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
       const ownerId = String(car.owner_id ?? userId)
       setBusyAngle(angleKey)
       try {
-        const blob = await compressImageToJpeg(file, { maxSide: 1200, quality: 0.85 })
+        let blob = await compressImageToJpeg(file, { maxSide: 1200, quality: 0.85 })
+        if (blurPlate && supportsHeuristicPlateBlur(angleKey)) {
+          blob = await applyHeuristicPlateBlurToJpegBlob(blob, { angleKey })
+        }
         const path = `${ownerId}/${car.id}/${angleKey}.jpg`
         const { error: upErr } = await supabase.storage.from('vehicle-photos').upload(path, blob, {
           contentType: 'image/jpeg',
@@ -137,7 +152,7 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
         setBusyAngle(null)
       }
     },
-    [car?.id, car?.owner_id, userId, refresh, onUpdated]
+    [car?.id, car?.owner_id, userId, refresh, onUpdated, blurPlate]
   )
 
   function openFsFromAngle(angleKey) {
@@ -216,6 +231,26 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
           <li>{t('marketplacePhotos.tip3')}</li>
           <li>{t('marketplacePhotos.tip4')}</li>
         </ul>
+      </div>
+
+      <div className="mvp-plate-blur card pad-lg">
+        <label className="mvp-plate-blur-row">
+          <input
+            type="checkbox"
+            checked={blurPlate}
+            onChange={(e) => {
+              const v = e.target.checked
+              setBlurPlate(v)
+              try {
+                localStorage.setItem(PLATE_BLUR_LS, v ? '1' : '0')
+              } catch {
+                /* ignore */
+              }
+            }}
+          />
+          <span>{t('marketplacePhotos.plateBlurCheckbox')}</span>
+        </label>
+        <p className="muted small mvp-plate-blur-hint mb-0">{t('marketplacePhotos.plateBlurHint')}</p>
       </div>
 
       <h3 className="mvp-subhead">
