@@ -113,6 +113,8 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
         const { data: pub } = supabase.storage.from('vehicle-photos').getPublicUrl(path)
         const publicUrl = pub?.publicUrl
         if (!publicUrl) throw new Error('publicUrl')
+        // Same storage path on re-upload → browsers cache the old image; bust cache via query on stored URL.
+        const photoUrlForDb = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}v=${Date.now()}`
 
         const labels = VEHICLE_PHOTO_LABELS_DB[angleKey]
         if (!labels) throw new Error('angle')
@@ -128,7 +130,7 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
           angle_key: angleKey,
           angle_label_pl: labels.pl,
           angle_label_uk: labels.uk,
-          photo_url: publicUrl,
+          photo_url: photoUrlForDb,
           is_primary: isPrimary,
         })
         if (insErr) throw insErr
@@ -136,7 +138,7 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
         if (isPrimary) {
           let cq = supabase
             .from('cars')
-            .update({ primary_photo_url: publicUrl, marketplace_photo_url: publicUrl })
+            .update({ primary_photo_url: photoUrlForDb, marketplace_photo_url: photoUrlForDb })
             .eq('id', car.id)
           cq = cq.eq('owner_id', userId)
           const { error: cErr } = await cq

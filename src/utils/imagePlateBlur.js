@@ -6,9 +6,9 @@
 
 /** @type {Readonly<Record<string, PlateBlurRectNorm>>} */
 const HEURISTIC_PRESETS = Object.freeze({
-  // Front / rear corners: plate usually in lower-center of frame (approximate).
-  front_left: { x: 0.08, y: 0.66, w: 0.84, h: 0.34 },
-  rear_right: { x: 0.08, y: 0.66, w: 0.84, h: 0.34 },
+  // Front / rear corners: plate usually lower-center (approximate; widened to catch more frames).
+  front_left: { x: 0.04, y: 0.55, w: 0.92, h: 0.45 },
+  rear_right: { x: 0.04, y: 0.55, w: 0.92, h: 0.45 },
 })
 
 /**
@@ -67,20 +67,25 @@ export async function applyHeuristicPlateBlurToJpegBlob(jpegBlob, opts) {
     if (!sctx) throw new Error('canvas')
     sctx.drawImage(canvas, rx, ry, rw, rh, 0, 0, rw, rh)
 
-    const factor = 12
-    const sw = Math.max(1, Math.round(rw / factor))
-    const sh = Math.max(1, Math.round(rh / factor))
-    const low = document.createElement('canvas')
-    low.width = sw
-    low.height = sh
-    const lctx = low.getContext('2d')
-    if (!lctx) throw new Error('canvas')
-    lctx.imageSmoothingEnabled = true
-    lctx.drawImage(strip, 0, 0, rw, rh, 0, 0, sw, sh)
-
-    sctx.clearRect(0, 0, rw, rh)
-    sctx.imageSmoothingEnabled = true
-    sctx.drawImage(low, 0, 0, sw, sh, 0, 0, rw, rh)
+    /** @param {number} factor */
+    const mosaicPass = (factor) => {
+      const sw = Math.max(1, Math.round(rw / factor))
+      const sh = Math.max(1, Math.round(rh / factor))
+      const low = document.createElement('canvas')
+      low.width = sw
+      low.height = sh
+      const lctx = low.getContext('2d')
+      if (!lctx) throw new Error('canvas')
+      lctx.imageSmoothingEnabled = true
+      lctx.imageSmoothingQuality = 'low'
+      lctx.drawImage(strip, 0, 0, rw, rh, 0, 0, sw, sh)
+      sctx.clearRect(0, 0, rw, rh)
+      sctx.imageSmoothingEnabled = true
+      sctx.imageSmoothingQuality = 'low'
+      sctx.drawImage(low, 0, 0, sw, sh, 0, 0, rw, rh)
+    }
+    mosaicPass(10)
+    mosaicPass(6)
 
     ctx.drawImage(strip, 0, 0, rw, rh, rx, ry, rw, rh)
 
