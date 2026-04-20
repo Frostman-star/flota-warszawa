@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -9,6 +9,9 @@ import { DriverProfileCard } from '../components/DriverProfileCard'
 export function OwnerApplications() {
   const { t } = useTranslation()
   const { user } = useAuth()
+  const [searchParams] = useSearchParams()
+  const carFilter = searchParams.get('carId')
+  const focusChat = searchParams.get('focus') === 'chat'
 
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
@@ -63,6 +66,40 @@ export function OwnerApplications() {
     void load()
   }, [load])
 
+  const filteredRows = useMemo(() => {
+    if (!carFilter) return rows
+    return rows.filter((r) => String(r.car_id ?? '') === carFilter)
+  }, [rows, carFilter])
+
+  const filterPlate = useMemo(() => {
+    const first = filteredRows[0]?.car?.plate_number
+    return first != null && String(first).trim() !== '' ? String(first) : '—'
+  }, [filteredRows])
+
+  /** @type {[Set<string>, import('react').Dispatch<import('react').SetStateAction<Set<string>>>]} */
+  const [chatReplyIds, setChatReplyIds] = useState(() => new Set())
+
+  useEffect(() => {
+    if (!carFilter || !user?.id) {
+      setChatReplyIds(new Set())
+      return
+    }
+    let cancelled = false
+    void supabase.rpc('owner_application_ids_needing_owner_reply_for_car', { p_car_id: carFilter }).then(({ data, error }) => {
+      if (cancelled) return
+      if (error) {
+        console.error(error)
+        setChatReplyIds(new Set())
+        return
+      }
+      const ids = new Set((data ?? []).map((x) => String(x.application_id)))
+      setChatReplyIds(ids)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [carFilter, user?.id, rows])
+
   const rejectApplication = useCallback(
     async (applicationId) => {
       if (!window.confirm(t('ownerApplications.confirmReject'))) return
@@ -85,13 +122,21 @@ export function OwnerApplications() {
 
   const grouped = useMemo(() => {
     const m = new Map()
-    for (const r of rows) {
+    for (const r of filteredRows) {
       const cid = String(r.car_id ?? '')
       if (!m.has(cid)) m.set(cid, { car: r.car, apps: [] })
       m.get(cid).apps.push(r)
     }
-    return [...m.values()]
-  }, [rows])
+    return [...m.values()].map((g) => {
+      if (!focusChat) return g
+      const appsSorted = [...g.apps].sort((a, b) => {
+        const ap = String(a.status || '') === 'pending' && chatReplyIds.has(String(a.id)) ? 0 : 1
+        const bp = String(b.status || '') === 'pending' && chatReplyIds.has(String(b.id)) ? 0 : 1
+        return ap - bp
+      })
+      return { ...g, apps: appsSorted }
+    })
+  }, [filteredRows, focusChat, chatReplyIds])
 
   return (
     <div className="page-simple owner-apps-page">
@@ -103,6 +148,19 @@ export function OwnerApplications() {
       <h1>{t('ownerApplications.title')}</h1>
       <p className="muted">{t('ownerApplications.lead')}</p>
 
+      {carFilter ? (
+        <p className="owner-apps-filter-banner muted small" role="status">
+          {focusChat
+            ? t('ownerApplications.filterCarChat', { plate: filterPlate })
+            : t('ownerApplications.filterCar', { plate: filterPlate })}{' '}
+          <Link to="/wnioski" className="link-strong">
+            {t('ownerApplications.clearCarFilter')}
+          </Link>
+        </p>
+      ) : null}
+
+      {focusChat && carFilter ? <p className="muted small owner-apps-chat-focus-hint">{t('ownerApplications.chatFocusHint')}</p> : null}
+
       {banner ? (
         <p className={banner.type === 'success' ? 'owner-apps-banner owner-apps-banner--ok' : 'form-error'} role="status">
           {banner.text}
@@ -112,7 +170,9 @@ export function OwnerApplications() {
       {loading ? <LoadingSpinner /> : null}
       {err ? <p className="form-error">{err}</p> : null}
 
-      {!loading && !err && rows.length === 0 ? <p className="muted">{t('ownerApplications.empty')}</p> : null}
+      {!loading && !err && filteredRows.length === 0 ? (
+        <p className="muted">{carFilter ? t('ownerApplications.emptyFiltered') : t('ownerApplications.empty')}</p>
+      ) : null}
 
       <div className="owner-apps-groups">
         {grouped.map((g) => {
@@ -151,8 +211,10 @@ export function OwnerApplications() {
                       : st === 'rejected'
                         ? t('driverApplications.statusRejected')
                         : t('driverApplications.statusPending')
+                  const needsChat = Boolean(carFilter) && String(app.status || '') === 'pending' && chatReplyIds.has(String(app.id))
                   return (
-                    <li key={app.id} className="owner-app-card">
+                    <li key={app.id} className={`owner-app-card${needsChat ? ' owner-app-card--chat-ping' : ''}`}>
+                      {needsChat ? <span className="owner-app-chat-ping">{t('ownerApplications.chatAwaitingReply')}</span> : null}
                       <span className={leadClass}>{t(`ownerApplications.leadSource.${lead}`)}</span>
                       <DriverProfileCard profile={profileForCard} showDocVerified className="owner-app-driver-card" />
                       <div className="owner-app-card-top owner-app-card-phone-row">

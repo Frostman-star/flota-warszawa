@@ -171,7 +171,12 @@
     "edit": "Edytuj",
     "delete": "Usuń",
     "confirmDelete": "Usunąć {{plate}}?",
-    "pendingApplicationsBadge": "Oczekujące zgłoszenia kierowców: {{count}}"
+    "pendingApplicationsBadge": "Oczekujące zgłoszenia kierowców: {{count}}",
+    "attentionLegend": "Na każdym aucie: 📋 wnioski z marketplace, 🤝 prośby współpracy, 💬 czat — ostatnia wiadomość od kierowcy (do odpowiedzi).",
+    "attentionFlagsAria": "Skróty uwagi dla tego auta",
+    "attentionAppsBadge": "Wnioski na to auto: {{count}}",
+    "attentionEmpBadge": "Prośby współpracy na to auto: {{count}}",
+    "attentionChatBadge": "Czat wymaga Twojej odpowiedzi: {{count}} wątków"
   },
   "alerts": {
     "title": "Alerty",
@@ -818,7 +823,10 @@
       "completed": "Zakończone",
       "cancelled_by_driver": "Anulowane przez kierowcę",
       "rejected_by_owner": "Odrzucone przez właściciela"
-    }
+    },
+    "filterCar": "Filtr: auto {{plate}}.",
+    "clearCarFilter": "Pokaż wszystkie",
+    "emptyFiltered": "Brak próśb dla wybranego auta."
   },
   "driverApplications": {
     "title": "Moje wnioski",
@@ -854,7 +862,13 @@
     "rejectedFlash": "Wniosek odrzucony.",
     "confirmReject": "Odrzucić ten wniosek? Kierowca zobaczy status „odrzucony”.",
     "acceptBusy": "Przetwarzanie…",
-    "rejectBusy": "Przetwarzanie…"
+    "rejectBusy": "Przetwarzanie…",
+    "filterCar": "Filtr: auto {{plate}}.",
+    "filterCarChat": "Filtr: auto {{plate}} — priorytet czatu (odpowiedz kierowcy).",
+    "clearCarFilter": "Pokaż wszystkie auta",
+    "chatFocusHint": "Karty z etykietą poniżej to wątki, gdzie ostatnia wiadomość jest od kierowcy.",
+    "emptyFiltered": "Brak pozycji dla wybranego auta.",
+    "chatAwaitingReply": "Odpowiedz w czacie"
   },
   "applicationChat": {
     "title": "Czat wokół wniosku",

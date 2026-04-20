@@ -1994,6 +1994,7 @@ tr.tier-row-none td:first-child {
   gap: 1rem;
 }
 .car-tile {
+  position: relative;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--bg-card);
@@ -2005,6 +2006,54 @@ tr.tier-row-none td:first-child {
   padding: 1rem 1rem 0.75rem;
   color: inherit;
   text-decoration: none;
+}
+.fleet-attention-legend {
+  margin: 0 0 0.75rem;
+}
+.fleet-attention-flags {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  max-width: calc(100% - 1rem);
+}
+.fleet-attn-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  min-height: 22px;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-decoration: none;
+  color: #fff;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.fleet-attn-flag:hover {
+  filter: brightness(1.06);
+  color: #fff;
+}
+.fleet-attn-flag--apps {
+  background: #dc2626;
+}
+.fleet-attn-flag--emp {
+  background: #b45309;
+}
+.fleet-attn-flag--chat {
+  background: #2563eb;
+}
+.fleet-attn-flag-emoji {
+  font-size: 12px;
+  line-height: 1;
+}
+.fleet-attn-flag-num {
+  font-variant-numeric: tabular-nums;
 }
 .fleet-pending-badge {
   position: absolute;
@@ -3234,6 +3283,31 @@ tr.tier-row-none td:first-child {
   flex-direction: column;
   gap: 0.15rem;
   margin-bottom: 0.75rem;
+}
+.owner-apps-filter-banner {
+  margin: 0.5rem 0 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: rgba(37, 99, 235, 0.08);
+}
+.owner-apps-chat-focus-hint {
+  margin: 0 0 0.75rem;
+}
+.owner-app-card--chat-ping {
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
+}
+.owner-app-chat-ping {
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(37, 99, 235, 0.18);
+  color: #1e3a8a;
 }
 .owner-app-card {
   border: 1px solid var(--border);

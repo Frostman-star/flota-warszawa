@@ -171,7 +171,12 @@
     "edit": "Edit",
     "delete": "Delete",
     "confirmDelete": "Delete {{plate}}?",
-    "pendingApplicationsBadge": "Pending driver applications: {{count}}"
+    "pendingApplicationsBadge": "Pending driver applications: {{count}}",
+    "attentionLegend": "On each car: 📋 marketplace applications, 🤝 cooperation requests, 💬 chat where the driver sent the last message (needs your reply).",
+    "attentionFlagsAria": "Attention shortcuts for this car",
+    "attentionAppsBadge": "Applications for this car: {{count}}",
+    "attentionEmpBadge": "Cooperation requests for this car: {{count}}",
+    "attentionChatBadge": "Chat needs your reply: {{count}} threads"
   },
   "alerts": {
     "title": "Alerts",
@@ -818,7 +823,10 @@
       "completed": "Completed",
       "cancelled_by_driver": "Cancelled by driver",
       "rejected_by_owner": "Declined by owner"
-    }
+    },
+    "filterCar": "Filter: car {{plate}}.",
+    "clearCarFilter": "Show all",
+    "emptyFiltered": "No requests for the selected car."
   },
   "driverApplications": {
     "title": "My applications",
@@ -854,7 +862,13 @@
     "rejectedFlash": "Application rejected.",
     "confirmReject": "Reject this application? The driver will see it as rejected.",
     "acceptBusy": "Processing…",
-    "rejectBusy": "Processing…"
+    "rejectBusy": "Processing…",
+    "filterCar": "Filter: car {{plate}}.",
+    "filterCarChat": "Filter: car {{plate}} — chat priority (reply to the driver).",
+    "clearCarFilter": "Show all cars",
+    "chatFocusHint": "Cards labelled below are threads where the last message is from the driver.",
+    "emptyFiltered": "Nothing for the selected car.",
+    "chatAwaitingReply": "Reply in chat"
   },
   "applicationChat": {
     "title": "Application chat",

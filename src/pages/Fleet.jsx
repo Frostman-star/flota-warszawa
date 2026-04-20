@@ -10,6 +10,8 @@ import { useDrivers } from '../hooks/useDrivers'
 import { useAuth } from '../context/AuthContext'
 import { localeTag } from '../utils/localeTag'
 
+/** @typedef {{ pendingApps: number; pendingEmployment: number; chatAttention: number; chatFirstAppId: string | null }} CarAttention */
+
 export function Fleet() {
   const { t, i18n } = useTranslation()
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
@@ -19,35 +21,59 @@ export function Fleet() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState(null)
   const [q, setQ] = useState('')
-  /** @type {[Record<string, number>, import('react').Dispatch<import('react').SetStateAction<Record<string, number>>>]} */
-  const [pendingByCarId, setPendingByCarId] = useState({})
+  /** @type {[Record<string, CarAttention>, import('react').Dispatch<import('react').SetStateAction<Record<string, CarAttention>>>]} */
+  const [attentionByCarId, setAttentionByCarId] = useState({})
 
   useEffect(() => {
     const ids = (cars ?? []).map((c) => c.id).filter(Boolean)
     if (!ids.length || !user?.id) {
-      setPendingByCarId({})
+      setAttentionByCarId({})
       return
     }
     let cancelled = false
     void (async () => {
-      const { data, error } = await supabase
-        .from('driver_applications')
-        .select('car_id')
-        .eq('status', 'pending')
-        .eq('owner_id', user.id)
-        .in('car_id', ids)
+      const { data, error: rpcErr } = await supabase.rpc('owner_fleet_car_attention_counts', { p_car_ids: ids })
       if (cancelled) return
-      if (error) {
-        console.error(error)
-        setPendingByCarId({})
+      if (rpcErr) {
+        console.error(rpcErr)
+        const { data: rows, error: appErr } = await supabase
+          .from('driver_applications')
+          .select('car_id')
+          .eq('status', 'pending')
+          .eq('owner_id', user.id)
+          .in('car_id', ids)
+        if (cancelled) return
+        if (appErr) {
+          console.error(appErr)
+          setAttentionByCarId({})
+          return
+        }
+        const m = /** @type {Record<string, CarAttention>} */ ({})
+        for (const id of ids) {
+          m[String(id)] = { pendingApps: 0, pendingEmployment: 0, chatAttention: 0, chatFirstAppId: null }
+        }
+        for (const row of rows ?? []) {
+          const id = String(row.car_id)
+          if (!m[id]) m[id] = { pendingApps: 0, pendingEmployment: 0, chatAttention: 0, chatFirstAppId: null }
+          m[id].pendingApps += 1
+        }
+        setAttentionByCarId(m)
         return
       }
-      const m = {}
+      const m = /** @type {Record<string, CarAttention>} */ ({})
+      for (const id of ids) {
+        m[String(id)] = { pendingApps: 0, pendingEmployment: 0, chatAttention: 0, chatFirstAppId: null }
+      }
       for (const row of data ?? []) {
         const id = String(row.car_id)
-        m[id] = (m[id] ?? 0) + 1
+        m[id] = {
+          pendingApps: Number(row.pending_apps ?? 0),
+          pendingEmployment: Number(row.pending_employment ?? 0),
+          chatAttention: Number(row.chat_attention ?? 0),
+          chatFirstAppId: row.chat_first_app_id != null ? String(row.chat_first_app_id) : null,
+        }
       }
-      setPendingByCarId(m)
+      setAttentionByCarId(m)
     })()
     return () => {
       cancelled = true
@@ -79,18 +105,60 @@ export function Fleet() {
     <div className="page-simple">
       <p className="muted small"><Link to="/panel" className="link">← {t('app.panel')}</Link></p>
       <h1>{t('fleet.title')}</h1>
+      <p className="muted small fleet-attention-legend">{t('fleet.attentionLegend')}</p>
       <input className="input input-xl fleet-search-simple" type="search" placeholder={t('fleet.search')} value={q} onChange={(e) => setQ(e.target.value)} aria-label={t('app.search')} />
       <div className="car-card-grid">
         {list.map((car) => {
-          const pendingCount = pendingByCarId[String(car.id)] ?? 0
+          const cid = String(car.id)
+          const a = attentionByCarId[cid] ?? {
+            pendingApps: 0,
+            pendingEmployment: 0,
+            chatAttention: 0,
+            chatFirstAppId: null,
+          }
+          const chatHref =
+            a.chatAttention > 0
+              ? a.chatAttention === 1 && a.chatFirstAppId
+                ? `/rozmowa-wniosek/${a.chatFirstAppId}`
+                : `/wnioski?carId=${encodeURIComponent(cid)}&focus=chat`
+              : null
           return (
             <article key={car.id} className="car-tile">
-              <Link to={carPath(String(car.id), true)} className="car-tile-link">
-                {pendingCount > 0 ? (
-                  <span className="fleet-pending-badge" aria-label={t('fleet.pendingApplicationsBadge', { count: pendingCount })}>
-                    {pendingCount > 99 ? '99+' : pendingCount}
-                  </span>
+              <div className="fleet-attention-flags" aria-label={t('fleet.attentionFlagsAria')}>
+                {a.pendingApps > 0 ? (
+                  <Link
+                    to={`/wnioski?carId=${encodeURIComponent(cid)}`}
+                    className="fleet-attn-flag fleet-attn-flag--apps"
+                    aria-label={t('fleet.attentionAppsBadge', { count: a.pendingApps })}
+                  >
+                    <span className="fleet-attn-flag-emoji" aria-hidden>
+                      📋
+                    </span>
+                    <span className="fleet-attn-flag-num">{a.pendingApps > 99 ? '99+' : a.pendingApps}</span>
+                  </Link>
                 ) : null}
+                {a.pendingEmployment > 0 ? (
+                  <Link
+                    to={`/zapytania-kierowcow?carId=${encodeURIComponent(cid)}`}
+                    className="fleet-attn-flag fleet-attn-flag--emp"
+                    aria-label={t('fleet.attentionEmpBadge', { count: a.pendingEmployment })}
+                  >
+                    <span className="fleet-attn-flag-emoji" aria-hidden>
+                      🤝
+                    </span>
+                    <span className="fleet-attn-flag-num">{a.pendingEmployment > 99 ? '99+' : a.pendingEmployment}</span>
+                  </Link>
+                ) : null}
+                {a.chatAttention > 0 && chatHref ? (
+                  <Link to={chatHref} className="fleet-attn-flag fleet-attn-flag--chat" aria-label={t('fleet.attentionChatBadge', { count: a.chatAttention })}>
+                    <span className="fleet-attn-flag-emoji" aria-hidden>
+                      💬
+                    </span>
+                    <span className="fleet-attn-flag-num">{a.chatAttention > 99 ? '99+' : a.chatAttention}</span>
+                  </Link>
+                ) : null}
+              </div>
+              <Link to={carPath(String(car.id), true)} className="car-tile-link">
                 <div className="car-mobile-card-head">
                   <p className="car-tile-plate">{car.plate_number}</p>
                   <p className="car-tile-rent">{Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}<span className="car-tile-rent-suffix"> {t('fleet.rentSuffix')}</span></p>

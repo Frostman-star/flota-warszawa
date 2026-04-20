@@ -171,7 +171,12 @@
     "edit": "Редагувати",
     "delete": "Видалити",
     "confirmDelete": "Видалити {{plate}}?",
-    "pendingApplicationsBadge": "Очікуючі заявки водіїв: {{count}}"
+    "pendingApplicationsBadge": "Очікуючі заявки водіїв: {{count}}",
+    "attentionLegend": "На кожному авто: 📋 заявки з маркетплейсу, 🤝 запити щодо співпраці, 💬 чат, де останнє повідомлення від водія (треба відповісти).",
+    "attentionFlagsAria": "Короткі позначки уваги для цього авто",
+    "attentionAppsBadge": "Заявки на це авто: {{count}}",
+    "attentionEmpBadge": "Запити співпраці на це авто: {{count}}",
+    "attentionChatBadge": "У чаті чекає відповідь: {{count}} тредів"
   },
   "alerts": {
     "title": "Попередження",
@@ -818,7 +823,10 @@
       "completed": "Завершено",
       "cancelled_by_driver": "Скасовано водієм",
       "rejected_by_owner": "Відхилено власником"
-    }
+    },
+    "filterCar": "Фільтр: авто {{plate}}.",
+    "clearCarFilter": "Показати всі",
+    "emptyFiltered": "Немає запитів для обраного авто."
   },
   "driverApplications": {
     "title": "Мої заявки",
@@ -854,7 +862,13 @@
     "rejectedFlash": "Заявку відхилено.",
     "confirmReject": "Відхилити цю заявку? Водій побачить статус «відхилено».",
     "acceptBusy": "Обробка…",
-    "rejectBusy": "Обробка…"
+    "rejectBusy": "Обробка…",
+    "filterCar": "Фільтр: авто {{plate}}.",
+    "filterCarChat": "Фільтр: авто {{plate}} — пріоритет чату (відповідь водію).",
+    "clearCarFilter": "Показати всі авто",
+    "chatFocusHint": "Картки з позначкою нижче — треди, де останнє повідомлення від водія.",
+    "emptyFiltered": "Немає записів для обраного авто.",
+    "chatAwaitingReply": "Відповісти в чаті"
   },
   "applicationChat": {
     "title": "Чат за заявкою",

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
@@ -9,6 +9,8 @@ import { useOwnerPendingEmploymentRequestCount } from '../hooks/useOwnerPendingE
 export function OwnerEmploymentRequests() {
   const { t } = useTranslation()
   const { user } = useAuth()
+  const [searchParams] = useSearchParams()
+  const carFilter = searchParams.get('carId')
   const { refresh: refreshCount } = useOwnerPendingEmploymentRequestCount(user?.id, Boolean(user?.id))
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
@@ -25,6 +27,7 @@ export function OwnerEmploymentRequests() {
       .select(
         `
         id,
+        car_id,
         kind,
         reason_code,
         reason_note,
@@ -73,6 +76,16 @@ export function OwnerEmploymentRequests() {
     [load, refreshCount, t]
   )
 
+  const visibleRows = useMemo(() => {
+    if (!carFilter) return rows
+    return rows.filter((r) => String(r.car_id ?? '') === carFilter)
+  }, [rows, carFilter])
+
+  const filterPlate = useMemo(() => {
+    const first = visibleRows[0]?.car?.plate_number
+    return first != null && String(first).trim() !== '' ? String(first) : '—'
+  }, [visibleRows])
+
   return (
     <div className="page-simple owner-employment-page">
       <p className="muted small">
@@ -83,6 +96,15 @@ export function OwnerEmploymentRequests() {
       <h1>{t('employmentRequests.title')}</h1>
       <p className="muted">{t('employmentRequests.lead')}</p>
 
+      {carFilter ? (
+        <p className="owner-apps-filter-banner muted small" role="status">
+          {t('employmentRequests.filterCar', { plate: filterPlate })}{' '}
+          <Link to="/zapytania-kierowcow" className="link-strong">
+            {t('employmentRequests.clearCarFilter')}
+          </Link>
+        </p>
+      ) : null}
+
       {banner ? (
         <p className={banner.type === 'success' ? 'owner-apps-banner owner-apps-banner--ok' : 'form-error'} role="status">
           {banner.text}
@@ -92,10 +114,12 @@ export function OwnerEmploymentRequests() {
       {loading ? <LoadingSpinner /> : null}
       {err ? <p className="form-error">{err}</p> : null}
 
-      {!loading && !err && rows.length === 0 ? <p className="muted">{t('employmentRequests.empty')}</p> : null}
+      {!loading && !err && visibleRows.length === 0 ? (
+        <p className="muted">{carFilter ? t('employmentRequests.emptyFiltered') : t('employmentRequests.empty')}</p>
+      ) : null}
 
       <ul className="owner-employment-list">
-        {rows.map((row) => {
+        {visibleRows.map((row) => {
           const plate = row.car?.plate_number != null ? String(row.car.plate_number) : '—'
           const driverName = row.driver?.full_name != null ? String(row.driver.full_name) : '—'
           const phone = row.driver?.phone != null ? String(row.driver.phone).trim() : ''
