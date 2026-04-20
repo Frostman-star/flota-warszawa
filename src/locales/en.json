@@ -772,7 +772,7 @@
   },
   "ownerApplications": {
     "title": "Driver applications",
-    "lead": "Driver applications log (read-only).",
+    "lead": "Review applications, chat with drivers, accept or reject.",
     "empty": "No applications yet.",
     "openChat": "💬 Chat",
     "leadSource": {
@@ -791,7 +791,10 @@
     "reassignBody": "This driver is already assigned to another vehicle: {{plate}}. Are you sure you want to move them here?",
     "confirmReassign": "Yes, reassign",
     "cancelReassign": "Cancel",
-    "rejectedFlash": "Application rejected."
+    "rejectedFlash": "Application rejected.",
+    "confirmReject": "Reject this application? The driver will see it as rejected.",
+    "acceptBusy": "Processing…",
+    "rejectBusy": "Processing…"
   },
   "applicationChat": {
     "title": "Application chat",

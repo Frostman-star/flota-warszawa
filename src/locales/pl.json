@@ -772,7 +772,7 @@
   },
   "ownerApplications": {
     "title": "Wnioski kierowców",
-    "lead": "Log zgłoszeń kierowców (tylko podgląd).",
+    "lead": "Przeglądaj zgłoszenia, czatuj z kierowcą, przyjmij lub odrzuć wniosek.",
     "empty": "Brak zgłoszeń.",
     "openChat": "💬 Czat",
     "leadSource": {
@@ -791,7 +791,10 @@
     "reassignBody": "Ten kierowca jest już przypisany do innego auta: {{plate}}. Czy na pewno chcesz go przepisać?",
     "confirmReassign": "Tak, przepisz",
     "cancelReassign": "Anuluj",
-    "rejectedFlash": "Wniosek odrzucony."
+    "rejectedFlash": "Wniosek odrzucony.",
+    "confirmReject": "Odrzucić ten wniosek? Kierowca zobaczy status „odrzucony”.",
+    "acceptBusy": "Przetwarzanie…",
+    "rejectBusy": "Przetwarzanie…"
   },
   "applicationChat": {
     "title": "Czat wokół wniosku",

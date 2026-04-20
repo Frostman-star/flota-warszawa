@@ -13,6 +13,9 @@ export function OwnerApplications() {
   const [rows, setRows] = useState([])
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState(null)
+  const [banner, setBanner] = useState(/** @type {{ type: 'success' | 'error'; text: string } | null} */ (null))
+  /** @type {[string | null, import('react').Dispatch<import('react').SetStateAction<string | null>>]} */
+  const [actionBusyId, setActionBusyId] = useState(null)
 
   const load = useCallback(async () => {
     if (!user?.id) return
@@ -60,6 +63,58 @@ export function OwnerApplications() {
     void load()
   }, [load])
 
+  const acceptApplication = useCallback(
+    async (applicationId) => {
+      setActionBusyId(applicationId)
+      setBanner(null)
+      try {
+        const { data: existing, error: peekErr } = await supabase.rpc('get_driver_current_assignment_for_application', {
+          p_application_id: applicationId,
+        })
+        if (peekErr) throw peekErr
+        const row = Array.isArray(existing) ? existing[0] : null
+        const otherPlate = row?.plate != null ? String(row.plate).trim() : ''
+        if (otherPlate) {
+          const ok = window.confirm(t('ownerApplications.reassignBody', { plate: otherPlate }))
+          if (!ok) {
+            setActionBusyId(null)
+            return
+          }
+        }
+        const { error } = await supabase.rpc('accept_driver_application', { p_application_id: applicationId })
+        if (error) throw error
+        setBanner({ type: 'success', text: t('ownerApplications.acceptSuccess') })
+        await load()
+      } catch (e) {
+        console.error(e)
+        setBanner({ type: 'error', text: e?.message ?? String(e) })
+      } finally {
+        setActionBusyId(null)
+      }
+    },
+    [load, t]
+  )
+
+  const rejectApplication = useCallback(
+    async (applicationId) => {
+      if (!window.confirm(t('ownerApplications.confirmReject'))) return
+      setActionBusyId(applicationId)
+      setBanner(null)
+      try {
+        const { error } = await supabase.rpc('reject_driver_application', { p_application_id: applicationId })
+        if (error) throw error
+        setBanner({ type: 'success', text: t('ownerApplications.rejectedFlash') })
+        await load()
+      } catch (e) {
+        console.error(e)
+        setBanner({ type: 'error', text: e?.message ?? String(e) })
+      } finally {
+        setActionBusyId(null)
+      }
+    },
+    [load, t]
+  )
+
   const grouped = useMemo(() => {
     const m = new Map()
     for (const r of rows) {
@@ -79,6 +134,12 @@ export function OwnerApplications() {
       </p>
       <h1>{t('ownerApplications.title')}</h1>
       <p className="muted">{t('ownerApplications.lead')}</p>
+
+      {banner ? (
+        <p className={banner.type === 'success' ? 'owner-apps-banner owner-apps-banner--ok' : 'form-error'} role="status">
+          {banner.text}
+        </p>
+      ) : null}
 
       {loading ? <LoadingSpinner /> : null}
       {err ? <p className="form-error">{err}</p> : null}
@@ -140,6 +201,26 @@ export function OwnerApplications() {
                         {app.created_at ? new Date(app.created_at).toLocaleString() : ''}
                       </p>
                       <div className="owner-app-actions">
+                        {st === 'pending' ? (
+                          <>
+                            <button
+                              type="button"
+                              className="btn small owner-app-accept"
+                              disabled={Boolean(actionBusyId)}
+                              onClick={() => void acceptApplication(app.id)}
+                            >
+                              {actionBusyId === app.id ? t('ownerApplications.acceptBusy') : t('ownerApplications.accept')}
+                            </button>
+                            <button
+                              type="button"
+                              className="btn small ghost owner-app-reject"
+                              disabled={Boolean(actionBusyId)}
+                              onClick={() => void rejectApplication(app.id)}
+                            >
+                              {actionBusyId === app.id ? t('ownerApplications.rejectBusy') : t('ownerApplications.reject')}
+                            </button>
+                          </>
+                        ) : null}
                         <Link className="btn ghost small" to={`/rozmowa-wniosek/${app.id}`}>
                           {t('ownerApplications.openChat')}
                         </Link>
