@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { defaultPlateBlurRectNorm } from '../utils/imagePlateBlur'
 
@@ -232,11 +233,26 @@ export function VehiclePhotoPlatePreviewModal({ open, jpegBlob, angleKey, busy =
     })
   }, [cw, ch, onConfirm, busy])
 
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [open])
+
   if (!open) return null
 
-  return (
-    <div className="modal-backdrop" role="presentation">
-      <div className="modal-card card pad-lg plate-preview-modal" role="dialog" aria-modal="true" aria-labelledby="plate-prev-title">
+  return createPortal(
+    <div className="modal-backdrop plate-preview-backdrop" role="presentation">
+      <div
+        className="modal-card card pad-lg plate-preview-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="plate-prev-title"
+        onPointerDown={(e) => e.stopPropagation()}
+      >
         <h2 id="plate-prev-title" className="modal-title">
           {t('marketplacePhotos.platePreviewTitle')}
         </h2>
@@ -276,6 +292,7 @@ export function VehiclePhotoPlatePreviewModal({ open, jpegBlob, angleKey, busy =
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

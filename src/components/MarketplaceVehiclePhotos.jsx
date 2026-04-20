@@ -312,7 +312,6 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
         ref={inputRef}
         type="file"
         accept="image/*"
-        capture="environment"
         className="sr-only"
         aria-hidden
         tabIndex={-1}

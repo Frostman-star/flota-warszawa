@@ -637,6 +637,11 @@ a:hover {
   z-index: 80;
 }
 
+/* Plate blur preview: portal to body + above mobile chrome / nested overflow contexts */
+.plate-preview-backdrop {
+  z-index: 2200;
+}
+
 .modal-panel {
   width: min(720px, 100%);
   max-height: min(92vh, 900px);

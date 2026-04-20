@@ -218,7 +218,7 @@ export function HandoverWizard({ open, onClose, car, ownerId, onSaved }) {
 
   return createPortal(
     <div className="handover-wizard-backdrop">
-      <input ref={fileRef} type="file" accept="image/*" capture="environment" className="sr-only" onChange={onFileChange} />
+      <input ref={fileRef} type="file" accept="image/*" className="sr-only" onChange={onFileChange} />
       <div className="handover-wizard-panel">
         <div className="handover-wizard-top">
           <button type="button" className="btn ghost handover-wizard-x" onClick={onClose} disabled={busy}>
