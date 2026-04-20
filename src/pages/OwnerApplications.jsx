@@ -24,6 +24,7 @@ export function OwnerApplications() {
         `
         id,
         status,
+        lead_source,
         created_at,
         driver_message,
         driver_name,
@@ -109,8 +110,21 @@ export function OwnerApplications() {
                     poland_status_doc_url: d?.poland_status_doc_url,
                     avatar_url: d?.avatar_url,
                   }
+                  const lead = String(app.lead_source || 'unknown')
+                  const leadClass =
+                    lead === 'cario_marketplace'
+                      ? 'owner-app-lead owner-app-lead--marketplace'
+                      : 'owner-app-lead owner-app-lead--other'
+                  const st = String(app.status || 'pending')
+                  const statusLabel =
+                    st === 'accepted'
+                      ? t('driverApplications.statusAccepted')
+                      : st === 'rejected'
+                        ? t('driverApplications.statusRejected')
+                        : t('driverApplications.statusPending')
                   return (
                     <li key={app.id} className="owner-app-card">
+                      <span className={leadClass}>{t(`ownerApplications.leadSource.${lead}`)}</span>
                       <DriverProfileCard profile={profileForCard} showDocVerified className="owner-app-driver-card" />
                       <div className="owner-app-card-top owner-app-card-phone-row">
                         {phone ? (
@@ -125,7 +139,12 @@ export function OwnerApplications() {
                       <p className="muted tiny">
                         {app.created_at ? new Date(app.created_at).toLocaleString() : ''}
                       </p>
-                      <span className="status-pill status-pill--pending">✓ {t('ownerApplications.sentStatus')}</span>
+                      <div className="owner-app-actions">
+                        <Link className="btn ghost small" to={`/rozmowa-wniosek/${app.id}`}>
+                          {t('ownerApplications.openChat')}
+                        </Link>
+                      </div>
+                      <span className={`status-pill status-pill--${st}`}>{statusLabel}</span>
                     </li>
                   )
                 })}

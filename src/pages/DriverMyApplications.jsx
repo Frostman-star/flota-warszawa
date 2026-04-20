@@ -31,6 +31,7 @@ export function DriverMyApplications() {
         `
         id,
         status,
+        lead_source,
         created_at,
         driver_message,
         car:cars ( plate_number, model, year )
@@ -81,6 +82,11 @@ export function DriverMyApplications() {
           const plate = car?.plate_number != null ? String(car.plate_number) : '—'
           const model = [car?.model, car?.year].filter(Boolean).join(' ')
           const sm = statusMeta(t, row.status)
+          const lead = String(row.lead_source || 'unknown')
+          const leadClass =
+            lead === 'cario_marketplace'
+              ? 'owner-app-lead owner-app-lead--marketplace'
+              : 'owner-app-lead owner-app-lead--other'
           return (
             <li key={row.id} className="card pad-lg driver-app-card">
               <div className="driver-app-card-head">
@@ -89,11 +95,17 @@ export function DriverMyApplications() {
                   {sm.emoji} {sm.label}
                 </span>
               </div>
+              <span className={leadClass}>{t(`ownerApplications.leadSource.${lead}`)}</span>
               {model ? <p className="muted small">{model}</p> : null}
               {row.driver_message ? <p className="driver-app-msg">{String(row.driver_message)}</p> : null}
               <p className="muted tiny">
                 {row.created_at ? new Date(row.created_at).toLocaleString() : ''}
               </p>
+              <div className="owner-app-actions">
+                <Link className="btn ghost small" to={`/rozmowa-wniosek/${row.id}`}>
+                  {t('driverApplications.openChat')}
+                </Link>
+              </div>
             </li>
           )
         })}

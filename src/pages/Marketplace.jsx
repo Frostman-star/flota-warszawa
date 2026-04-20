@@ -330,6 +330,7 @@ export function Marketplace() {
         driver_id: user.id,
         owner_id: ownerId,
         status: 'pending',
+        lead_source: 'cario_marketplace',
         driver_name: String(profile.full_name ?? '').trim(),
         driver_phone: String(profile.phone ?? '').trim(),
         driver_message: applyMessage.trim() || null,

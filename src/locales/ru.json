@@ -767,12 +767,20 @@
     "empty": "Вы ещё не отправляли заявок.",
     "statusPending": "Отправлено ✓",
     "statusAccepted": "Принято",
-    "statusRejected": "Отклонено"
+    "statusRejected": "Отклонено",
+    "openChat": "💬 Чат"
   },
   "ownerApplications": {
     "title": "Заявки водителей",
     "lead": "Журнал заявок водителей (только просмотр).",
     "empty": "Заявок пока нет.",
+    "openChat": "💬 Чат",
+    "leadSource": {
+      "cario_marketplace": "Лид с Cario Marketplace",
+      "cario_fleet_profile": "Лид с профиля флота Cario",
+      "cario_direct": "Лид по ссылке Cario",
+      "unknown": "Источник: неизвестно"
+    },
     "sentStatus": "Отправлено",
     "accept": "✅ Принять",
     "reject": "❌ Отклонить",
@@ -784,6 +792,17 @@
     "confirmReassign": "Да, переназначить",
     "cancelReassign": "Отмена",
     "rejectedFlash": "Заявка отклонена."
+  },
+  "applicationChat": {
+    "title": "Чат по заявке",
+    "leadBadgeTitle": "Откуда контакт (атрибуция лида)",
+    "empty": "Сообщений пока нет — напишите первое.",
+    "placeholder": "Сообщение…",
+    "send": "Отправить",
+    "sending": "Отправка…",
+    "closed": "Заявка закрыта — чат только для чтения.",
+    "backDriver": "← Мои заявки",
+    "backOwner": "← Заявки водителей"
   },
   "noteModal": {
     "title": "Заметка",

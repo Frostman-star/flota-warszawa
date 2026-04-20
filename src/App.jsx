@@ -24,6 +24,7 @@ import { AuthCallback } from './pages/AuthCallback'
 import { RoleSelection } from './pages/RoleSelection'
 import { PublicFleetProfile } from './pages/PublicFleetProfile'
 import { Favorites } from './pages/Favorites'
+import { ApplicationChatPage } from './pages/ApplicationChatPage'
 
 export default function App() {
   return (
@@ -63,6 +64,7 @@ export default function App() {
         <Route path="/obrane" element={<Favorites />} />
         <Route path="/profil" element={<DriverProfile />} />
         <Route path="/moje-wnioski" element={<DriverMyApplications />} />
+        <Route path="/rozmowa-wniosek/:applicationId" element={<ApplicationChatPage />} />
       </Route>
       <Route
         element={
@@ -79,6 +81,7 @@ export default function App() {
         <Route path="/serwisy" element={<Services />} />
         <Route path="/ustawienia" element={<Settings />} />
         <Route path="/wnioski" element={<OwnerApplications />} />
+        <Route path="/rozmowa-wniosek/:applicationId" element={<ApplicationChatPage />} />
         <Route path="/pojazd/:id" element={<CarPageShell nestInAdminLayout />}>
           <Route index element={<CarDetail />} />
         </Route>

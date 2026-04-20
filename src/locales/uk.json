@@ -767,12 +767,20 @@
     "empty": "Ви ще не надсилали заявок.",
     "statusPending": "Надіслано ✓",
     "statusAccepted": "Прийнято",
-    "statusRejected": "Відхилено"
+    "statusRejected": "Відхилено",
+    "openChat": "💬 Чат"
   },
   "ownerApplications": {
     "title": "Заявки водіїв",
     "lead": "Журнал заявок водіїв (лише перегляд).",
     "empty": "Заявок поки немає.",
+    "openChat": "💬 Чат",
+    "leadSource": {
+      "cario_marketplace": "Лід з Cario Marketplace",
+      "cario_fleet_profile": "Лід з профілю флоти Cario",
+      "cario_direct": "Лід з посилання Cario",
+      "unknown": "Джерело: невідомо"
+    },
     "sentStatus": "Надіслано",
     "accept": "✅ Прийняти",
     "reject": "❌ Відхилити",
@@ -784,6 +792,17 @@
     "confirmReassign": "Так, перепризначити",
     "cancelReassign": "Скасувати",
     "rejectedFlash": "Заявку відхилено."
+  },
+  "applicationChat": {
+    "title": "Чат за заявкою",
+    "leadBadgeTitle": "Звідки контакт (атрибуція ліда)",
+    "empty": "Повідомлень ще немає — напишіть перше.",
+    "placeholder": "Повідомлення…",
+    "send": "Надіслати",
+    "sending": "Надсилання…",
+    "closed": "Заявку закрито — чат лише для перегляду.",
+    "backDriver": "← Мої заявки",
+    "backOwner": "← Заявки водіїв"
   },
   "noteModal": {
     "title": "Нотатка",

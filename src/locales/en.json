@@ -767,12 +767,20 @@
     "empty": "You have not sent any applications yet.",
     "statusPending": "Sent ✓",
     "statusAccepted": "Accepted",
-    "statusRejected": "Rejected"
+    "statusRejected": "Rejected",
+    "openChat": "💬 Chat"
   },
   "ownerApplications": {
     "title": "Driver applications",
     "lead": "Driver applications log (read-only).",
     "empty": "No applications yet.",
+    "openChat": "💬 Chat",
+    "leadSource": {
+      "cario_marketplace": "Lead from Cario Marketplace",
+      "cario_fleet_profile": "Lead from Cario fleet profile",
+      "cario_direct": "Lead from Cario link",
+      "unknown": "Source: unknown"
+    },
     "sentStatus": "Sent",
     "accept": "✅ Accept",
     "reject": "❌ Reject",
@@ -784,6 +792,17 @@
     "confirmReassign": "Yes, reassign",
     "cancelReassign": "Cancel",
     "rejectedFlash": "Application rejected."
+  },
+  "applicationChat": {
+    "title": "Application chat",
+    "leadBadgeTitle": "Where this contact came from (lead attribution)",
+    "empty": "No messages yet — write the first one.",
+    "placeholder": "Message…",
+    "send": "Send",
+    "sending": "Sending…",
+    "closed": "This application is closed — chat is read-only.",
+    "backDriver": "← My applications",
+    "backOwner": "← Driver applications"
   },
   "noteModal": {
     "title": "Note",

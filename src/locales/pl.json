@@ -767,12 +767,20 @@
     "empty": "Nie wysłałeś jeszcze żadnego wniosku.",
     "statusPending": "Wysłane ✓",
     "statusAccepted": "Przyjęty",
-    "statusRejected": "Odrzucony"
+    "statusRejected": "Odrzucony",
+    "openChat": "💬 Czat"
   },
   "ownerApplications": {
     "title": "Wnioski kierowców",
     "lead": "Log zgłoszeń kierowców (tylko podgląd).",
     "empty": "Brak zgłoszeń.",
+    "openChat": "💬 Czat",
+    "leadSource": {
+      "cario_marketplace": "Lid z Cario Marketplace",
+      "cario_fleet_profile": "Lid z profilu floty Cario",
+      "cario_direct": "Lid z linku Cario",
+      "unknown": "Źródło: nieznane"
+    },
     "sentStatus": "Wysłane",
     "accept": "✅ Przyjmij",
     "reject": "❌ Odrzuć",
@@ -784,6 +792,17 @@
     "confirmReassign": "Tak, przepisz",
     "cancelReassign": "Anuluj",
     "rejectedFlash": "Wniosek odrzucony."
+  },
+  "applicationChat": {
+    "title": "Czat wokół wniosku",
+    "leadBadgeTitle": "Skąd pochodzi kontakt (atrybucja lida)",
+    "empty": "Brak wiadomości — napisz pierwszą.",
+    "placeholder": "Wiadomość…",
+    "send": "Wyślij",
+    "sending": "Wysyłanie…",
+    "closed": "Ten wniosek jest zamknięty — czat tylko do odczytu.",
+    "backDriver": "← Moje wnioski",
+    "backOwner": "← Wnioski kierowców"
   },
   "noteModal": {
     "title": "Notatka",
