@@ -5095,3 +5095,26 @@ tr.tier-row-none td:first-child {
   outline: 2px solid rgba(56, 189, 248, 0.45);
   outline-offset: 1px;
 }
+
+.owner-apps-assign-hint {
+  margin: 0.35rem 0 0;
+  max-width: 52ch;
+}
+.app-chat-assign-banner {
+  margin-top: 0.75rem;
+}
+.app-chat-assign-block {
+  margin-bottom: 1rem;
+}
+.app-chat-assign-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+.app-chat-assign-lead {
+  margin: 0 0 0.85rem;
+  max-width: 62ch;
+}
+.app-chat-assigned-note {
+  margin: 0 0 1rem;
+  max-width: 62ch;
+}

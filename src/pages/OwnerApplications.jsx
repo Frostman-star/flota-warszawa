@@ -63,38 +63,6 @@ export function OwnerApplications() {
     void load()
   }, [load])
 
-  const acceptApplication = useCallback(
-    async (applicationId) => {
-      setActionBusyId(applicationId)
-      setBanner(null)
-      try {
-        const { data: existing, error: peekErr } = await supabase.rpc('get_driver_current_assignment_for_application', {
-          p_application_id: applicationId,
-        })
-        if (peekErr) throw peekErr
-        const row = Array.isArray(existing) ? existing[0] : null
-        const otherPlate = row?.plate != null ? String(row.plate).trim() : ''
-        if (otherPlate) {
-          const ok = window.confirm(t('ownerApplications.reassignBody', { plate: otherPlate }))
-          if (!ok) {
-            setActionBusyId(null)
-            return
-          }
-        }
-        const { error } = await supabase.rpc('accept_driver_application', { p_application_id: applicationId })
-        if (error) throw error
-        setBanner({ type: 'success', text: t('ownerApplications.acceptSuccess') })
-        await load()
-      } catch (e) {
-        console.error(e)
-        setBanner({ type: 'error', text: e?.message ?? String(e) })
-      } finally {
-        setActionBusyId(null)
-      }
-    },
-    [load, t]
-  )
-
   const rejectApplication = useCallback(
     async (applicationId) => {
       if (!window.confirm(t('ownerApplications.confirmReject'))) return
@@ -200,26 +168,19 @@ export function OwnerApplications() {
                       <p className="muted tiny">
                         {app.created_at ? new Date(app.created_at).toLocaleString() : ''}
                       </p>
+                      {st === 'pending' ? (
+                        <p className="muted tiny owner-apps-assign-hint">{t('ownerApplications.assignInChatHint')}</p>
+                      ) : null}
                       <div className="owner-app-actions">
                         {st === 'pending' ? (
-                          <>
-                            <button
-                              type="button"
-                              className="btn small owner-app-accept"
-                              disabled={Boolean(actionBusyId)}
-                              onClick={() => void acceptApplication(app.id)}
-                            >
-                              {actionBusyId === app.id ? t('ownerApplications.acceptBusy') : t('ownerApplications.accept')}
-                            </button>
-                            <button
-                              type="button"
-                              className="btn small ghost owner-app-reject"
-                              disabled={Boolean(actionBusyId)}
-                              onClick={() => void rejectApplication(app.id)}
-                            >
-                              {actionBusyId === app.id ? t('ownerApplications.rejectBusy') : t('ownerApplications.reject')}
-                            </button>
-                          </>
+                          <button
+                            type="button"
+                            className="btn small ghost owner-app-reject"
+                            disabled={Boolean(actionBusyId)}
+                            onClick={() => void rejectApplication(app.id)}
+                          >
+                            {actionBusyId === app.id ? t('ownerApplications.rejectBusy') : t('ownerApplications.reject')}
+                          </button>
                         ) : null}
                         <Link className="btn ghost small" to={`/rozmowa-wniosek/${app.id}`}>
                           {t('ownerApplications.openChat')}

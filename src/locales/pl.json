@@ -772,7 +772,8 @@
   },
   "ownerApplications": {
     "title": "Wnioski kierowców",
-    "lead": "Przeglądaj zgłoszenia, czatuj z kierowcą, przyjmij lub odrzuć wniosek.",
+    "lead": "Czatuj z kierowcą, odrzuć wniosek albo — po ustaleniach — przypisz go do auta z poziomu czatu.",
+    "assignInChatHint": "Przypisanie do auta: otwórz czat i użyj przycisku po rozmowie z kierowcą.",
     "empty": "Brak zgłoszeń.",
     "openChat": "💬 Czat",
     "leadSource": {
@@ -805,7 +806,14 @@
     "sending": "Wysyłanie…",
     "closed": "Ten wniosek jest zamknięty — czat tylko do odczytu.",
     "backDriver": "← Moje wnioski",
-    "backOwner": "← Wnioski kierowców"
+    "backOwner": "← Wnioski kierowców",
+    "assignTitle": "Przypisanie kierowcy do auta",
+    "assignLead": "Najpierw porozmawiaj w czacie. Gdy wszystko się zgadza — przypisz kierowcę do tego pojazdu (auto zejdzie z marketplace). Później można powiązać ten krok z protokołem / podpisem umowy.",
+    "assignButton": "Przypisz kierowcę do tego auta",
+    "assignBusy": "Przypisywanie…",
+    "assignConfirm": "Przypisać tego kierowcę do auta z wniosku? Inne oczekujące wnioski na to auto zostaną odrzucone.",
+    "assignSuccess": "Kierowca został przypisany do auta.",
+    "assignDoneNote": "Kierowca jest już przypisany do tego auta. Możesz dalej pisać w czacie."
   },
   "noteModal": {
     "title": "Notatka",

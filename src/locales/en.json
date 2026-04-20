@@ -772,7 +772,8 @@
   },
   "ownerApplications": {
     "title": "Driver applications",
-    "lead": "Review applications, chat with drivers, accept or reject.",
+    "lead": "Chat with drivers, reject an application, or — after you agree — assign them to the car from the chat.",
+    "assignInChatHint": "To assign to the car: open the chat and use the button after you have talked to the driver.",
     "empty": "No applications yet.",
     "openChat": "💬 Chat",
     "leadSource": {
@@ -805,7 +806,14 @@
     "sending": "Sending…",
     "closed": "This application is closed — chat is read-only.",
     "backDriver": "← My applications",
-    "backOwner": "← Driver applications"
+    "backOwner": "← Driver applications",
+    "assignTitle": "Assign driver to this car",
+    "assignLead": "Talk in the chat first. When everything is agreed — assign the driver to this vehicle (the listing will leave the marketplace). Later this step can be linked to a handover / e-signature flow.",
+    "assignButton": "Assign driver to this car",
+    "assignBusy": "Assigning…",
+    "assignConfirm": "Assign this driver to the car from this application? Other pending applications for this car will be rejected.",
+    "assignSuccess": "The driver has been assigned to the car.",
+    "assignDoneNote": "The driver is already assigned to this car. You can keep chatting."
   },
   "noteModal": {
     "title": "Note",

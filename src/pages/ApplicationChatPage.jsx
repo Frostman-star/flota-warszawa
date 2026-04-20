@@ -20,9 +20,15 @@ export function ApplicationChatPage() {
   const [msgLoading, setMsgLoading] = useState(true)
   const [draft, setDraft] = useState('')
   const [sending, setSending] = useState(false)
+  const [assignBusy, setAssignBusy] = useState(false)
+  const [assignBanner, setAssignBanner] = useState(/** @type {{ type: 'success' | 'error'; text: string } | null} */ (null))
   const listEndRef = useRef(null)
 
   const idOk = useMemo(() => isUuid(applicationId), [applicationId])
+  const isOwner = useMemo(
+    () => Boolean(user?.id && appRow?.owner_id && String(user.id) === String(appRow.owner_id)),
+    [user?.id, appRow?.owner_id]
+  )
 
   const loadApplication = useCallback(async () => {
     if (!user?.id || !applicationId || !idOk) return
@@ -123,6 +129,38 @@ export function ApplicationChatPage() {
 
   const canSend = appRow && (appRow.status === 'pending' || appRow.status === 'accepted')
 
+  const assignDriverToCar = useCallback(async () => {
+    if (!applicationId || !idOk || !isOwner) return
+    if (!window.confirm(t('applicationChat.assignConfirm'))) return
+    setAssignBusy(true)
+    setAssignBanner(null)
+    try {
+      const { data: existing, error: peekErr } = await supabase.rpc('get_driver_current_assignment_for_application', {
+        p_application_id: applicationId,
+      })
+      if (peekErr) throw peekErr
+      const row = Array.isArray(existing) ? existing[0] : null
+      const otherPlate = row?.plate != null ? String(row.plate).trim() : ''
+      if (otherPlate) {
+        const ok = window.confirm(t('ownerApplications.reassignBody', { plate: otherPlate }))
+        if (!ok) {
+          setAssignBusy(false)
+          return
+        }
+      }
+      const { error } = await supabase.rpc('assign_driver_from_application', { p_application_id: applicationId })
+      if (error) throw error
+      setAssignBanner({ type: 'success', text: t('applicationChat.assignSuccess') })
+      await loadApplication()
+      void loadMessages()
+    } catch (e) {
+      console.error(e)
+      setAssignBanner({ type: 'error', text: e?.message ?? String(e) })
+    } finally {
+      setAssignBusy(false)
+    }
+  }, [applicationId, idOk, isOwner, loadApplication, loadMessages, t])
+
   async function handleSend(e) {
     e.preventDefault()
     if (!canSend || !user?.id || !applicationId) return
@@ -191,6 +229,36 @@ export function ApplicationChatPage() {
           {t(`ownerApplications.leadSource.${String(appRow.lead_source || 'unknown')}`)}
         </span>
       </header>
+
+      {assignBanner ? (
+        <p
+          className={assignBanner.type === 'success' ? 'owner-apps-banner owner-apps-banner--ok app-chat-assign-banner' : 'form-error app-chat-assign-banner'}
+          role="status"
+        >
+          {assignBanner.text}
+        </p>
+      ) : null}
+
+      {isOwner && appRow.status === 'pending' ? (
+        <section className="card pad-lg app-chat-assign-block" aria-labelledby="app-chat-assign-title">
+          <h2 id="app-chat-assign-title" className="app-chat-assign-title">
+            {t('applicationChat.assignTitle')}
+          </h2>
+          <p className="muted small app-chat-assign-lead">{t('applicationChat.assignLead')}</p>
+          <button
+            type="button"
+            className="btn primary owner-app-accept"
+            disabled={assignBusy}
+            onClick={() => void assignDriverToCar()}
+          >
+            {assignBusy ? t('applicationChat.assignBusy') : t('applicationChat.assignButton')}
+          </button>
+        </section>
+      ) : null}
+
+      {isOwner && appRow.status === 'accepted' ? (
+        <p className="muted small app-chat-assigned-note">{t('applicationChat.assignDoneNote')}</p>
+      ) : null}
 
       {!canSend ? (
         <p className="muted app-chat-closed">{t('applicationChat.closed')}</p>
