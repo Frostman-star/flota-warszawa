@@ -6,9 +6,9 @@
 
 /** @type {Readonly<Record<string, PlateBlurRectNorm>>} */
 const HEURISTIC_PRESETS = Object.freeze({
-  // Front / rear corners: plate usually lower-center (approximate; widened to catch more frames).
-  front_left: { x: 0.04, y: 0.55, w: 0.92, h: 0.45 },
-  rear_right: { x: 0.04, y: 0.55, w: 0.92, h: 0.45 },
+  // Front / rear corners: default strip before manual tweak in preview modal.
+  front_left: { x: 0.2, y: 0.74, w: 0.6, h: 0.2 },
+  rear_right: { x: 0.2, y: 0.74, w: 0.6, h: 0.2 },
 })
 
 /**

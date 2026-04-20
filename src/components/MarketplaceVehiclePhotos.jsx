@@ -10,6 +10,7 @@ import {
 } from '../utils/vehiclePhotoAngles'
 import { useVehiclePhotos } from '../hooks/useVehiclePhotos'
 import { PhotoFullscreenViewer } from './PhotoFullscreenViewer'
+import { VehiclePhotoPlatePreviewModal } from './VehiclePhotoPlatePreviewModal'
 
 const PLATE_BLUR_LS = 'flota_mvp_plate_blur_v1'
 
@@ -37,6 +38,8 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
   const [fsOpen, setFsOpen] = useState(false)
   const [fsIdx, setFsIdx] = useState(0)
   const [blurPlate, setBlurPlate] = useState(() => readPlateBlurPref())
+  const [pendingPlatePreview, setPendingPlatePreview] = useState(/** @type {{ blob: Blob, angleKey: string } | null} */ (null))
+  const [platePreviewBusy, setPlatePreviewBusy] = useState(false)
   const inputRef = useRef(null)
   const pendingAngleRef = useRef(null)
 
@@ -88,6 +91,87 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
     inputRef.current?.click()
   }, [])
 
+  const commitVehiclePhotoUpload = useCallback(
+    async (blob, angleKey) => {
+      const ownerId = String(car?.owner_id ?? userId)
+      if (!car?.id || !userId) return
+      const path = `${ownerId}/${car.id}/${angleKey}.jpg`
+      const { error: upErr } = await supabase.storage.from('vehicle-photos').upload(path, blob, {
+        contentType: 'image/jpeg',
+        upsert: true,
+      })
+      if (upErr) throw upErr
+
+      const { data: pub } = supabase.storage.from('vehicle-photos').getPublicUrl(path)
+      const publicUrl = pub?.publicUrl
+      if (!publicUrl) throw new Error('publicUrl')
+      const photoUrlForDb = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}v=${Date.now()}`
+
+      const labels = VEHICLE_PHOTO_LABELS_DB[angleKey]
+      if (!labels) throw new Error('angle')
+
+      const isPrimary = angleKey === 'front_left'
+
+      const { error: delErr } = await supabase.from('vehicle_photos').delete().eq('vehicle_id', car.id).eq('angle_key', angleKey)
+      if (delErr) throw delErr
+
+      const { error: insErr } = await supabase.from('vehicle_photos').insert({
+        vehicle_id: car.id,
+        owner_id: userId,
+        angle_key: angleKey,
+        angle_label_pl: labels.pl,
+        angle_label_uk: labels.uk,
+        photo_url: photoUrlForDb,
+        is_primary: isPrimary,
+      })
+      if (insErr) throw insErr
+
+      if (isPrimary) {
+        let cq = supabase
+          .from('cars')
+          .update({ primary_photo_url: photoUrlForDb, marketplace_photo_url: photoUrlForDb })
+          .eq('id', car.id)
+        cq = cq.eq('owner_id', userId)
+        const { error: cErr } = await cq
+        if (cErr) throw cErr
+      }
+
+      await refresh()
+      onUpdated?.()
+    },
+    [car?.id, car?.owner_id, userId, refresh, onUpdated]
+  )
+
+  const handlePlatePreviewCancel = useCallback(() => {
+    if (platePreviewBusy) return
+    setPendingPlatePreview(null)
+    setBusyAngle(null)
+  }, [platePreviewBusy])
+
+  const handlePlatePreviewConfirm = useCallback(
+    async (/** @type {{ mode: 'blur' | 'none'; rect?: { x: number, y: number, w: number, h: number } }} */ payload) => {
+      const pending = pendingPlatePreview
+      if (!pending || platePreviewBusy) return
+      setPlatePreviewBusy(true)
+      try {
+        let b = pending.blob
+        const { angleKey } = pending
+        if (payload.mode === 'blur' && payload.rect) {
+          b = await applyHeuristicPlateBlurToJpegBlob(b, { angleKey, overrideRect: payload.rect })
+        }
+        await commitVehiclePhotoUpload(b, angleKey)
+        setPendingPlatePreview(null)
+        setBusyAngle(null)
+      } catch (err) {
+        console.error(err)
+        window.alert(err instanceof Error ? err.message : String(err))
+      } finally {
+        setPlatePreviewBusy(false)
+      }
+    },
+    [pendingPlatePreview, platePreviewBusy, commitVehiclePhotoUpload]
+  )
+
   const onFile = useCallback(
     async (e) => {
       const angleKey = pendingAngleRef.current
@@ -96,65 +180,24 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
       e.target.value = ''
       if (!file || !angleKey || !car?.id || !userId) return
 
-      const ownerId = String(car.owner_id ?? userId)
       setBusyAngle(angleKey)
+      let deferBusyClear = false
       try {
-        let blob = await compressImageToJpeg(file, { maxSide: 1200, quality: 0.85 })
+        const blob = await compressImageToJpeg(file, { maxSide: 1200, quality: 0.85 })
         if (blurPlate && supportsHeuristicPlateBlur(angleKey)) {
-          blob = await applyHeuristicPlateBlurToJpegBlob(blob, { angleKey })
+          setPendingPlatePreview({ blob, angleKey })
+          deferBusyClear = true
+          return
         }
-        const path = `${ownerId}/${car.id}/${angleKey}.jpg`
-        const { error: upErr } = await supabase.storage.from('vehicle-photos').upload(path, blob, {
-          contentType: 'image/jpeg',
-          upsert: true,
-        })
-        if (upErr) throw upErr
-
-        const { data: pub } = supabase.storage.from('vehicle-photos').getPublicUrl(path)
-        const publicUrl = pub?.publicUrl
-        if (!publicUrl) throw new Error('publicUrl')
-        // Same storage path on re-upload → browsers cache the old image; bust cache via query on stored URL.
-        const photoUrlForDb = `${publicUrl}${publicUrl.includes('?') ? '&' : '?'}v=${Date.now()}`
-
-        const labels = VEHICLE_PHOTO_LABELS_DB[angleKey]
-        if (!labels) throw new Error('angle')
-
-        const isPrimary = angleKey === 'front_left'
-
-        const { error: delErr } = await supabase.from('vehicle_photos').delete().eq('vehicle_id', car.id).eq('angle_key', angleKey)
-        if (delErr) throw delErr
-
-        const { error: insErr } = await supabase.from('vehicle_photos').insert({
-          vehicle_id: car.id,
-          owner_id: userId,
-          angle_key: angleKey,
-          angle_label_pl: labels.pl,
-          angle_label_uk: labels.uk,
-          photo_url: photoUrlForDb,
-          is_primary: isPrimary,
-        })
-        if (insErr) throw insErr
-
-        if (isPrimary) {
-          let cq = supabase
-            .from('cars')
-            .update({ primary_photo_url: photoUrlForDb, marketplace_photo_url: photoUrlForDb })
-            .eq('id', car.id)
-          cq = cq.eq('owner_id', userId)
-          const { error: cErr } = await cq
-          if (cErr) throw cErr
-        }
-
-        await refresh()
-        onUpdated?.()
+        await commitVehiclePhotoUpload(blob, angleKey)
       } catch (err) {
         console.error(err)
         window.alert(err instanceof Error ? err.message : String(err))
       } finally {
-        setBusyAngle(null)
+        if (!deferBusyClear) setBusyAngle(null)
       }
     },
-    [car?.id, car?.owner_id, userId, refresh, onUpdated, blurPlate]
+    [car?.id, car?.owner_id, userId, commitVehiclePhotoUpload, blurPlate]
   )
 
   function openFsFromAngle(angleKey) {
@@ -278,6 +321,17 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
 
       {fsOpen && fsSlides.length ? (
         <PhotoFullscreenViewer open={fsOpen} slides={fsSlides} initialIndex={fsIdx} onClose={() => setFsOpen(false)} />
+      ) : null}
+
+      {pendingPlatePreview ? (
+        <VehiclePhotoPlatePreviewModal
+          open
+          jpegBlob={pendingPlatePreview.blob}
+          angleKey={pendingPlatePreview.angleKey}
+          busy={platePreviewBusy}
+          onCancel={handlePlatePreviewCancel}
+          onConfirm={handlePlatePreviewConfirm}
+        />
       ) : null}
     </section>
   )

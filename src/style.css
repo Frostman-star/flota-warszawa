@@ -4498,6 +4498,32 @@ tr.tier-row-none td:first-child {
   margin-top: 0;
   line-height: 1.45;
 }
+.plate-preview-modal {
+  max-width: min(560px, calc(100vw - 1.5rem));
+}
+.plate-preview-canvas-wrap {
+  margin: 0.75rem 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #0f172a;
+}
+.plate-preview-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+  cursor: grab;
+}
+.plate-preview-canvas:active {
+  cursor: grabbing;
+}
+.plate-preview-touch-hint {
+  margin: 0 0 0.5rem;
+}
+.plate-preview-actions {
+  flex-wrap: wrap;
+}
 .mvp-subhead {
   margin: 0 0 0.5rem;
   font-size: 1rem;
