@@ -1,7 +1,7 @@
 ﻿import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-import { registerServiceWorker, subscribeUserToPush } from '../lib/push'
+import { registerServiceWorker, subscribeToPush } from '../lib/push'
 
 const STORAGE_KEY = 'flota_push_prompt_done_v1'
 
@@ -19,8 +19,7 @@ export function PushBanner() {
     setBusy(true)
     try {
       await registerServiceWorker()
-      const perm = await Notification.requestPermission()
-      if (perm === 'granted') await subscribeUserToPush(user.id)
+      await subscribeToPush(user)
     } finally {
       localStorage.setItem(STORAGE_KEY, '1')
       setDismissed(true)
@@ -39,7 +38,7 @@ export function PushBanner() {
         <span className="push-banner-text">{t('push.text')}</span>
         <div className="push-banner-actions">
           <button type="button" className="btn primary small" disabled={busy} onClick={enable}>
-            {busy ? t('push.busy') : t('push.enable')}
+            {busy ? t('push.busy') : '🔔 Включити сповіщення'}
           </button>
           <button type="button" className="btn ghost small" onClick={skip}>
             {t('push.later')}

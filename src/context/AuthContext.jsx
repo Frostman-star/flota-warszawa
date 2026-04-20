@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { subscribeToPush } from '../lib/push'
 import { normalizeProfileRole } from '../utils/profileRole'
 
 /** @typedef {'admin' | 'driver' | 'owner'} UserRole */
@@ -81,6 +82,16 @@ export function AuthProvider({ children }) {
       subscription.unsubscribe()
     }
   }, [loadProfile])
+
+  useEffect(() => {
+    if (!session?.user?.id) return
+    if (typeof window === 'undefined') return
+    if (!('Notification' in window) || !('serviceWorker' in navigator)) return
+
+    subscribeToPush(session.user).catch((e) => {
+      console.error('[Cario] auto subscribe failed', e)
+    })
+  }, [session?.user])
 
   const signIn = useCallback(async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })

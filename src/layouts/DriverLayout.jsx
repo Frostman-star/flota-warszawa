@@ -4,6 +4,7 @@ import { AppLayout } from '../components/AppLayout'
 import { DriverMobileBottomNav } from '../components/DriverMobileBottomNav'
 import { InstallAppBanner } from '../components/InstallAppBanner'
 import { MobileBottomNav } from '../components/MobileBottomNav'
+import { PushBanner } from '../components/PushBanner'
 import { useAuth } from '../context/AuthContext'
 import { useCars } from '../hooks/useCars'
 
@@ -21,6 +22,7 @@ export function DriverLayout() {
 
   return (
     <>
+      <PushBanner />
       <AppLayout
         showNav={showAdminTopExtras}
         outletContext={null}
