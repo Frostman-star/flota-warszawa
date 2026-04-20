@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { DriverProfileCard } from '../components/DriverProfileCard'
+import { DriverEmploymentActions } from '../components/DriverEmploymentActions'
 import { useDriverAssignedCar } from '../hooks/useDriverAssignedCar'
 import {
   driverAgeYears,
@@ -15,7 +16,10 @@ import {
 export function DriverProfile() {
   const { t } = useTranslation()
   const { user, refreshProfile, profile } = useAuth()
-  const { assignment, loading: assignmentLoading } = useDriverAssignedCar(user?.id, Boolean(user?.id))
+  const { assignment, loading: assignmentLoading, refresh: refreshAssignedCar } = useDriverAssignedCar(
+    user?.id,
+    Boolean(user?.id)
+  )
   const [fullName, setFullName] = useState('')
   const [phone, setPhone] = useState('')
   const [experienceYears, setExperienceYears] = useState('0')
@@ -206,6 +210,11 @@ export function DriverProfile() {
           <p className="driver-employment-line">
             {t('driverEmployment.owner')}: {assignment.ownerName}
           </p>
+          <DriverEmploymentActions
+            carId={assignment.carId}
+            userId={user?.id}
+            onUpdated={() => void refreshAssignedCar()}
+          />
         </section>
       ) : (
         <section className="driver-employment-card driver-employment-card--idle card pad-lg" aria-label={t('driverEmployment.noCarAssigned')}>

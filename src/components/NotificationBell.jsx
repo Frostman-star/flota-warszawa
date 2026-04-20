@@ -57,6 +57,14 @@ export function NotificationBell({ cars = [] }) {
     const kind = String(row.kind || '')
     if (kind === 'driver_application_new') return '/wnioski'
     if (kind === 'application_accepted' || kind === 'application_rejected') return '/moje-wnioski'
+    if (kind === 'driver_employment_request_new') return '/zapytania-kierowcow'
+    if (
+      kind === 'driver_employment_released' ||
+      kind === 'driver_employment_request_rejected' ||
+      kind === 'driver_employment_intent_acknowledged'
+    ) {
+      return '/profil'
+    }
     return isAdmin ? '/panel' : '/marketplace'
   }
 
@@ -66,6 +74,10 @@ export function NotificationBell({ cars = [] }) {
     if (kind === 'driver_application_new') return t('notifications.appNewApplication', { plate })
     if (kind === 'application_accepted') return t('notifications.appAccepted', { plate })
     if (kind === 'application_rejected') return t('notifications.appRejected', { plate })
+    if (kind === 'driver_employment_request_new') return t('notifications.empRequestNew', { plate })
+    if (kind === 'driver_employment_released') return t('notifications.empReleased', { plate })
+    if (kind === 'driver_employment_request_rejected') return t('notifications.empRequestRejected', { plate })
+    if (kind === 'driver_employment_intent_acknowledged') return t('notifications.empIntentAcknowledged', { plate })
     return t('notifications.appGeneric')
   }
 

@@ -12,6 +12,7 @@ import { DriverProfile } from './pages/DriverProfile'
 import { Fleet } from './pages/Fleet'
 import { Marketplace } from './pages/Marketplace'
 import { OwnerApplications } from './pages/OwnerApplications'
+import { OwnerEmploymentRequests } from './pages/OwnerEmploymentRequests'
 import { PanelHome } from './pages/PanelHome'
 import { HomeRedirect } from './pages/HomeRedirect'
 import { Login } from './pages/Login'
@@ -81,6 +82,7 @@ export default function App() {
         <Route path="/serwisy" element={<Services />} />
         <Route path="/ustawienia" element={<Settings />} />
         <Route path="/wnioski" element={<OwnerApplications />} />
+        <Route path="/zapytania-kierowcow" element={<OwnerEmploymentRequests />} />
         <Route path="/rozmowa-wniosek/:applicationId" element={<ApplicationChatPage />} />
         <Route path="/pojazd/:id" element={<CarPageShell nestInAdminLayout />}>
           <Route index element={<CarDetail />} />

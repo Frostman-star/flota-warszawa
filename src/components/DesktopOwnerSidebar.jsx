@@ -14,6 +14,7 @@ export function DesktopOwnerSidebar() {
   const links = [
     { to: '/panel', end: true, label: `🏠 ${t('app.panel')}` },
     { to: '/flota', end: false, label: `🚗 ${t('nav.fleet')}` },
+    { to: '/zapytania-kierowcow', end: true, label: `🤝 ${t('nav.employmentRequests')}` },
     { to: '/dodaj', end: true, label: `➕ ${t('panel.addCar')}` },
     { to: '/alerty', end: true, label: `🔔 ${t('nav.alerts')}` },
     { to: '/statystyki', end: true, label: `📊 ${t('nav.statistics')}` },

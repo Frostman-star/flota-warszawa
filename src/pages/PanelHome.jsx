@@ -7,6 +7,7 @@ import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { localeTag } from '../utils/localeTag'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
+import { useOwnerPendingEmploymentRequestCount } from '../hooks/useOwnerPendingEmploymentRequestCount'
 
 function countCriticalSoon(cars) {
   let n = 0
@@ -26,6 +27,7 @@ export function PanelHome() {
   const { user } = useAuth()
   const location = useLocation()
   const { count: pendingApps } = useOwnerPendingApplicationCount(user?.id, Boolean(user?.id))
+  const { count: pendingEmployment } = useOwnerPendingEmploymentRequestCount(user?.id, Boolean(user?.id))
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const weekly = computeWeeklyRentTotal(cars)
   const toCheck = buildAlertRows(cars).length
@@ -92,6 +94,24 @@ export function PanelHome() {
         {pendingApps > 0 ? (
           <span className="panel-pending-apps-badge" aria-label={t('panel.newApplicationsBadge')}>
             {pendingApps > 99 ? '99+' : pendingApps}
+          </span>
+        ) : null}
+      </Link>
+
+      <Link
+        to="/zapytania-kierowcow"
+        className={`panel-pending-apps card pad-lg${pendingEmployment > 0 ? ' panel-pending-apps--alert' : ''}`}
+      >
+        <span className="panel-pending-apps-emoji" aria-hidden>
+          🤝
+        </span>
+        <div className="panel-pending-apps-body">
+          <strong>{t('panel.newEmploymentRequestsCard', { count: pendingEmployment })}</strong>
+          <p className="muted small mb-0">{t('panel.newEmploymentRequestsHint')}</p>
+        </div>
+        {pendingEmployment > 0 ? (
+          <span className="panel-pending-apps-badge" aria-label={t('panel.newEmploymentRequestsBadge')}>
+            {pendingEmployment > 99 ? '99+' : pendingEmployment}
           </span>
         ) : null}
       </Link>

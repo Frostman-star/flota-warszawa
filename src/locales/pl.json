@@ -43,6 +43,7 @@
     "profile": "Profil",
     "myApplications": "Moje wnioski",
     "applicationsTab": "Wnioski",
+    "employmentRequests": "Współpraca",
     "services": "Serwisy"
   },
   "login": {
@@ -118,6 +119,8 @@
     "driverApplicationsDesc": "Śledź swoje zgłoszenia na ogłoszenia w Cario.",
     "ownerApplicationsTitle": "Wnioski",
     "ownerApplicationsDesc": "Przeglądaj zgłoszenia kierowców na Twoje ogłoszenia w Cario.",
+    "ownerEmploymentRequestsTitle": "Prośby współpracy",
+    "ownerEmploymentRequestsDesc": "Zakończenie współpracy lub sygnał zmiany auta — potwierdzenia właściciela w Cario.",
     "wizardTitle": "Dodaj auto",
     "wizardDesc": "Dodaj nowy pojazd do floty w Cario.",
     "noCarTitle": "Brak przypisanego auta",
@@ -140,6 +143,9 @@
     "newApplicationsCard": "📋 Nowe zgłoszenia: {{count}}",
     "newApplicationsHint": "Kierowcy aplikują na Twoje auta z marketplace.",
     "newApplicationsBadge": "Nowe",
+    "newEmploymentRequestsCard": "🤝 Prośby współpracy: {{count}}",
+    "newEmploymentRequestsHint": "Kierowca chce zakończyć lub sygnalizuje zmianę auta — potwierdź lub odrzuć.",
+    "newEmploymentRequestsBadge": "Nowe prośby",
     "publicProfileTitle": "🌐 Twój profil publiczny:",
     "publicProfileHint": "Udostępnij ten link w grupach kierowców aby znaleźć pracowników.",
     "copyLink": "Skopiuj link",
@@ -394,7 +400,11 @@
     "appNewApplication": "Nowy wniosek na {{plate}}",
     "appAccepted": "Przyjęto na {{plate}}",
     "appRejected": "Odrzucono wniosek — {{plate}}",
-    "appGeneric": "Powiadomienie"
+    "appGeneric": "Powiadomienie",
+    "empRequestNew": "Nowa prośba kierowcy — {{plate}}",
+    "empReleased": "Zwolniono Cię z auta {{plate}}",
+    "empRequestRejected": "Właściciel odrzucił prośbę — {{plate}}",
+    "empIntentAcknowledged": "Właściciel potwierdził intencję zmiany — {{plate}}"
   },
   "push": {
     "regionAria": "Powiadomienia push",
@@ -759,7 +769,56 @@
     "partner": "Partner",
     "weeklyRent": "{{amount}} zł / tydzień",
     "registration": "Rejestracja",
-    "owner": "Właściciel"
+    "owner": "Właściciel",
+    "endWorkBtn": "Zakończ współpracę z tym autem",
+    "changeCarBtn": "Chcę zmienić auto (bez rozpinania)",
+    "pendingTitle": "Czekamy na odpowiedź właściciela",
+    "pendingHint": "Właściciel musi potwierdzić zwolnienie z auta albo odpowiedzieć na sygnał o zmianie.",
+    "cancelRequestBtn": "Cofnij prośbę",
+    "modalTerminateTitle": "Zakończenie współpracy",
+    "modalTerminateLead": "Podaj powód — zapis trafi do historii przy rozłączeniu z autem.",
+    "reasonSelectLabel": "Powód",
+    "noteLabel": "Uwagi (opcjonalnie)",
+    "sending": "Wysyłanie…",
+    "submit": "Wyślij prośbę",
+    "modalChangeTitle": "Chcę inne auto",
+    "modalChangeLead": "To tylko sygnał dla właściciela — bez automatycznego przepisania. Możesz dalej pracować na tym aucie, dopóki się dogadacie.",
+    "changeNoteOptional": "Krótka wiadomość (opcjonalnie)",
+    "submitIntent": "Wyślij intencję",
+    "successTerminateSubmitted": "Prośba wysłana — czekamy na potwierdzenie właściciela.",
+    "successChangeSubmitted": "Intencja wysłana — czekamy na odpowiedź właściciela.",
+    "cancelConfirm": "Cofnąć oczekującą prośbę?"
+  },
+  "employmentRequest": {
+    "reasons": {
+      "reason_mutual": "Wspólna decyzja",
+      "reason_schedule": "Grafik / dostępność",
+      "reason_pay": "Warunki płatności / czynsz",
+      "reason_vehicle": "Stan / funkcjonowanie auta",
+      "reason_personal": "Powody osobiste",
+      "reason_other": "Inne",
+      "reason_change_vehicle": "Chcę pracować na innym aucie"
+    }
+  },
+  "employmentRequests": {
+    "title": "Prośby kierowców (współpraca)",
+    "lead": "Zwolnienie z auta wymaga Twojego potwierdzenia. Sygnał o zmianie auta nie rozpinuje kierowcy automatycznie.",
+    "empty": "Brak próśb.",
+    "driver": "Kierowca",
+    "kindTerminate": "Zakończenie współpracy",
+    "kindChangeIntent": "Intencja zmiany auta",
+    "reason": "Powód",
+    "confirmRelease": "Potwierdź zwolnienie kierowcy z auta",
+    "rejectRelease": "Odrzuć (bez zmian przypisania)",
+    "acknowledgeIntent": "Potwierdzam — widzę (bez rozpinania)",
+    "busy": "Przetwarzanie…",
+    "respondSuccess": "Zapisano.",
+    "status": {
+      "pending_owner": "Oczekuje",
+      "completed": "Zakończone",
+      "cancelled_by_driver": "Anulowane przez kierowcę",
+      "rejected_by_owner": "Odrzucone przez właściciela"
+    }
   },
   "driverApplications": {
     "title": "Moje wnioski",

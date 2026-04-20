@@ -43,6 +43,7 @@
     "profile": "Профіль",
     "myApplications": "Мої заявки",
     "applicationsTab": "Заявки",
+    "employmentRequests": "Співпраця",
     "services": "Сервіси"
   },
   "login": {
@@ -118,6 +119,8 @@
     "driverApplicationsDesc": "Статус ваших заявок на оголошення в Cario.",
     "ownerApplicationsTitle": "Заявки",
     "ownerApplicationsDesc": "Переглядайте заявки водіїв на ваші оголошення в Cario.",
+    "ownerEmploymentRequestsTitle": "Запити щодо співпраці",
+    "ownerEmploymentRequestsDesc": "Завершення співпраці або сигнал про зміну авто — підтвердження власника в Cario.",
     "wizardTitle": "Додати авто",
     "wizardDesc": "Додайте новий транспорт до флоту в Cario.",
     "noCarTitle": "Немає призначеного авто",
@@ -140,6 +143,9 @@
     "newApplicationsCard": "📋 Нові заявки водіїв: {{count}}",
     "newApplicationsHint": "Водії подають заявки на ваші авто з маркетплейсу.",
     "newApplicationsBadge": "Нові",
+    "newEmploymentRequestsCard": "🤝 Запити щодо співпраці: {{count}}",
+    "newEmploymentRequestsHint": "Водій хоче завершити співпрацю або сигналізує про зміну авто — підтвердіть або відхиліть.",
+    "newEmploymentRequestsBadge": "Нові запити",
     "publicProfileTitle": "🌐 Ваш публічний профіль:",
     "publicProfileHint": "Поширюйте це посилання в групах водіїв, щоб знайти працівників.",
     "copyLink": "Скопіювати посилання",
@@ -394,7 +400,11 @@
     "appNewApplication": "Нова заявка на {{plate}}",
     "appAccepted": "Прийнято на {{plate}}",
     "appRejected": "Заявку відхилено — {{plate}}",
-    "appGeneric": "Сповіщення"
+    "appGeneric": "Сповіщення",
+    "empRequestNew": "Новий запит від водія — {{plate}}",
+    "empReleased": "Вас знято з авто {{plate}}",
+    "empRequestRejected": "Власник відхилив запит — {{plate}}",
+    "empIntentAcknowledged": "Власник підтвердив намір зміни — {{plate}}"
   },
   "push": {
     "regionAria": "Push-сповіщення",
@@ -759,7 +769,56 @@
     "partner": "Партнер",
     "weeklyRent": "{{amount}} zł / тиждень",
     "registration": "Реєстрація",
-    "owner": "Власник"
+    "owner": "Власник",
+    "endWorkBtn": "Завершити співпрацю з цим авто",
+    "changeCarBtn": "Хочу інше авто (без автозняття)",
+    "pendingTitle": "Чекаємо на відповідь власника",
+    "pendingHint": "Власник має підтвердити зняття з авто або відповісти на сигнал про зміну.",
+    "cancelRequestBtn": "Скасувати запит",
+    "modalTerminateTitle": "Завершення співпраці",
+    "modalTerminateLead": "Оберіть причину — запис збережеться при знятті з авто.",
+    "reasonSelectLabel": "Причина",
+    "noteLabel": "Примітки (необов’язково)",
+    "sending": "Надсилання…",
+    "submit": "Надіслати запит",
+    "modalChangeTitle": "Хочу інше авто",
+    "modalChangeLead": "Це лише сигнал власнику — без автоматичного перепризначення. Можна далі працювати на цьому авто, доки не домовитесь.",
+    "changeNoteOptional": "Коротке повідомлення (необов’язково)",
+    "submitIntent": "Надіслати намір",
+    "successTerminateSubmitted": "Запит надіслано — чекаємо підтвердження власника.",
+    "successChangeSubmitted": "Намір надіслано — чекаємо відповіді власника.",
+    "cancelConfirm": "Скасувати очікуваний запит?"
+  },
+  "employmentRequest": {
+    "reasons": {
+      "reason_mutual": "Спільне рішення",
+      "reason_schedule": "Графік / доступність",
+      "reason_pay": "Оплата / умови оренди",
+      "reason_vehicle": "Стан / робота авто",
+      "reason_personal": "Особисті причини",
+      "reason_other": "Інше",
+      "reason_change_vehicle": "Хочу працювати на іншому авто"
+    }
+  },
+  "employmentRequests": {
+    "title": "Запити водіїв (співпраця)",
+    "lead": "Зняття з авто потребує вашого підтвердження. Сигнал про зміну авто не знімає водія автоматично.",
+    "empty": "Немає запитів.",
+    "driver": "Водій",
+    "kindTerminate": "Завершення співпраці",
+    "kindChangeIntent": "Намір змінити авто",
+    "reason": "Причина",
+    "confirmRelease": "Підтвердити зняття водія з авто",
+    "rejectRelease": "Відхилити (без змін призначення)",
+    "acknowledgeIntent": "Підтверджую — бачив(ла) (без зняття)",
+    "busy": "Обробка…",
+    "respondSuccess": "Збережено.",
+    "status": {
+      "pending_owner": "Очікує",
+      "completed": "Завершено",
+      "cancelled_by_driver": "Скасовано водієм",
+      "rejected_by_owner": "Відхилено власником"
+    }
   },
   "driverApplications": {
     "title": "Мої заявки",

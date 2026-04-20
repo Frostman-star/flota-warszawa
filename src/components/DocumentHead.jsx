@@ -20,6 +20,12 @@ const ROUTES = [
   { test: (p) => p === '/profil', titleMode: 'suffix', titleKey: 'pageMeta.driverProfileTitle', descKey: 'pageMeta.driverProfileDesc' },
   { test: (p) => p === '/moje-wnioski', titleMode: 'suffix', titleKey: 'pageMeta.driverApplicationsTitle', descKey: 'pageMeta.driverApplicationsDesc' },
   { test: (p) => p === '/wnioski', titleMode: 'suffix', titleKey: 'pageMeta.ownerApplicationsTitle', descKey: 'pageMeta.ownerApplicationsDesc' },
+  {
+    test: (p) => p === '/zapytania-kierowcow',
+    titleMode: 'suffix',
+    titleKey: 'pageMeta.ownerEmploymentRequestsTitle',
+    descKey: 'pageMeta.ownerEmploymentRequestsDesc',
+  },
   { test: (p) => p === '/dodaj', titleMode: 'suffix', titleKey: 'pageMeta.wizardTitle', descKey: 'pageMeta.wizardDesc' },
   { test: (p) => p === '/brak-pojazdu', titleMode: 'suffix', titleKey: 'pageMeta.noCarTitle', descKey: 'pageMeta.noCarDesc' },
 ]

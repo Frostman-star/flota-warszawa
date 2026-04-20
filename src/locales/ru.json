@@ -43,6 +43,7 @@
     "profile": "Профиль",
     "myApplications": "Мои заявки",
     "applicationsTab": "Заявки",
+    "employmentRequests": "Сотрудничество",
     "services": "Сервисы"
   },
   "login": {
@@ -118,6 +119,8 @@
     "driverApplicationsDesc": "Статус ваших заявок на объявления в Cario.",
     "ownerApplicationsTitle": "Заявки",
     "ownerApplicationsDesc": "Просматривайте заявки водителей на ваши объявления в Cario.",
+    "ownerEmploymentRequestsTitle": "Запросы по сотрудничеству",
+    "ownerEmploymentRequestsDesc": "Завершение сотрудничества или сигнал о смене авто — подтверждения владельца в Cario.",
     "wizardTitle": "Добавить авто",
     "wizardDesc": "Добавьте новый транспорт в автопарк в Cario.",
     "noCarTitle": "Нет назначенного авто",
@@ -140,6 +143,9 @@
     "newApplicationsCard": "📋 Новые заявки водителей: {{count}}",
     "newApplicationsHint": "Водители подают заявки на ваши авто с маркетплейса.",
     "newApplicationsBadge": "Новые",
+    "newEmploymentRequestsCard": "🤝 Запросы по сотрудничеству: {{count}}",
+    "newEmploymentRequestsHint": "Водитель хочет завершить сотрудничество или сигнализирует о смене авто — подтвердите или отклоните.",
+    "newEmploymentRequestsBadge": "Новые запросы",
     "publicProfileTitle": "🌐 Ваш публичный профиль:",
     "publicProfileHint": "Поделитесь этой ссылкой в группах водителей, чтобы найти сотрудников.",
     "copyLink": "Скопировать ссылку",
@@ -394,7 +400,11 @@
     "appNewApplication": "Новая заявка на {{plate}}",
     "appAccepted": "Принято на {{plate}}",
     "appRejected": "Заявка отклонена — {{plate}}",
-    "appGeneric": "Уведомление"
+    "appGeneric": "Уведомление",
+    "empRequestNew": "Новый запрос от водителя — {{plate}}",
+    "empReleased": "Вас сняли с авто {{plate}}",
+    "empRequestRejected": "Владелец отклонил запрос — {{plate}}",
+    "empIntentAcknowledged": "Владелец подтвердил намерение смены — {{plate}}"
   },
   "push": {
     "regionAria": "Push-уведомления",
@@ -759,7 +769,56 @@
     "partner": "Партнёр",
     "weeklyRent": "{{amount}} zł / неделя",
     "registration": "Регистрация",
-    "owner": "Владелец"
+    "owner": "Владелец",
+    "endWorkBtn": "Завершить сотрудничество с этим авто",
+    "changeCarBtn": "Хочу другое авто (без автоснятия)",
+    "pendingTitle": "Ждём ответа владельца",
+    "pendingHint": "Владелец должен подтвердить снятие с авто или ответить на сигнал о смене.",
+    "cancelRequestBtn": "Отозвать запрос",
+    "modalTerminateTitle": "Завершение сотрудничества",
+    "modalTerminateLead": "Укажите причину — запись сохранится при снятии с авто.",
+    "reasonSelectLabel": "Причина",
+    "noteLabel": "Заметки (необязательно)",
+    "sending": "Отправка…",
+    "submit": "Отправить запрос",
+    "modalChangeTitle": "Хочу другое авто",
+    "modalChangeLead": "Это только сигнал владельцу — без автоматического переназначения. Можно продолжать работать на этом авто, пока не договоритесь.",
+    "changeNoteOptional": "Короткое сообщение (необязательно)",
+    "submitIntent": "Отправить намерение",
+    "successTerminateSubmitted": "Запрос отправлен — ждём подтверждения владельца.",
+    "successChangeSubmitted": "Намерение отправлено — ждём ответа владельца.",
+    "cancelConfirm": "Отозвать ожидающий запрос?"
+  },
+  "employmentRequest": {
+    "reasons": {
+      "reason_mutual": "Совместное решение",
+      "reason_schedule": "График / доступность",
+      "reason_pay": "Оплата / условия аренды",
+      "reason_vehicle": "Состояние / работа авто",
+      "reason_personal": "Личные причины",
+      "reason_other": "Другое",
+      "reason_change_vehicle": "Хочу работать на другом авто"
+    }
+  },
+  "employmentRequests": {
+    "title": "Запросы водителей (сотрудничество)",
+    "lead": "Снятие с авто требует вашего подтверждения. Сигнал о смене авто не снимает водителя автоматически.",
+    "empty": "Нет запросов.",
+    "driver": "Водитель",
+    "kindTerminate": "Завершение сотрудничества",
+    "kindChangeIntent": "Намерение сменить авто",
+    "reason": "Причина",
+    "confirmRelease": "Подтвердить снятие водителя с авто",
+    "rejectRelease": "Отклонить (без изменения назначения)",
+    "acknowledgeIntent": "Подтверждаю — вижу (без снятия)",
+    "busy": "Обработка…",
+    "respondSuccess": "Сохранено.",
+    "status": {
+      "pending_owner": "Ожидает",
+      "completed": "Завершено",
+      "cancelled_by_driver": "Отменено водителем",
+      "rejected_by_owner": "Отклонено владельцем"
+    }
   },
   "driverApplications": {
     "title": "Мои заявки",

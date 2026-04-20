@@ -43,6 +43,7 @@
     "profile": "Profile",
     "myApplications": "My applications",
     "applicationsTab": "Applications",
+    "employmentRequests": "Cooperation",
     "services": "Services"
   },
   "login": {
@@ -118,6 +119,8 @@
     "driverApplicationsDesc": "Track your marketplace applications in Cario.",
     "ownerApplicationsTitle": "Applications",
     "ownerApplicationsDesc": "Review driver applications to your listings in Cario.",
+    "ownerEmploymentRequestsTitle": "Cooperation requests",
+    "ownerEmploymentRequestsDesc": "End of cooperation or a car-change signal — owner confirmations in Cario.",
     "wizardTitle": "Add car",
     "wizardDesc": "Add a new vehicle to your fleet in Cario.",
     "noCarTitle": "No vehicle assigned",
@@ -140,6 +143,9 @@
     "newApplicationsCard": "📋 New driver applications: {{count}}",
     "newApplicationsHint": "Drivers are applying to your marketplace cars.",
     "newApplicationsBadge": "New",
+    "newEmploymentRequestsCard": "🤝 Cooperation requests: {{count}}",
+    "newEmploymentRequestsHint": "A driver wants to end cooperation or signals a car change — confirm or decline.",
+    "newEmploymentRequestsBadge": "New requests",
     "publicProfileTitle": "🌐 Your public profile:",
     "publicProfileHint": "Share this link in driver groups to find workers.",
     "copyLink": "Copy link",
@@ -394,7 +400,11 @@
     "appNewApplication": "New application for {{plate}}",
     "appAccepted": "Accepted for {{plate}}",
     "appRejected": "Application rejected — {{plate}}",
-    "appGeneric": "Notification"
+    "appGeneric": "Notification",
+    "empRequestNew": "New driver request — {{plate}}",
+    "empReleased": "You were released from car {{plate}}",
+    "empRequestRejected": "Owner declined the request — {{plate}}",
+    "empIntentAcknowledged": "Owner acknowledged change intent — {{plate}}"
   },
   "push": {
     "regionAria": "Push notifications",
@@ -759,7 +769,56 @@
     "partner": "Partner",
     "weeklyRent": "{{amount}} PLN / week",
     "registration": "Registration",
-    "owner": "Owner"
+    "owner": "Owner",
+    "endWorkBtn": "End cooperation with this car",
+    "changeCarBtn": "I want a different car (no auto unassign)",
+    "pendingTitle": "Waiting for the owner’s response",
+    "pendingHint": "The owner must confirm release from the car or respond to your change signal.",
+    "cancelRequestBtn": "Withdraw request",
+    "modalTerminateTitle": "End cooperation",
+    "modalTerminateLead": "Choose a reason — it will be stored when you are released from the car.",
+    "reasonSelectLabel": "Reason",
+    "noteLabel": "Notes (optional)",
+    "sending": "Sending…",
+    "submit": "Send request",
+    "modalChangeTitle": "I want a different car",
+    "modalChangeLead": "This is only a signal to the owner — no automatic reassignment. You can keep working on this car until you agree otherwise.",
+    "changeNoteOptional": "Short message (optional)",
+    "submitIntent": "Send intent",
+    "successTerminateSubmitted": "Request sent — waiting for the owner to confirm.",
+    "successChangeSubmitted": "Intent sent — waiting for the owner’s response.",
+    "cancelConfirm": "Withdraw the pending request?"
+  },
+  "employmentRequest": {
+    "reasons": {
+      "reason_mutual": "Mutual decision",
+      "reason_schedule": "Schedule / availability",
+      "reason_pay": "Payment / rent terms",
+      "reason_vehicle": "Car condition / operation",
+      "reason_personal": "Personal reasons",
+      "reason_other": "Other",
+      "reason_change_vehicle": "I want to work on a different car"
+    }
+  },
+  "employmentRequests": {
+    "title": "Driver cooperation requests",
+    "lead": "Releasing a driver from the car needs your confirmation. A car-change signal does not unassign the driver automatically.",
+    "empty": "No requests yet.",
+    "driver": "Driver",
+    "kindTerminate": "End cooperation",
+    "kindChangeIntent": "Intent to change car",
+    "reason": "Reason",
+    "confirmRelease": "Confirm release from the car",
+    "rejectRelease": "Decline (no assignment change)",
+    "acknowledgeIntent": "Acknowledged — seen (no unassign)",
+    "busy": "Processing…",
+    "respondSuccess": "Saved.",
+    "status": {
+      "pending_owner": "Pending",
+      "completed": "Completed",
+      "cancelled_by_driver": "Cancelled by driver",
+      "rejected_by_owner": "Declined by owner"
+    }
   },
   "driverApplications": {
     "title": "My applications",
