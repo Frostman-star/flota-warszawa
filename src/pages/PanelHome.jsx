@@ -101,7 +101,7 @@ export function PanelHome() {
   }
 
   return (
-    <div className="page-simple">
+    <div className="page-simple panel-home-shell">
       {critical > 0 ? (
         <div className="urgent-banner" role="alert">
           <strong>{t('panel.title')}</strong>
@@ -137,42 +137,6 @@ export function PanelHome() {
         </section>
       ) : null}
 
-      <Link
-        to="/wnioski"
-        className={`panel-pending-apps card pad-lg${pendingApps > 0 ? ' panel-pending-apps--alert' : ''}`}
-      >
-        <span className="panel-pending-apps-emoji" aria-hidden>
-          📋
-        </span>
-        <div className="panel-pending-apps-body">
-          <strong>{t('panel.newApplicationsCard', { count: pendingApps })}</strong>
-          <p className="muted small mb-0">{t('panel.newApplicationsHint')}</p>
-        </div>
-        {pendingApps > 0 ? (
-          <span className="panel-pending-apps-badge" aria-label={t('panel.newApplicationsBadge')}>
-            {pendingApps > 99 ? '99+' : pendingApps}
-          </span>
-        ) : null}
-      </Link>
-
-      <Link
-        to="/zapytania-kierowcow"
-        className={`panel-pending-apps card pad-lg${pendingEmployment > 0 ? ' panel-pending-apps--alert' : ''}`}
-      >
-        <span className="panel-pending-apps-emoji" aria-hidden>
-          🤝
-        </span>
-        <div className="panel-pending-apps-body">
-          <strong>{t('panel.newEmploymentRequestsCard', { count: pendingEmployment })}</strong>
-          <p className="muted small mb-0">{t('panel.newEmploymentRequestsHint')}</p>
-        </div>
-        {pendingEmployment > 0 ? (
-          <span className="panel-pending-apps-badge" aria-label={t('panel.newEmploymentRequestsBadge')}>
-            {pendingEmployment > 99 ? '99+' : pendingEmployment}
-          </span>
-        ) : null}
-      </Link>
-
       <section className="panel-priority-inbox card pad-lg" aria-label={t('panel.priorityInboxTitle')}>
         <header className="panel-priority-inbox-head">
           <strong>{t('panel.priorityInboxTitle')}</strong>
@@ -180,7 +144,7 @@ export function PanelHome() {
         </header>
         <div className="panel-priority-inbox-grid">
           {priorityItems.map((item) => (
-            <Link key={item.id} to={item.href} className={`panel-priority-tile${item.score > 0 ? ' panel-priority-tile--alert panel-priority-tile--pulse' : ''}`}>
+            <Link key={item.id} to={item.href} className={`panel-priority-tile${item.score > 0 ? ' panel-priority-tile--alert' : ''}`}>
               <span className="panel-priority-tile-emoji" aria-hidden>
                 {item.emoji}
               </span>
