@@ -1,6 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { AlertTriangle, Car, ClipboardList, MessageCircleMore, Plus, Shapes } from 'lucide-react'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { daysUntil } from '../utils/documents'
@@ -65,7 +66,7 @@ export function PanelHome() {
       {
         id: 'alerts',
         href: '/alerty',
-        emoji: '⚠',
+        Icon: AlertTriangle,
         title: t('nav.alerts'),
         subtitle: t('panel.criticalBody', { count: critical }),
         score: Number(critical || 0),
@@ -73,7 +74,7 @@ export function PanelHome() {
       {
         id: 'applications',
         href: '/wnioski',
-        emoji: '◷',
+        Icon: ClipboardList,
         title: t('nav.applicationsTab'),
         subtitle: t('panel.newApplicationsCard', { count: pendingApps }),
         score: Number(pendingApps || 0),
@@ -81,7 +82,7 @@ export function PanelHome() {
       {
         id: 'chat',
         href: '/wnioski?focus=chat',
-        emoji: '◎',
+        Icon: MessageCircleMore,
         title: t('ownerApplications.openChat'),
         subtitle: t('panel.chatNeedsReplyCard', { count: chatAttentionTotal }),
         score: Number(chatAttentionTotal || 0),
@@ -119,7 +120,7 @@ export function PanelHome() {
 
       <section className="panel-hero-cta card pad-lg" aria-label={t('panel.addCar')}>
         <div className="panel-hero-cta-glow" aria-hidden />
-        <div className="panel-hero-cta-icon" aria-hidden>＋</div>
+        <div className="panel-hero-cta-icon" aria-hidden><Plus size={28} strokeWidth={2.2} /></div>
         <h2 className="panel-hero-cta-title">{t('panel.addCar')}</h2>
         <div className="panel-hero-cta-actions">
           <Link to="/dodaj" className="btn panel-hero-cta-btn">
@@ -160,7 +161,7 @@ export function PanelHome() {
           {priorityItems.map((item) => (
             <Link key={item.id} to={item.href} className={`panel-priority-tile${item.score > 0 ? ' panel-priority-tile--alert' : ''}`}>
               <span className="panel-priority-tile-emoji" aria-hidden>
-                {item.emoji}
+                <item.Icon size={17} strokeWidth={2.1} />
               </span>
               <span className="panel-priority-tile-body">
                 <strong>{item.title}</strong>
@@ -172,10 +173,10 @@ export function PanelHome() {
       </section>
 
       <nav className="big-actions" aria-label={t('panel.quick')}>
-        <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden>＋</span><span className="big-action-text">{t('panel.addCar')}</span></Link>
-        <Link to="/flota" className="big-action"><span className="big-action-emoji" aria-hidden>◈</span><span className="big-action-text">{t('panel.myCars')}</span></Link>
-        <Link to="/alerty" className="big-action"><span className="big-action-emoji" aria-hidden>⚠</span><span className="big-action-text">{t('nav.alerts')}</span></Link>
-        <Link to="/statystyki" className="big-action"><span className="big-action-emoji" aria-hidden>◳</span><span className="big-action-text">{t('nav.statistics')}</span></Link>
+        <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden><Plus size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('panel.addCar')}</span></Link>
+        <Link to="/flota" className="big-action"><span className="big-action-emoji" aria-hidden><Car size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('panel.myCars')}</span></Link>
+        <Link to="/alerty" className="big-action"><span className="big-action-emoji" aria-hidden><AlertTriangle size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('nav.alerts')}</span></Link>
+        <Link to="/statystyki" className="big-action"><span className="big-action-emoji" aria-hidden><Shapes size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('nav.statistics')}</span></Link>
       </nav>
 
       <p className="muted small footer-hint">

@@ -1173,6 +1173,10 @@ code {
   font-weight: 700;
   line-height: 1;
 }
+.mob-nav-item-icon > svg {
+  width: 1.14rem;
+  height: 1.14rem;
+}
 
 .mob-nav--four .mob-nav-item {
   flex: 1 1 24%;
@@ -1669,6 +1673,10 @@ tr.tier-row-none td:first-child {
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1;
+}
+.big-action-emoji > svg {
+  width: 1.06rem;
+  height: 1.06rem;
 }
 .big-action-text {
   flex: 1;
@@ -3175,6 +3183,10 @@ tr.tier-row-none td:first-child {
   font-weight: 700;
   opacity: 0.95;
 }
+.panel-priority-tile-emoji > svg {
+  width: 1rem;
+  height: 1rem;
+}
 .panel-priority-tile-body {
   display: flex;
   flex-direction: column;
@@ -3672,6 +3684,10 @@ tr.tier-row-none td:first-child {
   border: 1px solid rgba(45, 212, 191, 0.45);
   background: rgba(20, 184, 166, 0.18);
 }
+.owner-apps-inbox-stat-icon > svg {
+  width: 1rem;
+  height: 1rem;
+}
 .owner-apps-inbox-stat strong {
   font-size: 2rem;
   line-height: 1.1;
@@ -3694,6 +3710,10 @@ tr.tier-row-none td:first-child {
   font-size: 1rem;
   line-height: 1;
   font-weight: 700;
+}
+.owner-apps-tab-icon > svg {
+  width: 1rem;
+  height: 1rem;
 }
 .owner-apps-filter-banner {
   margin: 0.5rem 0 0.75rem;
@@ -3825,6 +3845,10 @@ tr.tier-row-none td:first-child {
   border: 1px solid rgba(45, 212, 191, 0.46);
   background: rgba(20, 184, 166, 0.12);
   box-shadow: 0 0 0 10px rgba(20, 184, 166, 0.06);
+}
+.owner-apps-empty-icon > svg {
+  width: 2.1rem;
+  height: 2.1rem;
 }
 .owner-apps-empty-title {
   display: block;

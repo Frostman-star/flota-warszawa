@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { ClipboardList, MessageCircleMore } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
@@ -245,14 +246,14 @@ export function OwnerApplications() {
       <section className="card pad-lg owner-apps-inbox-strip" aria-label={t('ownerApplications.title')}>
         <div className="owner-apps-inbox-stat owner-apps-inbox-stat--icon">
           <span className="owner-apps-inbox-stat-icon" aria-hidden>
-            ◷
+            <ClipboardList size={17} strokeWidth={2.1} />
           </span>
           <strong>{pendingCount}</strong>
           <span className="muted small">{t('driverApplications.statusPending')}</span>
         </div>
         <div className="owner-apps-inbox-stat owner-apps-inbox-stat--icon">
           <span className="owner-apps-inbox-stat-icon" aria-hidden>
-            ◎
+            <MessageCircleMore size={17} strokeWidth={2.1} />
           </span>
           <strong>{replyNeededCount}</strong>
           <span className="muted small">{t('ownerApplications.chatAwaitingReply')}</span>
@@ -260,13 +261,13 @@ export function OwnerApplications() {
         <div className="owner-apps-inbox-actions">
           <Link className={`btn small ${focusChat ? 'primary' : 'ghost'}`} to="/wnioski?focus=chat">
             <span className="owner-apps-tab-icon" aria-hidden>
-              ◎
+              <MessageCircleMore size={16} strokeWidth={2.1} />
             </span>
             <span>{openChatPlain}</span>
           </Link>
           <Link className={`btn small ${focusChat ? 'ghost' : 'primary'}`} to="/wnioski">
             <span className="owner-apps-tab-icon" aria-hidden>
-              ◷
+              <ClipboardList size={16} strokeWidth={2.1} />
             </span>
             <span>{t('ownerApplications.title')}</span>
           </Link>
@@ -285,7 +286,7 @@ export function OwnerApplications() {
       {!loading && !err && filteredRows.length === 0 ? (
         <section className="card pad-lg owner-apps-empty-state" aria-live="polite">
           <div className="owner-apps-empty-icon" aria-hidden>
-            ◎
+            <MessageCircleMore size={38} strokeWidth={2.1} />
           </div>
           <strong className="owner-apps-empty-title">{carFilter ? t('ownerApplications.emptyFiltered') : t('ownerApplications.empty')}</strong>
           <p className="muted owner-apps-empty-lead">{t('ownerApplications.emptyHint')}</p>

@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Bell, Car, ClipboardList, LayoutGrid, Menu, Plus, Settings, Sparkles, Wrench } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 
@@ -15,11 +16,11 @@ export function MobileBottomNav() {
     setMenuOpen(false)
   }, [pathname])
 
-  const item = (to, icon, label, opts = {}) => {
+  const item = (to, Icon, label, opts = {}) => {
     const active = opts.exact ? pathname === to : pathname === to || pathname.startsWith(`${to}/`)
     return (
       <Link to={to} className={`mob-nav-item${active ? ' active' : ''}`}>
-        <span className="mob-nav-item-icon" aria-hidden>{icon}</span>
+        <span className="mob-nav-item-icon" aria-hidden><Icon size={18} strokeWidth={2.1} /></span>
         <span>{label}</span>
       </Link>
     )
@@ -36,9 +37,9 @@ export function MobileBottomNav() {
   return (
     <>
       <nav className="mob-nav mob-nav--four" aria-label={t('panel.quick')}>
-        {item('/panel', '⌂', t('app.panel'), { exact: true })}
-        {item('/flota', '◈', t('nav.fleet'))}
-        {item('/marketplace', '◎', t('nav.marketplace'))}
+        {item('/panel', LayoutGrid, t('app.panel'), { exact: true })}
+        {item('/flota', Car, t('nav.fleet'))}
+        {item('/marketplace', Sparkles, t('nav.marketplace'))}
         <button
           type="button"
           className={`mob-nav-item mob-nav-item--badge-wrap${isMenuActive || menuOpen ? ' active' : ''}`}
@@ -46,7 +47,7 @@ export function MobileBottomNav() {
           aria-expanded={menuOpen}
           aria-controls="mobile-more-menu"
         >
-          <span className="mob-nav-item-icon" aria-hidden>≡</span>
+          <span className="mob-nav-item-icon" aria-hidden><Menu size={18} strokeWidth={2.1} /></span>
           <span>{t('nav.menu')}</span>
           {pendingApps > 0 ? (
             <span className="mob-nav-item-badge" aria-label={t('panel.newApplicationsBadge')}>
@@ -73,27 +74,27 @@ export function MobileBottomNav() {
             </div>
             <div className="mob-nav-menu-links">
               <Link to="/dodaj" className={`mob-nav-menu-link${pathname === '/dodaj' ? ' active' : ''}`}>
-                <span className="mob-nav-item-icon" aria-hidden>＋</span>
+                <span className="mob-nav-item-icon" aria-hidden><Plus size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.addCar')}</span>
               </Link>
               <Link to="/wnioski" className={`mob-nav-menu-link${pathname === '/wnioski' ? ' active' : ''}`}>
-                <span className="mob-nav-item-icon" aria-hidden>◷</span>
+                <span className="mob-nav-item-icon" aria-hidden><ClipboardList size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.applicationsTab')}</span>
               </Link>
               <Link to="/statystyki" className={`mob-nav-menu-link${pathname === '/statystyki' ? ' active' : ''}`}>
-                <span className="mob-nav-item-icon" aria-hidden>◳</span>
+                <span className="mob-nav-item-icon" aria-hidden><LayoutGrid size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.statistics')}</span>
               </Link>
               <Link to="/serwisy" className={`mob-nav-menu-link${pathname === '/serwisy' ? ' active' : ''}`}>
-                <span className="mob-nav-item-icon" aria-hidden>✦</span>
+                <span className="mob-nav-item-icon" aria-hidden><Wrench size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.services')}</span>
               </Link>
               <Link to="/alerty" className={`mob-nav-menu-link${pathname === '/alerty' ? ' active' : ''}`}>
-                <span className="mob-nav-item-icon" aria-hidden>⚠</span>
+                <span className="mob-nav-item-icon" aria-hidden><Bell size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.alerts')}</span>
               </Link>
               <Link to="/ustawienia" className={`mob-nav-menu-link${pathname === '/ustawienia' ? ' active' : ''}`}>
-                <span className="mob-nav-item-icon" aria-hidden>⚙</span>
+                <span className="mob-nav-item-icon" aria-hidden><Settings size={18} strokeWidth={2.1} /></span>
                 <span>{t('app.settings')}</span>
               </Link>
             </div>
