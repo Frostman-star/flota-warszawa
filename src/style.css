@@ -1148,6 +1148,67 @@ code {
   background: rgba(14, 165, 233, 0.12);
 }
 
+.mob-nav--four .mob-nav-item {
+  flex: 1 1 24%;
+  min-width: 22%;
+  min-height: 58px;
+}
+
+.mob-nav-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 61;
+  border: none;
+  background: rgba(2, 6, 23, 0.45);
+}
+
+.mob-nav-menu {
+  position: fixed;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
+  z-index: 62;
+  border-color: rgba(148, 163, 184, 0.28);
+  box-shadow: 0 20px 40px rgba(2, 6, 23, 0.45);
+  max-height: min(70vh, 520px);
+  overflow: auto;
+}
+
+.mob-nav-menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.mob-nav-menu-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.mob-nav-menu-link {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  padding: 0.7rem 0.8rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.mob-nav-menu-link:hover {
+  text-decoration: none;
+  border-color: rgba(56, 189, 248, 0.6);
+  background: rgba(56, 189, 248, 0.09);
+}
+
+.mob-nav-menu-link.active {
+  border-color: rgba(56, 189, 248, 0.75);
+  background: rgba(56, 189, 248, 0.14);
+}
+
 @media (max-width: 767px) {
   .mob-nav {
     display: flex;
@@ -1446,6 +1507,43 @@ tr.tier-row-none td:first-child {
 }
 .topbar-settings-link:hover {
   color: var(--text);
+}
+
+@media (max-width: 767px) {
+  .topbar-simple {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.75rem;
+  }
+
+  .topbar-simple .brand-tagline,
+  .topbar-simple .topbar-actions,
+  .topbar-simple .lang-switch {
+    display: none;
+  }
+
+  .topbar-simple .topbar-settings-link {
+    margin-right: 0;
+    justify-self: end;
+    min-height: 40px;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(11, 18, 32, 0.9);
+  }
+
+  .topbar-simple .notif-bell-wrap {
+    justify-self: end;
+  }
+
+  .topbar-simple .notif-bell-btn {
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 12px;
+    padding: 0.2rem;
+  }
 }
 
 .page-simple {
@@ -4982,7 +5080,7 @@ tr.tier-row-none td:first-child {
   bottom: calc(3.35rem + env(safe-area-inset-bottom, 0px));
 }
 .install-app-banner--nav-admin {
-  bottom: calc(7.15rem + env(safe-area-inset-bottom, 0px));
+  bottom: calc(4.1rem + env(safe-area-inset-bottom, 0px));
 }
 .install-app-banner-icon {
   flex: 0 0 auto;
