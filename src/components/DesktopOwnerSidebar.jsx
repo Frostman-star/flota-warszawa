@@ -29,7 +29,7 @@ export function DesktopOwnerSidebar() {
       <div className="desktop-sidebar__top">
         <NavLink to="/panel" className="desktop-sidebar__brand" end>
           <span className="brand-icon" aria-hidden>
-            C
+            <img src="/brand-emblem.png" alt="" className="brand-icon-img" />
           </span>
           <span className="desktop-sidebar__brand-text">
             <span className="desktop-sidebar__brand-name">{t('app.brandName')}</span>

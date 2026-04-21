@@ -37,7 +37,7 @@ export function AppLayout({
         <header className="topbar topbar-simple">
           <Link to={isAdmin ? '/panel' : '/'} className="brand brand-lockup">
             <span className="brand-icon" aria-hidden>
-              C
+              <img src="/brand-emblem.png" alt="" className="brand-icon-img" />
             </span>
             <span className="brand-text-stack">
               <span className="brand-word">{t('app.brandName')}</span>
