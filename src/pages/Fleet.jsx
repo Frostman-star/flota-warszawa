@@ -110,6 +110,7 @@ export function Fleet() {
       <div className="car-card-grid">
         {list.map((car) => {
           const cid = String(car.id)
+          const tilePhoto = String(car.primary_photo_url || car.marketplace_photo_url || '').trim()
           const a = attentionByCarId[cid] ?? {
             pendingApps: 0,
             pendingEmployment: 0,
@@ -159,6 +160,9 @@ export function Fleet() {
                 ) : null}
               </div>
               <Link to={carPath(String(car.id), true)} className="car-tile-link">
+                <div className="fleet-car-photo" aria-hidden>
+                  <img src={tilePhoto || '/images/car-placeholder.png'} alt="" className="fleet-car-photo-img" loading="lazy" />
+                </div>
                 <div className="car-mobile-card-head">
                   <p className="car-tile-plate">{car.plate_number}</p>
                   <p className="car-tile-rent">{Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}<span className="car-tile-rent-suffix"> {t('fleet.rentSuffix')}</span></p>

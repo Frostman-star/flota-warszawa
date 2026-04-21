@@ -1837,12 +1837,17 @@ tr.tier-row-none td:first-child {
 .market-photo {
   height: 120px;
   border-radius: 10px;
-  background: #0b1220;
+  background:
+    linear-gradient(rgba(7, 12, 24, 0.42), rgba(7, 12, 24, 0.42)),
+    url('/images/car-placeholder.png') center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 3rem;
   margin-bottom: 0.35rem;
+}
+.market-photo > * {
+  display: none;
 }
 .market-price {
   font-weight: 700;
@@ -2166,6 +2171,19 @@ tr.tier-row-none td:first-child {
   padding: 1rem 1rem 0.75rem;
   color: inherit;
   text-decoration: none;
+}
+.fleet-car-photo {
+  margin: -0.55rem -0.55rem 0.75rem;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: #0a1020;
+}
+.fleet-car-photo-img {
+  width: 100%;
+  height: 148px;
+  object-fit: cover;
+  display: block;
 }
 .fleet-attention-legend {
   margin: 0 0 0.75rem;
@@ -2874,11 +2892,13 @@ tr.tier-row-none td:first-child {
 }
 
 .market-catalog-photo--ph {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.5rem;
-  color: var(--muted);
+  display: block;
+  background:
+    linear-gradient(rgba(7, 12, 24, 0.35), rgba(7, 12, 24, 0.35)),
+    url('/images/car-placeholder.png') center/cover no-repeat;
+}
+.market-catalog-photo--ph > * {
+  display: none;
 }
 
 .market-catalog-photo--hero {
