@@ -5794,6 +5794,117 @@ tr.tier-row-none td:first-child {
   margin: 0.35rem 0 0;
   max-width: 52ch;
 }
+
+@media (min-width: 1100px) {
+  .panel-home-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(380px, 1.05fr) minmax(420px, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .panel-home-shell .hero-summary,
+  .panel-home-shell .panel-hero-cta {
+    grid-column: 1;
+  }
+
+  .panel-home-shell .panel-priority-inbox,
+  .panel-home-shell .big-actions {
+    grid-column: 2;
+  }
+
+  .panel-home-shell .big-actions {
+    margin-top: 0;
+  }
+
+  .panel-home-shell .card {
+    margin-bottom: 0;
+  }
+
+  .panel-hero-cta-title {
+    font-size: clamp(2.1rem, 2.3vw, 2.8rem);
+  }
+
+  .panel-priority-inbox-grid {
+    gap: 0.7rem;
+  }
+
+  .panel-priority-tile {
+    padding: 0.85rem 0.9rem;
+  }
+
+  .car-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .fleet-car-photo-img {
+    height: 170px;
+  }
+
+  .owner-apps-page {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .owner-apps-inbox-strip {
+    padding: 1rem 1.15rem;
+  }
+
+  .owner-apps-inbox-actions {
+    width: auto;
+    margin-left: auto;
+  }
+
+  .owner-apps-inbox-actions .btn {
+    flex: 0 0 auto;
+    min-width: 220px;
+  }
+
+  .owner-apps-desktop-inbox {
+    border-radius: 18px;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: linear-gradient(160deg, rgba(15, 23, 42, 0.9), rgba(10, 16, 30, 0.88));
+  }
+
+  .owner-apps-desktop-list,
+  .owner-apps-desktop-preview {
+    max-height: 72vh;
+  }
+
+  .owner-apps-desktop-item {
+    padding: 0.8rem 0.9rem;
+  }
+
+  .marketplace-page,
+  .market-catalog-page,
+  .public-fleet-page {
+    max-width: 1240px;
+  }
+
+  .market-catalog-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1420px) {
+  .car-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .market-catalog-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .panel-home-shell {
+    grid-template-columns: minmax(460px, 1.05fr) minmax(520px, 1fr);
+  }
+}
 .app-chat-assign-banner {
   margin-top: 0.75rem;
 }
