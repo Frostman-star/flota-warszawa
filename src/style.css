@@ -5801,26 +5801,52 @@ tr.tier-row-none td:first-child {
     margin: 0 auto;
     display: grid;
     grid-template-columns: minmax(380px, 1.05fr) minmax(420px, 1fr);
+    grid-template-areas:
+      "summary public"
+      "cta priority"
+      "actions actions"
+      "footer footer";
     gap: 1rem;
     align-items: start;
   }
 
-  .panel-home-shell .hero-summary,
+  .panel-home-shell .hero-summary {
+    grid-area: summary;
+  }
+
   .panel-home-shell .panel-hero-cta {
-    grid-column: 1;
+    grid-area: cta;
   }
 
-  .panel-home-shell .panel-priority-inbox,
-  .panel-home-shell .big-actions {
-    grid-column: 2;
+  .panel-home-shell .panel-home-public-card {
+    grid-area: public;
   }
 
-  .panel-home-shell .big-actions {
+  .panel-home-shell .panel-priority-inbox {
+    grid-area: priority;
     margin-top: 0;
   }
 
-  .panel-home-shell .card {
+  .panel-home-shell .big-actions {
+    grid-area: actions;
+    margin-top: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .panel-home-shell .footer-hint {
+    grid-area: footer;
+    margin-top: 0.25rem;
+  }
+
+  .panel-home-shell .card,
+  .panel-home-shell .hero-summary {
     margin-bottom: 0;
+  }
+
+  .panel-home-shell .big-action {
+    min-height: 76px;
   }
 
   .panel-hero-cta-title {
@@ -5903,6 +5929,10 @@ tr.tier-row-none td:first-child {
 
   .panel-home-shell {
     grid-template-columns: minmax(460px, 1.05fr) minmax(520px, 1fr);
+  }
+
+  .panel-home-shell .big-action {
+    min-height: 82px;
   }
 }
 .app-chat-assign-banner {

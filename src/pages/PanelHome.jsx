@@ -133,7 +133,7 @@ export function PanelHome() {
       </section>
 
       {user?.id ? (
-        <section className="card pad-lg">
+        <section className="card pad-lg panel-home-public-card">
           <strong>{t('panel.publicProfileTitle')}</strong>
           <p className="muted small mb-0">{`${window.location.origin}/flota/${user.id}`}</p>
           <p className="muted small">{t('panel.publicProfileHint')}</p>
