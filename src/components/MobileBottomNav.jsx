@@ -15,11 +15,12 @@ export function MobileBottomNav() {
     setMenuOpen(false)
   }, [pathname])
 
-  const item = (to, label, opts = {}) => {
+  const item = (to, icon, label, opts = {}) => {
     const active = opts.exact ? pathname === to : pathname === to || pathname.startsWith(`${to}/`)
     return (
       <Link to={to} className={`mob-nav-item${active ? ' active' : ''}`}>
-        {label}
+        <span className="mob-nav-item-icon" aria-hidden>{icon}</span>
+        <span>{label}</span>
       </Link>
     )
   }
@@ -35,9 +36,9 @@ export function MobileBottomNav() {
   return (
     <>
       <nav className="mob-nav mob-nav--four" aria-label={t('panel.quick')}>
-        {item('/panel', `🏠 ${t('app.panel')}`, { exact: true })}
-        {item('/flota', `🚗 ${t('nav.fleet')}`)}
-        {item('/marketplace', `🛒 ${t('nav.marketplace')}`)}
+        {item('/panel', '⌂', t('app.panel'), { exact: true })}
+        {item('/flota', '◈', t('nav.fleet'))}
+        {item('/marketplace', '◎', t('nav.marketplace'))}
         <button
           type="button"
           className={`mob-nav-item mob-nav-item--badge-wrap${isMenuActive || menuOpen ? ' active' : ''}`}
@@ -45,7 +46,8 @@ export function MobileBottomNav() {
           aria-expanded={menuOpen}
           aria-controls="mobile-more-menu"
         >
-          ☰ {t('nav.menu')}
+          <span className="mob-nav-item-icon" aria-hidden>≡</span>
+          <span>{t('nav.menu')}</span>
           {pendingApps > 0 ? (
             <span className="mob-nav-item-badge" aria-label={t('panel.newApplicationsBadge')}>
               {pendingApps > 9 ? '9+' : pendingApps}
@@ -71,22 +73,28 @@ export function MobileBottomNav() {
             </div>
             <div className="mob-nav-menu-links">
               <Link to="/dodaj" className={`mob-nav-menu-link${pathname === '/dodaj' ? ' active' : ''}`}>
-                ➕ {t('nav.addCar')}
+                <span className="mob-nav-item-icon" aria-hidden>＋</span>
+                <span>{t('nav.addCar')}</span>
               </Link>
               <Link to="/wnioski" className={`mob-nav-menu-link${pathname === '/wnioski' ? ' active' : ''}`}>
-                📋 {t('nav.applicationsTab')}
+                <span className="mob-nav-item-icon" aria-hidden>◷</span>
+                <span>{t('nav.applicationsTab')}</span>
               </Link>
               <Link to="/statystyki" className={`mob-nav-menu-link${pathname === '/statystyki' ? ' active' : ''}`}>
-                📊 {t('nav.statistics')}
+                <span className="mob-nav-item-icon" aria-hidden>◳</span>
+                <span>{t('nav.statistics')}</span>
               </Link>
               <Link to="/serwisy" className={`mob-nav-menu-link${pathname === '/serwisy' ? ' active' : ''}`}>
-                🔧 {t('nav.services')}
+                <span className="mob-nav-item-icon" aria-hidden>✦</span>
+                <span>{t('nav.services')}</span>
               </Link>
               <Link to="/alerty" className={`mob-nav-menu-link${pathname === '/alerty' ? ' active' : ''}`}>
-                🔔 {t('nav.alerts')}
+                <span className="mob-nav-item-icon" aria-hidden>⚠</span>
+                <span>{t('nav.alerts')}</span>
               </Link>
               <Link to="/ustawienia" className={`mob-nav-menu-link${pathname === '/ustawienia' ? ' active' : ''}`}>
-                ⚙️ {t('app.settings')}
+                <span className="mob-nav-item-icon" aria-hidden>⚙</span>
+                <span>{t('app.settings')}</span>
               </Link>
             </div>
           </div>

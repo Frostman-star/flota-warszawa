@@ -1138,6 +1138,16 @@ code {
   color: var(--muted);
   border-radius: 10px;
   text-decoration: none;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.18rem;
+  line-height: 1.15;
+  cursor: pointer;
 }
 .mob-nav-item:hover {
   color: var(--text);
@@ -1146,6 +1156,16 @@ code {
 .mob-nav-item.active {
   color: var(--accent);
   background: rgba(14, 165, 233, 0.12);
+}
+
+.mob-nav-item-icon {
+  width: 1.2rem;
+  height: 1.2rem;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1;
 }
 
 .mob-nav--four .mob-nav-item {
@@ -1196,6 +1216,9 @@ code {
   color: var(--text);
   text-decoration: none;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
 .mob-nav-menu-link:hover {
