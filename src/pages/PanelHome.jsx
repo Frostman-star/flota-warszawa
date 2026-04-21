@@ -1,4 +1,5 @@
-﻿import { Link, useLocation, useOutletContext } from 'react-router-dom'
+﻿import { useEffect, useState } from 'react'
+import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
@@ -8,6 +9,7 @@ import { localeTag } from '../utils/localeTag'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 import { useOwnerPendingEmploymentRequestCount } from '../hooks/useOwnerPendingEmploymentRequestCount'
+import { supabase } from '../lib/supabase'
 
 function countCriticalSoon(cars) {
   let n = 0
@@ -28,10 +30,65 @@ export function PanelHome() {
   const location = useLocation()
   const { count: pendingApps } = useOwnerPendingApplicationCount(user?.id, Boolean(user?.id))
   const { count: pendingEmployment } = useOwnerPendingEmploymentRequestCount(user?.id, Boolean(user?.id))
+  const [chatAttentionTotal, setChatAttentionTotal] = useState(0)
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const weekly = computeWeeklyRentTotal(cars)
   const toCheck = buildAlertRows(cars).length
   const critical = countCriticalSoon(cars)
+
+  useEffect(() => {
+    const ids = (cars ?? []).map((c) => c.id).filter(Boolean)
+    if (!user?.id || !ids.length) {
+      setChatAttentionTotal(0)
+      return
+    }
+    let cancelled = false
+    void supabase
+      .rpc('owner_fleet_car_attention_counts', { p_car_ids: ids })
+      .then(({ data, error: rpcErr }) => {
+        if (cancelled) return
+        if (rpcErr) {
+          console.error(rpcErr)
+          setChatAttentionTotal(0)
+          return
+        }
+        const total = (data ?? []).reduce((acc, row) => acc + Number(row.chat_attention ?? 0), 0)
+        setChatAttentionTotal(total)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [cars, user?.id])
+
+  const priorityItems = useMemo(() => {
+    const items = [
+      {
+        id: 'alerts',
+        href: '/alerty',
+        emoji: '🔔',
+        title: t('nav.alerts'),
+        subtitle: t('panel.criticalBody', { count: critical }),
+        score: Number(critical || 0),
+      },
+      {
+        id: 'applications',
+        href: '/wnioski',
+        emoji: '📋',
+        title: t('nav.applicationsTab'),
+        subtitle: t('panel.newApplicationsCard', { count: pendingApps }),
+        score: Number(pendingApps || 0),
+      },
+      {
+        id: 'chat',
+        href: '/wnioski?focus=chat',
+        emoji: '💬',
+        title: t('ownerApplications.openChat'),
+        subtitle: t('panel.chatNeedsReplyCard', { count: chatAttentionTotal }),
+        score: Number(chatAttentionTotal || 0),
+      },
+    ]
+    return items.sort((a, b) => b.score - a.score)
+  }, [critical, pendingApps, chatAttentionTotal, t])
 
   if (loading) return <div className="page-simple"><LoadingSpinner /></div>
   if (error) {
@@ -115,6 +172,26 @@ export function PanelHome() {
           </span>
         ) : null}
       </Link>
+
+      <section className="panel-priority-inbox card pad-lg" aria-label={t('panel.priorityInboxTitle')}>
+        <header className="panel-priority-inbox-head">
+          <strong>{t('panel.priorityInboxTitle')}</strong>
+          <span className="muted small">{t('panel.priorityInboxLead')}</span>
+        </header>
+        <div className="panel-priority-inbox-grid">
+          {priorityItems.map((item) => (
+            <Link key={item.id} to={item.href} className={`panel-priority-tile${item.score > 0 ? ' panel-priority-tile--alert panel-priority-tile--pulse' : ''}`}>
+              <span className="panel-priority-tile-emoji" aria-hidden>
+                {item.emoji}
+              </span>
+              <span className="panel-priority-tile-body">
+                <strong>{item.title}</strong>
+                <span className="muted small">{item.subtitle}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <nav className="big-actions" aria-label={t('panel.quick')}>
         <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden>➕</span><span className="big-action-text">{t('panel.addCar')}</span></Link>
