@@ -65,7 +65,7 @@ export function PanelHome() {
       {
         id: 'alerts',
         href: '/alerty',
-        emoji: '🔔',
+        emoji: '⚠',
         title: t('nav.alerts'),
         subtitle: t('panel.criticalBody', { count: critical }),
         score: Number(critical || 0),
@@ -73,7 +73,7 @@ export function PanelHome() {
       {
         id: 'applications',
         href: '/wnioski',
-        emoji: '📋',
+        emoji: '◷',
         title: t('nav.applicationsTab'),
         subtitle: t('panel.newApplicationsCard', { count: pendingApps }),
         score: Number(pendingApps || 0),
@@ -81,7 +81,7 @@ export function PanelHome() {
       {
         id: 'chat',
         href: '/wnioski?focus=chat',
-        emoji: '💬',
+        emoji: '◎',
         title: t('ownerApplications.openChat'),
         subtitle: t('panel.chatNeedsReplyCard', { count: chatAttentionTotal }),
         score: Number(chatAttentionTotal || 0),
@@ -172,10 +172,10 @@ export function PanelHome() {
       </section>
 
       <nav className="big-actions" aria-label={t('panel.quick')}>
-        <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden>➕</span><span className="big-action-text">{t('panel.addCar')}</span></Link>
-        <Link to="/flota" className="big-action"><span className="big-action-emoji" aria-hidden>🚗</span><span className="big-action-text">{t('panel.myCars')}</span></Link>
-        <Link to="/alerty" className="big-action"><span className="big-action-emoji" aria-hidden>🔔</span><span className="big-action-text">{t('nav.alerts')}</span></Link>
-        <Link to="/statystyki" className="big-action"><span className="big-action-emoji" aria-hidden>📊</span><span className="big-action-text">{t('nav.statistics')}</span></Link>
+        <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden>＋</span><span className="big-action-text">{t('panel.addCar')}</span></Link>
+        <Link to="/flota" className="big-action"><span className="big-action-emoji" aria-hidden>◈</span><span className="big-action-text">{t('panel.myCars')}</span></Link>
+        <Link to="/alerty" className="big-action"><span className="big-action-emoji" aria-hidden>⚠</span><span className="big-action-text">{t('nav.alerts')}</span></Link>
+        <Link to="/statystyki" className="big-action"><span className="big-action-emoji" aria-hidden>◳</span><span className="big-action-text">{t('nav.statistics')}</span></Link>
       </nav>
 
       <p className="muted small footer-hint">
