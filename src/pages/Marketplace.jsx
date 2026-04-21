@@ -14,12 +14,13 @@ import { AppPlatformPills } from '../components/AppPlatformPills'
 import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
 import { VEHICLE_REQUIRED_KEYS } from '../utils/vehiclePhotoAngles'
 import { fuelIcon, transmissionIcon, normalizeMarketplaceFeatures } from '../utils/marketplaceDisplay'
+import { MarketplaceListedCarArticle } from '../components/MarketplaceListedCarArticle'
 
 const DRIVER_SELECT = `
   id, model, year, weekly_rent_pln, marketplace_photo_url, primary_photo_url, marketplace_description, marketplace_location,
   marketplace_status, deposit_amount, fuel_type, transmission, seats, consumption, marketplace_features,
   min_driver_age, min_experience_years, min_rental_months, owner_phone, owner_telegram,
-  plate_number, owner_id,
+  plate_number, owner_id, marketplace_view_count,
   partner_names, partner_name, partner_contact, apps_available, registration_city
 `
 
@@ -113,6 +114,16 @@ export function Marketplace() {
     error: ownerError,
     refresh: refreshOwnerCars,
   } = useCars({ enabled: isAdmin && Boolean(user?.id), ownerId: user?.id ?? null })
+
+  const bumpDriverCarViewCount = useCallback((carId) => {
+    setDriverCars((prev) =>
+      prev.map((c) =>
+        String(c.id) === carId
+          ? { ...c, marketplace_view_count: Number(c.marketplace_view_count ?? 0) + 1 }
+          : c
+      )
+    )
+  }, [])
 
   const loadDriverListings = useCallback(async () => {
     setDriverLoading(true)
@@ -516,7 +527,13 @@ export function Marketplace() {
                     const dep = Number(car.deposit_amount ?? 0)
                     const isFavorited = favoritedIds.has(String(car.id))
                     return (
-                      <article key={car.id} className="market-catalog-card">
+                      <MarketplaceListedCarArticle
+                        key={car.id}
+                        carId={String(car.id)}
+                        pingEnabled={showCatalog}
+                        onViewRecorded={bumpDriverCarViewCount}
+                        className="market-catalog-card"
+                      >
                         <div className="market-catalog-photo-wrap">
                           {isDriver ? (
                             <button
@@ -555,6 +572,9 @@ export function Marketplace() {
                         <div className="market-catalog-body">
                           <h2 className="market-catalog-model">{title}</h2>
                           <p className="market-catalog-price">{formatWeekly(car)}</p>
+                          <p className="muted small market-catalog-views" aria-label={t('marketplace.viewCountAria', { count: Number(car.marketplace_view_count ?? 0).toLocaleString(lc) })}>
+                            {t('marketplace.viewCountLine', { count: Number(car.marketplace_view_count ?? 0).toLocaleString(lc) })}
+                          </p>
                           {dep > 0 ? (
                             <p className="market-catalog-deposit muted">
                               {t('marketplace.deposit', { amount: dep.toLocaleString(lc) })}
@@ -636,7 +656,7 @@ export function Marketplace() {
                             </button>
                           )}
                         </div>
-                      </article>
+                      </MarketplaceListedCarArticle>
                     )
                   })}
                 </div>

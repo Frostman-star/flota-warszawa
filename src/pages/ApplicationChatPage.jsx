@@ -23,6 +23,7 @@ export function ApplicationChatPage() {
   const [assignBusy, setAssignBusy] = useState(false)
   const [assignBanner, setAssignBanner] = useState(/** @type {{ type: 'success' | 'error'; text: string } | null} */ (null))
   const listEndRef = useRef(null)
+  const [lastSeenAt, setLastSeenAt] = useState(null)
 
   const idOk = useMemo(() => isUuid(applicationId), [applicationId])
   const isOwner = useMemo(
@@ -128,6 +129,21 @@ export function ApplicationChatPage() {
   }, [messages.length])
 
   const canSend = appRow && (appRow.status === 'pending' || appRow.status === 'accepted')
+  const chatSeenKey = useMemo(() => (applicationId ? `flota.chat.lastSeen.${applicationId}` : ''), [applicationId])
+
+  useEffect(() => {
+    if (!chatSeenKey) return
+    const saved = window.localStorage.getItem(chatSeenKey)
+    if (saved) setLastSeenAt(saved)
+  }, [chatSeenKey])
+
+  useEffect(() => {
+    if (!chatSeenKey || !messages.length) return
+    const latestTs = messages[messages.length - 1]?.created_at
+    if (!latestTs) return
+    window.localStorage.setItem(chatSeenKey, String(latestTs))
+    setLastSeenAt(String(latestTs))
+  }, [chatSeenKey, messages])
 
   const assignDriverToCar = useCallback(async () => {
     if (!applicationId || !idOk || !isOwner) return
@@ -270,8 +286,15 @@ export function ApplicationChatPage() {
         <ul className="app-chat-list">
           {messages.map((m) => {
             const mine = String(m.sender_id) === String(user?.id)
+            const isUnread = !mine && m.created_at && lastSeenAt && new Date(m.created_at).getTime() > new Date(lastSeenAt).getTime()
             return (
               <li key={m.id} className={`app-chat-bubble${mine ? ' app-chat-bubble--mine' : ''}`}>
+                <div className="app-chat-bubble-head">
+                  <span className={`app-chat-role-chip${mine ? ' app-chat-role-chip--mine' : ''}`}>
+                    {mine ? t('applicationChat.roleFleet') : t('applicationChat.roleDriver')}
+                  </span>
+                  {isUnread ? <span className="app-chat-unread-chip">{t('applicationChat.unread')}</span> : null}
+                </div>
                 <p className="app-chat-bubble-body">{String(m.body)}</p>
                 <span className="app-chat-bubble-meta">
                   {m.created_at ? new Date(m.created_at).toLocaleString() : ''}

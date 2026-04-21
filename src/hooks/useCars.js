@@ -53,6 +53,7 @@ const CAR_SELECT_NEW = `
         apps_available,
         registration_city,
         owner_id,
+        marketplace_view_count,
         ${CAR_EMBED}
       `
 
@@ -88,6 +89,7 @@ const CAR_SELECT_PUBLIC = `
         registration_city,
         driver_id,
         driver_label,
+        marketplace_view_count,
         ${CAR_EMBED}
       `
 
@@ -122,6 +124,7 @@ const CAR_SELECT_PUBLIC_LEGACY = `
         registration_city,
         assigned_driver_id,
         driver_label,
+        marketplace_view_count,
         ${CAR_EMBED}
       `
 
@@ -173,6 +176,7 @@ const CAR_SELECT_LEGACY = `
         apps_available,
         registration_city,
         owner_id,
+        marketplace_view_count,
         ${CAR_EMBED}
       `
 

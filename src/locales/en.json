@@ -258,6 +258,8 @@
     "car": "Car",
     "week": "/ week",
     "weekShort": "week",
+    "viewCountLine": "👁 {{count}} views",
+    "viewCountAria": "Total times this listing was shown in the catalog: {{count}}",
     "interest": "I'm interested",
     "contactCta": "Contact",
     "contactEmpty": "The owner did not add a phone or Telegram to the listing.",
@@ -494,6 +496,10 @@
       "androidStep2": "Tap the menu (⋮) in the top-right corner",
       "androidStep3": "Choose “Add to Home screen”",
       "androidStep4": "Tap “Add” — done!"
+    },
+    "update": {
+      "available": "A new app version is ready.",
+      "action": "Update now"
     }
   },
   "wizard": {
@@ -895,13 +901,49 @@
     "assignBusy": "Assigning…",
     "assignConfirm": "Assign this driver to the car from this application? Other pending applications for this car will be rejected.",
     "assignSuccess": "The driver has been assigned to the car.",
-    "assignDoneNote": "The driver is already assigned to this car. You can keep chatting."
+    "assignDoneNote": "The driver is already assigned to this car. You can keep chatting.",
+    "roleFleet": "Fleet owner",
+    "roleDriver": "Driver",
+    "unread": "New"
   },
   "noteModal": {
     "title": "Note",
     "body": "Content",
     "cancel": "Cancel",
-    "save": "Save"
+    "save": "Save",
+    "templateLabel": "Template",
+    "templateNone": "No template",
+    "templates": {
+      "service": {
+        "label": "Service",
+        "title": "Service note"
+      },
+      "engineRepair": {
+        "label": "Engine repair",
+        "title": "Engine repair note"
+      },
+      "tires": {
+        "label": "Tires",
+        "title": "Tire service note"
+      },
+      "accident": {
+        "label": "Incident / accident",
+        "title": "Incident note"
+      },
+      "plannedMaintenance": {
+        "label": "Planned maintenance",
+        "title": "Planned maintenance note"
+      },
+      "fields": {
+        "serviceDate": "Date",
+        "mileage": "Mileage",
+        "issue": "Issue",
+        "parts": "Parts replaced",
+        "workDone": "Work performed",
+        "cost": "Cost",
+        "nextStep": "Next step"
+      }
+    }
   },
   "alertPanel": {
     "title": "Document alerts",

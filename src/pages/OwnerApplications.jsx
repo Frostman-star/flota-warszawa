@@ -19,6 +19,7 @@ export function OwnerApplications() {
   const [banner, setBanner] = useState(/** @type {{ type: 'success' | 'error'; text: string } | null} */ (null))
   /** @type {[string | null, import('react').Dispatch<import('react').SetStateAction<string | null>>]} */
   const [actionBusyId, setActionBusyId] = useState(null)
+  const [selectedAppId, setSelectedAppId] = useState(null)
 
   const load = useCallback(async () => {
     if (!user?.id) return
@@ -138,6 +139,85 @@ export function OwnerApplications() {
     })
   }, [filteredRows, focusChat, chatReplyIds])
 
+  const pendingCount = useMemo(() => filteredRows.filter((r) => String(r.status || '') === 'pending').length, [filteredRows])
+  const replyNeededCount = useMemo(
+    () =>
+      filteredRows.filter(
+        (r) => String(r.status || '') === 'pending' && (!carFilter || chatReplyIds.has(String(r.id)))
+      ).length,
+    [filteredRows, carFilter, chatReplyIds]
+  )
+
+  useEffect(() => {
+    if (!filteredRows.length) {
+      setSelectedAppId(null)
+      return
+    }
+    setSelectedAppId((prev) => (prev && filteredRows.some((r) => String(r.id) === prev) ? prev : String(filteredRows[0].id)))
+  }, [filteredRows])
+
+  const selectedApp = useMemo(
+    () => filteredRows.find((r) => String(r.id) === String(selectedAppId)) ?? null,
+    [filteredRows, selectedAppId]
+  )
+
+  function renderAppCard(app, { compact = false } = {}) {
+    const d = app.driver
+    const phone = String(app.driver_phone || d?.phone || '').trim()
+    const profileForCard = {
+      full_name: app.driver_name || d?.full_name,
+      phone,
+      experience_years: d?.experience_years,
+      bio: d?.bio,
+      gender: d?.gender,
+      birth_year: d?.birth_year,
+      poland_status: d?.poland_status,
+      poland_status_doc_url: d?.poland_status_doc_url,
+      avatar_url: d?.avatar_url,
+    }
+    const lead = String(app.lead_source || 'unknown')
+    const leadClass = lead === 'cario_marketplace' ? 'owner-app-lead owner-app-lead--marketplace' : 'owner-app-lead owner-app-lead--other'
+    const st = String(app.status || 'pending')
+    const statusLabel =
+      st === 'accepted' ? t('driverApplications.statusAccepted') : st === 'rejected' ? t('driverApplications.statusRejected') : t('driverApplications.statusPending')
+    const needsChat = Boolean(carFilter) && st === 'pending' && chatReplyIds.has(String(app.id))
+    return (
+      <>
+        {needsChat ? <span className="owner-app-chat-ping">{t('ownerApplications.chatAwaitingReply')}</span> : null}
+        <span className={leadClass}>{t(`ownerApplications.leadSource.${lead}`)}</span>
+        <DriverProfileCard profile={profileForCard} showDocVerified className="owner-app-driver-card" />
+        <div className="owner-app-card-top owner-app-card-phone-row">
+          {phone ? (
+            <a className="owner-app-phone" href={`tel:${phone.replace(/\s+/g, '')}`}>
+              {phone}
+            </a>
+          ) : (
+            <span className="muted small">—</span>
+          )}
+        </div>
+        {!compact && app.driver_message ? <p className="owner-app-msg">{String(app.driver_message)}</p> : null}
+        <p className="muted tiny">{app.created_at ? new Date(app.created_at).toLocaleString() : ''}</p>
+        {st === 'pending' ? <p className="muted tiny owner-apps-assign-hint">{t('ownerApplications.assignInChatHint')}</p> : null}
+        <div className="owner-app-actions">
+          {st === 'pending' ? (
+            <button
+              type="button"
+              className="btn small ghost owner-app-reject"
+              disabled={Boolean(actionBusyId)}
+              onClick={() => void rejectApplication(app.id)}
+            >
+              {actionBusyId === app.id ? t('ownerApplications.rejectBusy') : t('ownerApplications.reject')}
+            </button>
+          ) : null}
+          <Link className="btn ghost small" to={`/rozmowa-wniosek/${app.id}`}>
+            {t('ownerApplications.openChat')}
+          </Link>
+        </div>
+        <span className={`status-pill status-pill--${st}`}>{statusLabel}</span>
+      </>
+    )
+  }
+
   return (
     <div className="page-simple owner-apps-page">
       <p className="muted small">
@@ -161,6 +241,25 @@ export function OwnerApplications() {
 
       {focusChat && carFilter ? <p className="muted small owner-apps-chat-focus-hint">{t('ownerApplications.chatFocusHint')}</p> : null}
 
+      <section className="card pad-lg owner-apps-inbox-strip" aria-label={t('ownerApplications.title')}>
+        <div className="owner-apps-inbox-stat">
+          <strong>{pendingCount}</strong>
+          <span className="muted small">{t('driverApplications.statusPending')}</span>
+        </div>
+        <div className="owner-apps-inbox-stat">
+          <strong>{replyNeededCount}</strong>
+          <span className="muted small">{t('ownerApplications.chatAwaitingReply')}</span>
+        </div>
+        <div className="owner-apps-inbox-actions">
+          <Link className={`btn small ${focusChat ? 'primary' : 'ghost'}`} to="/wnioski?focus=chat">
+            {t('ownerApplications.openChat')}
+          </Link>
+          <Link className={`btn small ${focusChat ? 'ghost' : 'primary'}`} to="/wnioski">
+            {t('ownerApplications.title')}
+          </Link>
+        </div>
+      </section>
+
       {banner ? (
         <p className={banner.type === 'success' ? 'owner-apps-banner owner-apps-banner--ok' : 'form-error'} role="status">
           {banner.text}
@@ -174,7 +273,42 @@ export function OwnerApplications() {
         <p className="muted">{carFilter ? t('ownerApplications.emptyFiltered') : t('ownerApplications.empty')}</p>
       ) : null}
 
-      <div className="owner-apps-groups">
+      <div className="owner-apps-desktop-inbox card">
+        <aside className="owner-apps-desktop-list">
+          <ul className="owner-apps-desktop-items">
+            {filteredRows.map((app) => {
+              const plate = app.car?.plate_number != null ? String(app.car.plate_number) : '—'
+              const active = String(app.id) === String(selectedAppId)
+              const st = String(app.status || 'pending')
+              return (
+                <li key={`desk-${app.id}`}>
+                  <button
+                    type="button"
+                    className={`owner-apps-desktop-item${active ? ' owner-apps-desktop-item--active' : ''}`}
+                    onClick={() => setSelectedAppId(String(app.id))}
+                  >
+                    <strong>{plate}</strong>
+                    <span className="muted small">{String(app.driver_name || app.driver?.full_name || '—')}</span>
+                    <span className={`status-pill status-pill--${st}`}>{st}</span>
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </aside>
+        <section className="owner-apps-desktop-preview pad-lg">
+          {selectedApp ? (
+            <article className="owner-app-card owner-app-card--desktop-preview">
+              {renderAppCard(selectedApp)}
+              {selectedApp.driver_message ? <p className="owner-app-msg">{String(selectedApp.driver_message)}</p> : null}
+            </article>
+          ) : (
+            <p className="muted small">{t('ownerApplications.empty')}</p>
+          )}
+        </section>
+      </div>
+
+      <div className="owner-apps-groups owner-apps-groups--mobile">
         {grouped.map((g) => {
           const plate = g.car?.plate_number != null ? String(g.car.plate_number) : '—'
           const title = [g.car?.model, g.car?.year].filter(Boolean).join(' ')
@@ -186,69 +320,12 @@ export function OwnerApplications() {
               </header>
               <ul className="owner-apps-cards">
                 {g.apps.map((app) => {
-                  const d = app.driver
-                  const phone = String(app.driver_phone || d?.phone || '').trim()
-                  const profileForCard = {
-                    full_name: app.driver_name || d?.full_name,
-                    phone,
-                    experience_years: d?.experience_years,
-                    bio: d?.bio,
-                    gender: d?.gender,
-                    birth_year: d?.birth_year,
-                    poland_status: d?.poland_status,
-                    poland_status_doc_url: d?.poland_status_doc_url,
-                    avatar_url: d?.avatar_url,
-                  }
-                  const lead = String(app.lead_source || 'unknown')
-                  const leadClass =
-                    lead === 'cario_marketplace'
-                      ? 'owner-app-lead owner-app-lead--marketplace'
-                      : 'owner-app-lead owner-app-lead--other'
                   const st = String(app.status || 'pending')
-                  const statusLabel =
-                    st === 'accepted'
-                      ? t('driverApplications.statusAccepted')
-                      : st === 'rejected'
-                        ? t('driverApplications.statusRejected')
-                        : t('driverApplications.statusPending')
                   const needsChat = Boolean(carFilter) && String(app.status || '') === 'pending' && chatReplyIds.has(String(app.id))
                   return (
                     <li key={app.id} className={`owner-app-card${needsChat ? ' owner-app-card--chat-ping' : ''}`}>
-                      {needsChat ? <span className="owner-app-chat-ping">{t('ownerApplications.chatAwaitingReply')}</span> : null}
-                      <span className={leadClass}>{t(`ownerApplications.leadSource.${lead}`)}</span>
-                      <DriverProfileCard profile={profileForCard} showDocVerified className="owner-app-driver-card" />
-                      <div className="owner-app-card-top owner-app-card-phone-row">
-                        {phone ? (
-                          <a className="owner-app-phone" href={`tel:${phone.replace(/\s+/g, '')}`}>
-                            {phone}
-                          </a>
-                        ) : (
-                          <span className="muted small">—</span>
-                        )}
-                      </div>
+                      {renderAppCard(app, { compact: true })}
                       {app.driver_message ? <p className="owner-app-msg">{String(app.driver_message)}</p> : null}
-                      <p className="muted tiny">
-                        {app.created_at ? new Date(app.created_at).toLocaleString() : ''}
-                      </p>
-                      {st === 'pending' ? (
-                        <p className="muted tiny owner-apps-assign-hint">{t('ownerApplications.assignInChatHint')}</p>
-                      ) : null}
-                      <div className="owner-app-actions">
-                        {st === 'pending' ? (
-                          <button
-                            type="button"
-                            className="btn small ghost owner-app-reject"
-                            disabled={Boolean(actionBusyId)}
-                            onClick={() => void rejectApplication(app.id)}
-                          >
-                            {actionBusyId === app.id ? t('ownerApplications.rejectBusy') : t('ownerApplications.reject')}
-                          </button>
-                        ) : null}
-                        <Link className="btn ghost small" to={`/rozmowa-wniosek/${app.id}`}>
-                          {t('ownerApplications.openChat')}
-                        </Link>
-                      </div>
-                      <span className={`status-pill status-pill--${st}`}>{statusLabel}</span>
                     </li>
                   )
                 })}

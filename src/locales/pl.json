@@ -258,6 +258,8 @@
     "car": "Auto",
     "week": "/ tydzień",
     "weekShort": "tydzień",
+    "viewCountLine": "👁 {{count}} wyświetleń",
+    "viewCountAria": "Łączna liczba wyświetleń tej oferty w katalogu: {{count}}",
     "interest": "Jestem zainteresowany",
     "contactCta": "Kontakt",
     "contactEmpty": "Właściciel nie podał telefonu ani Telegramu w ogłoszeniu.",
@@ -494,6 +496,10 @@
       "androidStep2": "Kliknij menu (⋮) w prawym górnym rogu",
       "androidStep3": "Wybierz «Dodaj do ekranu głównego»",
       "androidStep4": "Kliknij «Dodaj» — gotowe!"
+    },
+    "update": {
+      "available": "Nowa wersja aplikacji jest gotowa.",
+      "action": "Aktualizuj teraz"
     }
   },
   "wizard": {
@@ -895,13 +901,49 @@
     "assignBusy": "Przypisywanie…",
     "assignConfirm": "Przypisać tego kierowcę do auta z wniosku? Inne oczekujące wnioski na to auto zostaną odrzucone.",
     "assignSuccess": "Kierowca został przypisany do auta.",
-    "assignDoneNote": "Kierowca jest już przypisany do tego auta. Możesz dalej pisać w czacie."
+    "assignDoneNote": "Kierowca jest już przypisany do tego auta. Możesz dalej pisać w czacie.",
+    "roleFleet": "Właściciel floty",
+    "roleDriver": "Kierowca",
+    "unread": "Nowe"
   },
   "noteModal": {
     "title": "Notatka",
     "body": "Treść",
     "cancel": "Anuluj",
-    "save": "Zapisz"
+    "save": "Zapisz",
+    "templateLabel": "Szablon",
+    "templateNone": "Bez szablonu",
+    "templates": {
+      "service": {
+        "label": "Serwis",
+        "title": "Notatka serwisowa"
+      },
+      "engineRepair": {
+        "label": "Naprawa silnika",
+        "title": "Notatka: naprawa silnika"
+      },
+      "tires": {
+        "label": "Opony",
+        "title": "Notatka: serwis opon"
+      },
+      "accident": {
+        "label": "Kolizja / szkoda",
+        "title": "Notatka: zdarzenie"
+      },
+      "plannedMaintenance": {
+        "label": "Przegląd planowy",
+        "title": "Notatka: planowe utrzymanie"
+      },
+      "fields": {
+        "serviceDate": "Data",
+        "mileage": "Przebieg",
+        "issue": "Problem",
+        "parts": "Wymienione części",
+        "workDone": "Wykonane prace",
+        "cost": "Koszt",
+        "nextStep": "Następny krok"
+      }
+    }
   },
   "alertPanel": {
     "title": "Alerty dokumentów",

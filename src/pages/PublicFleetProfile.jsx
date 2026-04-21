@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { useAuth } from '../context/AuthContext'
+import { MarketplaceListedCarArticle } from '../components/MarketplaceListedCarArticle'
+import { localeTag } from '../utils/localeTag'
 
 export function PublicFleetProfile() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const { ownerId } = useParams()
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
@@ -16,6 +19,16 @@ export function PublicFleetProfile() {
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const isOwnProfile = Boolean(user?.id) && String(user.id) === String(ownerId)
+
+  const bumpCarViewCount = (carId) => {
+    setCars((prev) =>
+      prev.map((c) =>
+        String(c.id) === carId
+          ? { ...c, marketplace_view_count: Number(c.marketplace_view_count ?? 0) + 1 }
+          : c
+      )
+    )
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -33,7 +46,7 @@ export function PublicFleetProfile() {
       }
       const { data: listedCars, error: carsErr } = await supabase
         .from('cars')
-        .select('id, model, year, weekly_rent_pln, marketplace_photo_url, primary_photo_url, marketplace_listed, driver_id, plate_number')
+        .select('id, model, year, weekly_rent_pln, marketplace_photo_url, primary_photo_url, marketplace_listed, driver_id, plate_number, marketplace_view_count')
         .eq('owner_id', ownerId)
         .eq('marketplace_listed', true)
         .is('driver_id', null)
@@ -150,7 +163,13 @@ export function PublicFleetProfile() {
               const photo = String(car.primary_photo_url || car.marketplace_photo_url || '').trim()
               const title = [car.model || t('marketplace.car'), car.year ? String(car.year) : ''].filter(Boolean).join(' ')
               return (
-                <article key={car.id} className="market-catalog-card">
+                <MarketplaceListedCarArticle
+                  key={car.id}
+                  carId={String(car.id)}
+                  pingEnabled={hasCars}
+                  onViewRecorded={bumpCarViewCount}
+                  className="market-catalog-card"
+                >
                   <div className="market-catalog-photo-wrap">
                     {photo ? (
                       <img src={photo} alt="" className="market-catalog-photo market-catalog-photo--hero" loading="lazy" />
@@ -163,12 +182,15 @@ export function PublicFleetProfile() {
                   <div className="market-catalog-body">
                     <h3 className="market-catalog-model">{title}</h3>
                     <p className="market-catalog-price">{Number(car.weekly_rent_pln ?? 0).toLocaleString()} zł / {t('marketplace.weekShort')}</p>
+                    <p className="muted small market-catalog-views" aria-label={t('marketplace.viewCountAria', { count: Number(car.marketplace_view_count ?? 0).toLocaleString(lc) })}>
+                      {t('marketplace.viewCountLine', { count: Number(car.marketplace_view_count ?? 0).toLocaleString(lc) })}
+                    </p>
                     <p className="muted small">{String(car.plate_number ?? '').trim()}</p>
                     <Link to={user ? '/marketplace' : '/register?mode=register&role=driver'} className="btn btn-huge primary market-catalog-cta">
                       {t('publicFleet.apply')}
                     </Link>
                   </div>
-                </article>
+                </MarketplaceListedCarArticle>
               )
             })}
           </div>

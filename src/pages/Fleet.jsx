@@ -164,6 +164,11 @@ export function Fleet() {
                   <p className="car-tile-rent">{Number(car.weekly_rent_pln ?? 0).toLocaleString(lc, { style: 'currency', currency: 'PLN' })}<span className="car-tile-rent-suffix"> {t('fleet.rentSuffix')}</span></p>
                 </div>
                 <p className="car-mobile-meta">{car.model || '—'} · {car.driver_name ?? '—'}</p>
+                {car.marketplace_listed && !car.driver_id ? (
+                  <p className="muted small car-tile-catalog-views" aria-label={t('marketplace.viewCountAria', { count: Number(car.marketplace_view_count ?? 0).toLocaleString(lc) })}>
+                    {t('marketplace.viewCountLine', { count: Number(car.marketplace_view_count ?? 0).toLocaleString(lc) })}
+                  </p>
+                ) : null}
                 <FleetDocDots car={car} />
               </Link>
               <div className="car-tile-actions">

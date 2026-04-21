@@ -873,6 +873,14 @@ a:hover {
   overflow: hidden;
 }
 
+@media (max-width: 767px) {
+  .notif-popover {
+    right: max(-0.5rem, env(safe-area-inset-right, 0px));
+    width: min(360px, calc(100vw - 1rem - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    max-height: min(70vh, 520px);
+  }
+}
+
 .notif-pop-head {
   display: flex;
   align-items: baseline;
@@ -1431,6 +1439,10 @@ tr.tier-row-none td:first-child {
 .topbar-settings-link {
   margin-right: auto;
   text-decoration: none;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.35rem;
 }
 .topbar-settings-link:hover {
   color: var(--text);
@@ -1981,7 +1993,7 @@ tr.tier-row-none td:first-child {
 }
 
 .mob-nav-item {
-  min-height: 52px;
+  min-height: 58px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2116,6 +2128,9 @@ tr.tier-row-none td:first-child {
   opacity: 0.88;
   white-space: nowrap;
 }
+.car-tile-catalog-views {
+  margin: 0.2rem 0 0;
+}
 .fleet-doc-dots-mobile {
   flex-wrap: wrap;
   align-items: center;
@@ -2221,8 +2236,8 @@ tr.tier-row-none td:first-child {
   border: 1px solid var(--border);
   background: #0b1220;
   border-radius: 8px;
-  min-width: 30px;
-  height: 28px;
+  min-width: 38px;
+  height: 38px;
   cursor: pointer;
 }
 
@@ -2778,6 +2793,10 @@ tr.tier-row-none td:first-child {
   line-height: 1.2;
 }
 
+.market-catalog-views {
+  margin: 0.15rem 0 0;
+}
+
 .market-catalog-deposit {
   margin: 0.35rem 0 0;
   font-size: 0.9rem;
@@ -3283,11 +3302,87 @@ tr.tier-row-none td:first-child {
   flex-direction: column;
   gap: 1rem;
 }
+.owner-apps-desktop-inbox {
+  display: none;
+}
+.owner-apps-groups--mobile {
+  display: flex;
+}
+.owner-apps-desktop-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.owner-apps-desktop-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+.owner-apps-desktop-item--active {
+  background: rgba(56, 189, 248, 0.12);
+}
+.owner-app-card--desktop-preview {
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+@media (min-width: 1024px) {
+  .owner-apps-desktop-inbox {
+    display: grid;
+    grid-template-columns: minmax(260px, 360px) 1fr;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .owner-apps-desktop-list {
+    border-right: 1px solid var(--border);
+    max-height: 68vh;
+    overflow-y: auto;
+  }
+  .owner-apps-desktop-preview {
+    max-height: 68vh;
+    overflow-y: auto;
+  }
+  .owner-apps-groups--mobile {
+    display: none;
+  }
+}
 .owner-apps-group-head {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
   margin-bottom: 0.75rem;
+}
+.owner-apps-inbox-strip {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+.owner-apps-inbox-stat {
+  display: flex;
+  flex-direction: column;
+  min-width: 88px;
+}
+.owner-apps-inbox-stat strong {
+  font-size: 1.2rem;
+  line-height: 1.1;
+}
+.owner-apps-inbox-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 .owner-apps-filter-banner {
   margin: 0.5rem 0 0.75rem;
@@ -3319,6 +3414,13 @@ tr.tier-row-none td:first-child {
   border-radius: var(--radius);
   padding: 0.85rem 1rem;
   background: rgba(0, 0, 0, 0.12);
+  border-left: 4px solid transparent;
+}
+.owner-app-card:has(.status-pill--pending) {
+  border-left-color: #2563eb;
+}
+.owner-app-actions .btn {
+  min-height: 44px;
 }
 .owner-app-card-top {
   display: flex;
@@ -5229,6 +5331,38 @@ tr.tier-row-none td:first-child {
   border: 1px solid var(--border);
   background: var(--bg-elevated);
 }
+.app-chat-bubble-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+.app-chat-role-chip {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: rgba(148, 163, 184, 0.1);
+}
+.app-chat-role-chip--mine {
+  color: #082f49;
+  background: rgba(56, 189, 248, 0.45);
+  border-color: rgba(56, 189, 248, 0.8);
+}
+.app-chat-unread-chip {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #7f1d1d;
+  background: rgba(248, 113, 113, 0.25);
+  border: 1px solid rgba(248, 113, 113, 0.55);
+  border-radius: 999px;
+  padding: 0.1rem 0.4rem;
+}
 .app-chat-bubble--mine {
   align-self: flex-end;
   border-color: rgba(56, 189, 248, 0.35);
@@ -5290,4 +5424,17 @@ tr.tier-row-none td:first-child {
 .app-chat-assigned-note {
   margin: 0 0 1rem;
   max-width: 62ch;
+}
+
+.pwa-update-banner {
+  position: sticky;
+  top: 0;
+  z-index: 41;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.32), rgba(30, 64, 175, 0.28));
+  border-bottom: 1px solid rgba(59, 130, 246, 0.45);
 }

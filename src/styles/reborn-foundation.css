@@ -1,0 +1,28 @@
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --touch-target: 44px;
+}
+
+.btn,
+.mob-nav-item,
+.notif-bell-btn,
+.install-app-banner-install {
+  min-height: var(--touch-target);
+}
+
+.page-simple,
+.card,
+.panel,
+.modal-panel {
+  max-inline-size: 100%;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}

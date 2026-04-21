@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { LANG_OPTIONS } from '../i18n'
 import { NotificationBell } from './NotificationBell'
 import { DesktopOwnerSidebar } from './DesktopOwnerSidebar'
+import { PwaUpdateBanner } from './PwaUpdateBanner'
 
 /**
  * @param {{
@@ -71,6 +72,7 @@ export function AppLayout({
             </button>
           </div>
         </header>
+        <PwaUpdateBanner />
         <main className="main-content">
           <Outlet context={outletContext ?? undefined} />
         </main>
