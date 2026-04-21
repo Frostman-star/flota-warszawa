@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
+import { AlertTriangle, Car, Handshake, LayoutGrid, Plus, Settings, ShoppingCart, Wrench, BarChart3 } from 'lucide-react'
 
 function navCls({ isActive }) {
   const base = 'desktop-sidebar__link'
@@ -12,15 +13,15 @@ export function DesktopOwnerSidebar() {
   const { profile, signOut } = useAuth()
 
   const links = [
-    { to: '/panel', end: true, label: `🏠 ${t('app.panel')}` },
-    { to: '/flota', end: false, label: `🚗 ${t('nav.fleet')}` },
-    { to: '/zapytania-kierowcow', end: true, label: `🤝 ${t('nav.employmentRequests')}` },
-    { to: '/dodaj', end: true, label: `➕ ${t('panel.addCar')}` },
-    { to: '/alerty', end: true, label: `🔔 ${t('nav.alerts')}` },
-    { to: '/statystyki', end: true, label: `📊 ${t('nav.statistics')}` },
-    { to: '/marketplace', end: true, label: `🛒 ${t('nav.marketplace')}` },
-    { to: '/serwisy', end: true, label: `🔧 ${t('nav.services')}` },
-    { to: '/ustawienia', end: true, label: `⚙️ ${t('app.settings')}` },
+    { to: '/panel', end: true, label: t('app.panel'), Icon: LayoutGrid },
+    { to: '/flota', end: false, label: t('nav.fleet'), Icon: Car },
+    { to: '/zapytania-kierowcow', end: true, label: t('nav.employmentRequests'), Icon: Handshake },
+    { to: '/dodaj', end: true, label: t('panel.addCar'), Icon: Plus },
+    { to: '/alerty', end: true, label: t('nav.alerts'), Icon: AlertTriangle },
+    { to: '/statystyki', end: true, label: t('nav.statistics'), Icon: BarChart3 },
+    { to: '/marketplace', end: true, label: t('nav.marketplace'), Icon: ShoppingCart },
+    { to: '/serwisy', end: true, label: t('nav.services'), Icon: Wrench },
+    { to: '/ustawienia', end: true, label: t('app.settings'), Icon: Settings },
   ]
 
   return (
@@ -39,7 +40,10 @@ export function DesktopOwnerSidebar() {
       <nav className="desktop-sidebar__nav" aria-label={t('panel.quick')}>
         {links.map((l) => (
           <NavLink key={l.to} to={l.to} end={l.end} className={navCls}>
-            {l.label}
+            <span className="desktop-sidebar__link-icon" aria-hidden>
+              <l.Icon size={15} strokeWidth={2.1} />
+            </span>
+            <span>{l.label}</span>
           </NavLink>
         ))}
       </nav>

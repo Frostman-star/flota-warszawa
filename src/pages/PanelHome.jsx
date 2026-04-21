@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Car, ClipboardList, MessageCircleMore, Plus, Shapes } from 'lucide-react'
+import { AlertTriangle, ClipboardList, MessageCircleMore, Plus, Shapes, ShoppingCart, Wrench, Handshake } from 'lucide-react'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { daysUntil } from '../utils/documents'
@@ -62,15 +62,18 @@ export function PanelHome() {
   }, [cars, user?.id])
 
   const priorityItems = useMemo(() => {
-    const items = [
-      {
+    const items = []
+    if (critical <= 0) {
+      items.push({
         id: 'alerts',
         href: '/alerty',
         Icon: AlertTriangle,
         title: t('nav.alerts'),
         subtitle: t('panel.criticalBody', { count: critical }),
         score: Number(critical || 0),
-      },
+      })
+    }
+    items.push(
       {
         id: 'applications',
         href: '/wnioski',
@@ -86,8 +89,8 @@ export function PanelHome() {
         title: t('ownerApplications.openChat'),
         subtitle: t('panel.chatNeedsReplyCard', { count: chatAttentionTotal }),
         score: Number(chatAttentionTotal || 0),
-      },
-    ]
+      }
+    )
     return items.sort((a, b) => b.score - a.score)
   }, [critical, pendingApps, chatAttentionTotal, t])
 
@@ -173,10 +176,10 @@ export function PanelHome() {
       </section>
 
       <nav className="big-actions" aria-label={t('panel.quick')}>
-        <Link to="/dodaj" className="big-action big-action-primary"><span className="big-action-emoji" aria-hidden><Plus size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('panel.addCar')}</span></Link>
-        <Link to="/flota" className="big-action"><span className="big-action-emoji" aria-hidden><Car size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('panel.myCars')}</span></Link>
-        <Link to="/alerty" className="big-action"><span className="big-action-emoji" aria-hidden><AlertTriangle size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('nav.alerts')}</span></Link>
+        <Link to="/zapytania-kierowcow" className="big-action"><span className="big-action-emoji" aria-hidden><Handshake size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('nav.employmentRequests')}</span></Link>
+        <Link to="/serwisy" className="big-action"><span className="big-action-emoji" aria-hidden><Wrench size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('nav.services')}</span></Link>
         <Link to="/statystyki" className="big-action"><span className="big-action-emoji" aria-hidden><Shapes size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('nav.statistics')}</span></Link>
+        <Link to="/marketplace" className="big-action"><span className="big-action-emoji" aria-hidden><ShoppingCart size={19} strokeWidth={2.2} /></span><span className="big-action-text">{t('nav.marketplace')}</span></Link>
       </nav>
 
       <p className="muted small footer-hint">
