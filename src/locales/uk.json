@@ -862,6 +862,8 @@
     "assignInChatHint": "Щоб призначити на авто: відкрийте чат і натисніть кнопку після розмови з водієм.",
     "empty": "Заявок поки немає.",
     "openChat": "💬 Чат",
+    "openChatPlain": "Чат",
+    "emptyHint": "Коли водії надішлють заявки, вони з'являться тут.",
     "leadSource": {
       "cario_marketplace": "Лід з Cario Marketplace",
       "cario_fleet_profile": "Лід з профілю флоти Cario",

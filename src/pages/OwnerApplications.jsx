@@ -147,6 +147,7 @@ export function OwnerApplications() {
       ).length,
     [filteredRows, carFilter, chatReplyIds]
   )
+  const openChatPlain = t('ownerApplications.openChatPlain')
 
   useEffect(() => {
     if (!filteredRows.length) {
@@ -242,20 +243,32 @@ export function OwnerApplications() {
       {focusChat && carFilter ? <p className="muted small owner-apps-chat-focus-hint">{t('ownerApplications.chatFocusHint')}</p> : null}
 
       <section className="card pad-lg owner-apps-inbox-strip" aria-label={t('ownerApplications.title')}>
-        <div className="owner-apps-inbox-stat">
+        <div className="owner-apps-inbox-stat owner-apps-inbox-stat--icon">
+          <span className="owner-apps-inbox-stat-icon" aria-hidden>
+            ◷
+          </span>
           <strong>{pendingCount}</strong>
           <span className="muted small">{t('driverApplications.statusPending')}</span>
         </div>
-        <div className="owner-apps-inbox-stat">
+        <div className="owner-apps-inbox-stat owner-apps-inbox-stat--icon">
+          <span className="owner-apps-inbox-stat-icon" aria-hidden>
+            ◎
+          </span>
           <strong>{replyNeededCount}</strong>
           <span className="muted small">{t('ownerApplications.chatAwaitingReply')}</span>
         </div>
         <div className="owner-apps-inbox-actions">
           <Link className={`btn small ${focusChat ? 'primary' : 'ghost'}`} to="/wnioski?focus=chat">
-            {t('ownerApplications.openChat')}
+            <span className="owner-apps-tab-icon" aria-hidden>
+              ◎
+            </span>
+            <span>{openChatPlain}</span>
           </Link>
           <Link className={`btn small ${focusChat ? 'ghost' : 'primary'}`} to="/wnioski">
-            {t('ownerApplications.title')}
+            <span className="owner-apps-tab-icon" aria-hidden>
+              ◷
+            </span>
+            <span>{t('ownerApplications.title')}</span>
           </Link>
         </div>
       </section>
@@ -270,7 +283,13 @@ export function OwnerApplications() {
       {err ? <p className="form-error">{err}</p> : null}
 
       {!loading && !err && filteredRows.length === 0 ? (
-        <p className="muted">{carFilter ? t('ownerApplications.emptyFiltered') : t('ownerApplications.empty')}</p>
+        <section className="card pad-lg owner-apps-empty-state" aria-live="polite">
+          <div className="owner-apps-empty-icon" aria-hidden>
+            ◎
+          </div>
+          <strong className="owner-apps-empty-title">{carFilter ? t('ownerApplications.emptyFiltered') : t('ownerApplications.empty')}</strong>
+          <p className="muted owner-apps-empty-lead">{t('ownerApplications.emptyHint')}</p>
+        </section>
       ) : null}
 
       <div className="owner-apps-desktop-inbox card">

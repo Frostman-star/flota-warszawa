@@ -862,6 +862,8 @@
     "assignInChatHint": "Przypisanie do auta: otwórz czat i użyj przycisku po rozmowie z kierowcą.",
     "empty": "Brak zgłoszeń.",
     "openChat": "💬 Czat",
+    "openChatPlain": "Czat",
+    "emptyHint": "Gdy kierowcy wyślą wnioski, pojawią się one tutaj.",
     "leadSource": {
       "cario_marketplace": "Lid z Cario Marketplace",
       "cario_fleet_profile": "Lid z profilu floty Cario",

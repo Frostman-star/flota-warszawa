@@ -862,6 +862,8 @@
     "assignInChatHint": "To assign to the car: open the chat and use the button after you have talked to the driver.",
     "empty": "No applications yet.",
     "openChat": "💬 Chat",
+    "openChatPlain": "Chat",
+    "emptyHint": "When drivers send applications, they will appear here.",
     "leadSource": {
       "cario_marketplace": "Lead from Cario Marketplace",
       "cario_fleet_profile": "Lead from Cario fleet profile",
