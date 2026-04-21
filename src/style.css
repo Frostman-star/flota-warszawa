@@ -1545,16 +1545,28 @@ tr.tier-row-none td:first-child {
 @media (max-width: 767px) {
   .topbar-simple {
     display: grid;
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto auto auto;
     align-items: center;
     gap: 0.45rem;
     padding: 0.55rem 0.75rem;
   }
 
   .topbar-simple .brand-tagline,
-  .topbar-simple .topbar-actions,
-  .topbar-simple .lang-switch {
+  .topbar-simple .topbar-actions {
     display: none;
+  }
+
+  .topbar-simple .lang-switch {
+    display: inline-flex;
+    justify-self: end;
+    gap: 0.2rem;
+  }
+
+  .topbar-simple .lang-flag {
+    min-width: 30px;
+    height: 30px;
+    border-radius: 9px;
+    font-size: 0.72rem;
   }
 
   .topbar-simple .topbar-settings-link {
@@ -3160,6 +3172,21 @@ tr.tier-row-none td:first-child {
   margin: 1rem 0 1.25rem;
   border-color: rgba(148, 163, 184, 0.22);
   box-shadow: 0 10px 30px rgba(2, 6, 23, 0.32);
+}
+.panel-home-public-card--mini {
+  border-color: rgba(56, 189, 248, 0.28);
+  background: linear-gradient(160deg, rgba(7, 19, 38, 0.94), rgba(15, 23, 42, 0.9));
+}
+.panel-public-mini-lead {
+  margin: 0.35rem 0 0.15rem;
+}
+.panel-public-mini-link {
+  margin: 0 0 0.7rem;
+  color: #8eb3d7;
+  font-size: 0.82rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .panel-priority-inbox-head {
   display: flex;
@@ -4946,7 +4973,24 @@ tr.tier-row-none td:first-child {
   right: 0;
 }
 .public-fleet-header {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   text-align: center;
+}
+.public-fleet-header-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(120% 90% at 10% 0%, rgba(45, 212, 191, 0.22), transparent 45%),
+    linear-gradient(155deg, rgba(8, 28, 52, 0.95), rgba(20, 30, 52, 0.92));
+}
+.public-fleet-header[style*='--fleet-header-bg'] .public-fleet-header-backdrop {
+  background:
+    linear-gradient(rgba(5, 12, 24, 0.6), rgba(5, 12, 24, 0.78)),
+    var(--fleet-header-bg) center/cover no-repeat;
+  filter: saturate(1.05);
 }
 .public-fleet-logo {
   width: 88px;

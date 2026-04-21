@@ -36,6 +36,7 @@ export function PanelHome() {
   const weekly = computeWeeklyRentTotal(cars)
   const toCheck = buildAlertRows(cars).length
   const critical = countCriticalSoon(cars)
+  const publicProfileUrl = user?.id ? `${window.location.origin}/flota/${user.id}` : ''
 
   useEffect(() => {
     const ids = (cars ?? []).map((c) => c.id).filter(Boolean)
@@ -136,21 +137,26 @@ export function PanelHome() {
       </section>
 
       {user?.id ? (
-        <section className="card pad-lg panel-home-public-card">
+        <section className="card pad-lg panel-home-public-card panel-home-public-card--mini">
           <strong>{t('panel.publicProfileTitle')}</strong>
-          <p className="muted small mb-0">{`${window.location.origin}/flota/${user.id}`}</p>
-          <p className="muted small">{t('panel.publicProfileHint')}</p>
+          <p className="muted small panel-public-mini-lead">{t('panel.publicProfileHint')}</p>
+          <p className="panel-public-mini-link" title={publicProfileUrl}>
+            {publicProfileUrl}
+          </p>
           <div className="btn-row">
             <button
               type="button"
               className="btn secondary small"
-              onClick={() => navigator.clipboard.writeText(`${window.location.origin}/flota/${user.id}`)}
+              onClick={() => navigator.clipboard.writeText(publicProfileUrl)}
             >
               {t('panel.copyLink')}
             </button>
-            <a className="btn ghost small" href={`/flota/${user.id}`} target="_blank" rel="noreferrer">
+            <Link className="btn ghost small" to={`/flota/${user.id}`}>
               {t('panel.open')}
-            </a>
+            </Link>
+            <Link className="btn ghost small" to="/ustawienia#profil-firmy">
+              {t('app.settings')}
+            </Link>
           </div>
         </section>
       ) : null}

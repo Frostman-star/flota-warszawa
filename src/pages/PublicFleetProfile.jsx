@@ -81,6 +81,7 @@ export function PublicFleetProfile() {
   const totalCount = Number(totalCars || profile?.fleet_size || 0)
 
   const hasCars = useMemo(() => cars.length > 0, [cars.length])
+  const headerBg = String(profile?.company_logo_url ?? '').trim()
 
   async function copyLink() {
     try {
@@ -137,7 +138,11 @@ export function PublicFleetProfile() {
       ) : null}
       {copied ? <p className="form-info">{t('publicFleet.linkCopied')}</p> : null}
 
-      <section className="card pad-lg public-fleet-header">
+      <section
+        className="card pad-lg public-fleet-header"
+        style={headerBg ? { '--fleet-header-bg': `url(${headerBg})` } : undefined}
+      >
+        <div className="public-fleet-header-backdrop" aria-hidden />
         {String(profile?.company_logo_url ?? '').trim() ? (
           <img src={String(profile.company_logo_url)} alt="" className="public-fleet-logo" />
         ) : (

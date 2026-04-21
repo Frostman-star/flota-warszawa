@@ -254,7 +254,7 @@ export function Settings() {
             placeholder={t('settings.contactTelegramPlaceholder')}
           />
         </label>
-        <h2 className="block-title">{t('settings.companyProfileTitle')}</h2>
+        <h2 className="block-title" id="profil-firmy">{t('settings.companyProfileTitle')}</h2>
         <label className="field">
           <span className="field-label">{t('settings.companyLocation')}</span>
           <input className="input" value={companyLocation} onChange={(e) => setCompanyLocation(e.target.value)} />
@@ -288,9 +288,9 @@ export function Settings() {
           <span className="muted small">{uploadBusy ? t('app.loading') : t('settings.companyLogoHint')}</span>
         </label>
         {user?.id ? (
-          <a href={`/flota/${user.id}`} target="_blank" rel="noreferrer" className="link">
+          <Link to={`/flota/${user.id}`} className="link">
             {t('settings.publicProfilePreview')}
-          </a>
+          </Link>
         ) : null}
 
         <h2 className="block-title">{t('settings.notificationsBlock')}</h2>
