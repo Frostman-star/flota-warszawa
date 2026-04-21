@@ -117,6 +117,20 @@ export function PanelHome() {
       </section>
       {location.state?.toast ? <p className="form-info">{String(location.state.toast)}</p> : null}
 
+      <section className="panel-hero-cta card pad-lg" aria-label={t('panel.addCar')}>
+        <div className="panel-hero-cta-glow" aria-hidden />
+        <div className="panel-hero-cta-icon" aria-hidden>＋</div>
+        <h2 className="panel-hero-cta-title">{t('panel.addCar')}</h2>
+        <div className="panel-hero-cta-actions">
+          <Link to="/dodaj" className="btn panel-hero-cta-btn">
+            {t('panel.addCar')}
+          </Link>
+          <Link to="/flota" className="panel-hero-cta-link">
+            {t('panel.myCars')} →
+          </Link>
+        </div>
+      </section>
+
       {user?.id ? (
         <section className="card pad-lg">
           <strong>{t('panel.publicProfileTitle')}</strong>
