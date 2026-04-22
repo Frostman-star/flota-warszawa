@@ -18,6 +18,10 @@ function monthKeyFromDate(d) {
   return `${y}-${m}`
 }
 
+function isoDateOnly(d) {
+  return d.toISOString().slice(0, 10)
+}
+
 export function DriverFinance() {
   const { t, i18n } = useTranslation()
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
@@ -47,6 +51,7 @@ export function DriverFinance() {
     expectedExpenses: '',
     commissionPct: '10',
   })
+  const [period, setPeriod] = useState('month')
 
   const incomeCats = ['rides', 'tips', 'bonus', 'other']
   const expenseCats = ['fuel', 'wash', 'service', 'fees', 'fines', 'other']
@@ -83,13 +88,33 @@ export function DriverFinance() {
   }, [reload])
 
   const monthKey = useMemo(() => monthKeyFromDate(new Date()), [])
+  const periodStartIso = useMemo(() => {
+    const now = new Date()
+    if (period === 'day') return isoDateOnly(now)
+    if (period === 'week') {
+      const day = now.getDay()
+      const mondayShift = day === 0 ? 6 : day - 1
+      const start = new Date(now)
+      start.setDate(now.getDate() - mondayShift)
+      return isoDateOnly(start)
+    }
+    return `${monthKey}-01`
+  }, [period, monthKey])
+  const visibleIncomeRows = useMemo(
+    () => incomeRows.filter((r) => String(r.happened_on || '') >= periodStartIso),
+    [incomeRows, periodStartIso]
+  )
+  const visibleExpenseRows = useMemo(
+    () => expenseRows.filter((r) => String(r.happened_on || '') >= periodStartIso),
+    [expenseRows, periodStartIso]
+  )
   const monthlyIncome = useMemo(
-    () => incomeRows.filter((r) => String(r.happened_on || '').startsWith(monthKey)).reduce((s, r) => s + parseAmount(r.amount), 0),
-    [incomeRows, monthKey]
+    () => visibleIncomeRows.reduce((s, r) => s + parseAmount(r.amount), 0),
+    [visibleIncomeRows]
   )
   const monthlyExpenses = useMemo(
-    () => expenseRows.filter((r) => String(r.happened_on || '').startsWith(monthKey)).reduce((s, r) => s + parseAmount(r.amount), 0),
-    [expenseRows, monthKey]
+    () => visibleExpenseRows.reduce((s, r) => s + parseAmount(r.amount), 0),
+    [visibleExpenseRows]
   )
   const monthlyNet = monthlyIncome - monthlyExpenses
   const goalTarget = parseAmount(goal?.target_amount)
@@ -103,6 +128,22 @@ export function DriverFinance() {
     const remain = Math.max(0, goalTarget - monthlyNet)
     return remain / daysLeft
   }, [goalTarget, monthlyNet])
+  const expenseBreakdown = useMemo(() => {
+    const total = visibleExpenseRows.reduce((s, r) => s + parseAmount(r.amount), 0)
+    const map = new Map()
+    for (const row of visibleExpenseRows) {
+      const key = String(row.category || 'other')
+      map.set(key, (map.get(key) || 0) + parseAmount(row.amount))
+    }
+    const rows = [...map.entries()]
+      .map(([category, amount]) => ({
+        category,
+        amount,
+        pct: total > 0 ? (amount / total) * 100 : 0,
+      }))
+      .sort((a, b) => b.amount - a.amount)
+    return { total, rows, top: rows[0] ?? null }
+  }, [visibleExpenseRows])
 
   const calcRequiredGross = useMemo(() => {
     const targetNet = parseAmount(calcForm.targetNet)
@@ -190,6 +231,17 @@ export function DriverFinance() {
       </p>
       <h1>{t('driverFinance.title')}</h1>
       <p className="muted">{t('driverFinance.lead')}</p>
+      <div className="driver-finance-period-switch" role="tablist" aria-label={t('driverFinance.periodTitle')}>
+        <button type="button" className={`btn small ${period === 'day' ? 'primary' : 'ghost'}`} onClick={() => setPeriod('day')}>
+          {t('driverFinance.period.day')}
+        </button>
+        <button type="button" className={`btn small ${period === 'week' ? 'primary' : 'ghost'}`} onClick={() => setPeriod('week')}>
+          {t('driverFinance.period.week')}
+        </button>
+        <button type="button" className={`btn small ${period === 'month' ? 'primary' : 'ghost'}`} onClick={() => setPeriod('month')}>
+          {t('driverFinance.period.month')}
+        </button>
+      </div>
       {assignment?.plate ? <p className="driver-finance-assigned muted small">{t('driverFinance.car', { plate: assignment.plate })}</p> : null}
       {error ? <p className="form-error">{error}</p> : null}
       {banner ? <p className="form-info">{banner}</p> : null}
@@ -269,31 +321,55 @@ export function DriverFinance() {
         </p>
       </section>
 
+      <section className="card pad-lg driver-finance-breakdown">
+        <h2>{t('driverFinance.expenseBreakdownTitle')}</h2>
+        {expenseBreakdown.top ? (
+          <p className="muted small">
+            {t('driverFinance.topExpense', {
+              category: t(`driverFinance.expenseCat.${expenseBreakdown.top.category}`),
+              amount: fmtMoney(expenseBreakdown.top.amount),
+            })}
+          </p>
+        ) : null}
+        <ul className="driver-finance-breakdown-list">
+          {expenseBreakdown.rows.map((row) => (
+            <li key={row.category}>
+              <span>{t(`driverFinance.expenseCat.${row.category}`)}</span>
+              <div className="driver-finance-breakdown-bar">
+                <div style={{ width: `${Math.max(2, row.pct)}%` }} />
+              </div>
+              <strong>{fmtMoney(row.amount)}</strong>
+            </li>
+          ))}
+          {expenseBreakdown.rows.length === 0 ? <li className="muted small">{t('driverFinance.empty')}</li> : null}
+        </ul>
+      </section>
+
       <section className="driver-finance-lists">
         <article className="card pad-lg">
           <h2>{t('driverFinance.latestIncome')}</h2>
           <ul className="driver-finance-list">
-            {incomeRows.slice(0, 6).map((r) => (
+            {visibleIncomeRows.slice(0, 6).map((r) => (
               <li key={`i-${r.id}`}>
                 <span>{String(r.happened_on || '')}</span>
                 <span>{t(`driverFinance.incomeCat.${r.category}`)}</span>
                 <strong className="stats-money--in">{fmtMoney(r.amount)}</strong>
               </li>
             ))}
-            {incomeRows.length === 0 ? <li className="muted small">{t('driverFinance.empty')}</li> : null}
+            {visibleIncomeRows.length === 0 ? <li className="muted small">{t('driverFinance.empty')}</li> : null}
           </ul>
         </article>
         <article className="card pad-lg">
           <h2>{t('driverFinance.latestExpenses')}</h2>
           <ul className="driver-finance-list">
-            {expenseRows.slice(0, 6).map((r) => (
+            {visibleExpenseRows.slice(0, 6).map((r) => (
               <li key={`e-${r.id}`}>
                 <span>{String(r.happened_on || '')}</span>
                 <span>{t(`driverFinance.expenseCat.${r.category}`)}</span>
                 <strong className="stats-money--out">{fmtMoney(r.amount)}</strong>
               </li>
             ))}
-            {expenseRows.length === 0 ? <li className="muted small">{t('driverFinance.empty')}</li> : null}
+            {visibleExpenseRows.length === 0 ? <li className="muted small">{t('driverFinance.empty')}</li> : null}
           </ul>
         </article>
       </section>

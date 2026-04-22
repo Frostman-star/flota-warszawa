@@ -984,6 +984,14 @@
     "calcExpenses": "Ожидаемые расходы (PLN)",
     "calcCommission": "Комиссия (%)",
     "calcRequiredGross": "Требуемый валовый оборот",
+    "periodTitle": "Период",
+    "period": {
+      "day": "День",
+      "week": "Неделя",
+      "month": "Месяц"
+    },
+    "expenseBreakdownTitle": "Структура расходов",
+    "topExpense": "Самая большая трата: {{category}} — {{amount}}",
     "latestIncome": "Последние доходы",
     "latestExpenses": "Последние расходы",
     "empty": "Пока нет записей.",

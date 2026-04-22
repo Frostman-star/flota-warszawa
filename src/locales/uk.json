@@ -984,6 +984,14 @@
     "calcExpenses": "Очікувані витрати (PLN)",
     "calcCommission": "Комісія (%)",
     "calcRequiredGross": "Потрібний брутто-оборот",
+    "periodTitle": "Період",
+    "period": {
+      "day": "День",
+      "week": "Тиждень",
+      "month": "Місяць"
+    },
+    "expenseBreakdownTitle": "Структура витрат",
+    "topExpense": "Найбільша витрата: {{category}} — {{amount}}",
     "latestIncome": "Останні доходи",
     "latestExpenses": "Останні витрати",
     "empty": "Поки немає записів.",

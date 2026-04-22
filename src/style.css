@@ -6093,6 +6093,12 @@ tr.tier-row-none td:first-child {
 .driver-finance-assigned {
   margin: 0.15rem 0 0.9rem;
 }
+.driver-finance-period-switch {
+  display: flex;
+  gap: 0.45rem;
+  margin: 0.65rem 0 0.2rem;
+  flex-wrap: wrap;
+}
 .driver-finance-kpis {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -6153,6 +6159,32 @@ tr.tier-row-none td:first-child {
 .driver-finance-calc {
   margin-bottom: 0.9rem;
 }
+.driver-finance-breakdown {
+  margin-bottom: 0.9rem;
+}
+.driver-finance-breakdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.driver-finance-breakdown-list li {
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: 0.55rem;
+  align-items: center;
+}
+.driver-finance-breakdown-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.2);
+  overflow: hidden;
+}
+.driver-finance-breakdown-bar > div {
+  height: 100%;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.95), rgba(239, 68, 68, 0.9));
+}
 .driver-finance-calc-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -6194,5 +6226,8 @@ tr.tier-row-none td:first-child {
   }
   .driver-finance-inline-form .input {
     max-width: none;
+  }
+  .driver-finance-breakdown-list li {
+    grid-template-columns: 1fr;
   }
 }

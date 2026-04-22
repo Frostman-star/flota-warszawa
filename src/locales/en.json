@@ -984,6 +984,14 @@
     "calcExpenses": "Expected expenses (PLN)",
     "calcCommission": "Commission (%)",
     "calcRequiredGross": "Required gross",
+    "periodTitle": "Period",
+    "period": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "expenseBreakdownTitle": "Expense structure",
+    "topExpense": "Top expense: {{category}} — {{amount}}",
     "latestIncome": "Latest income",
     "latestExpenses": "Latest expenses",
     "empty": "No entries yet.",

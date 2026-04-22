@@ -984,6 +984,14 @@
     "calcExpenses": "Planowane koszty (PLN)",
     "calcCommission": "Prowizja (%)",
     "calcRequiredGross": "Wymagany obrót brutto",
+    "periodTitle": "Okres",
+    "period": {
+      "day": "Dzień",
+      "week": "Tydzień",
+      "month": "Miesiąc"
+    },
+    "expenseBreakdownTitle": "Struktura kosztów",
+    "topExpense": "Największy koszt: {{category}} — {{amount}}",
     "latestIncome": "Ostatnie przychody",
     "latestExpenses": "Ostatnie koszty",
     "empty": "Brak wpisów.",
