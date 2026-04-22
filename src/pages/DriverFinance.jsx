@@ -41,7 +41,7 @@ export function DriverFinance() {
   })
   const [expenseForm, setExpenseForm] = useState({
     selected: ['fuel'],
-    amounts: { fuel: '', wash: '', service: '', fees: '', fines: '', rent: '', other: '' },
+    amounts: { fuel: '', wash: '', service: '', fees: '', fines: '', rent: '', partner_payout: '', other: '' },
     happened_on: new Date().toISOString().slice(0, 10),
     note: '',
   })
@@ -54,7 +54,7 @@ export function DriverFinance() {
   const [period, setPeriod] = useState('month')
 
   const incomeCats = ['rides', 'tips', 'bonus', 'other']
-  const expenseCats = ['fuel', 'wash', 'service', 'fees', 'fines', 'rent', 'other']
+  const expenseCats = ['fuel', 'wash', 'service', 'fees', 'fines', 'rent', 'partner_payout', 'other']
 
   const fmtMoney = useCallback(
     (v) => Number(v || 0).toLocaleString(lc, { style: 'currency', currency: 'PLN', maximumFractionDigits: 0 }),
@@ -299,6 +299,7 @@ export function DriverFinance() {
         fees: '',
         fines: '',
         rent: prev.selected.includes('rent') && autoWeeklyRent > 0 ? String(autoWeeklyRent) : '',
+        partner_payout: '',
         other: '',
       },
       note: '',
@@ -438,6 +439,9 @@ export function DriverFinance() {
               </label>
             ))}
           </div>
+          {expenseForm.selected.includes('partner_payout') ? (
+            <p className="muted tiny">{t('driverFinance.partnerPayoutHint')}</p>
+          ) : null}
           {expenseForm.selected.map((cat) => (
             <input
               key={`amount-${cat}`}

@@ -982,6 +982,7 @@
     "saveExpense": "Save expense",
     "saveExpenses": "Save expenses",
     "autoRentHint": "Car weekly rent: {{value}} (auto-filled).",
+    "partnerPayoutHint": "Example: partner app fee about 170 PLN/week for weekly payouts, about 210 PLN for daily payouts — enter the amount for your chosen period.",
     "calcTitle": "Earnings calculator",
     "calcTargetNet": "Target net (PLN)",
     "calcExpenses": "Expected expenses (PLN)",
@@ -1022,6 +1023,7 @@
       "fees": "Fees",
       "fines": "Fines",
       "rent": "Car rent",
+      "partner_payout": "Partner payout fee",
       "other": "Other"
     }
   }

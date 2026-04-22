@@ -982,6 +982,7 @@
     "saveExpense": "Zapisz koszt",
     "saveExpenses": "Zapisz koszty",
     "autoRentHint": "Czynsz tygodniowy auta: {{value}} (uzupełniany automatycznie).",
+    "partnerPayoutHint": "Np. aplikacja partnera: ok. 170 zł/tydzień przy wypłacie raz w tygodniu, ok. 210 zł przy wypłacie codziennej — wpisz kwotę za wybrany okres.",
     "calcTitle": "Kalkulator zarobku",
     "calcTargetNet": "Docelowo na czysto (PLN)",
     "calcExpenses": "Planowane koszty (PLN)",
@@ -1022,6 +1023,7 @@
       "fees": "Opłaty",
       "fines": "Mandaty",
       "rent": "Najem auta",
+      "partner_payout": "Opłata partnera / harmonogram wypłat",
       "other": "Inne"
     }
   }
