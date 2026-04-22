@@ -975,15 +975,19 @@
     "saveGoal": "Save goal",
     "addIncome": "Add income",
     "addExpense": "Add expense",
+    "expenseSelectHint": "Choose one or more categories and enter amounts.",
     "amount": "Amount (PLN)",
     "note": "Note (optional)",
     "saveIncome": "Save income",
     "saveExpense": "Save expense",
+    "saveExpenses": "Save expenses",
+    "autoRentHint": "Car weekly rent: {{value}} (auto-filled).",
     "calcTitle": "Earnings calculator",
     "calcTargetNet": "Target net (PLN)",
     "calcExpenses": "Expected expenses (PLN)",
     "calcCommission": "Commission (%)",
     "calcRequiredGross": "Required gross",
+    "calcExpensesAutoHint": "If expenses field is empty, calculator uses expenses from selected period: {{value}}.",
     "periodTitle": "Period",
     "period": {
       "day": "Day",
@@ -1017,6 +1021,7 @@
       "service": "Service",
       "fees": "Fees",
       "fines": "Fines",
+      "rent": "Car rent",
       "other": "Other"
     }
   }

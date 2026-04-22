@@ -40,8 +40,8 @@ export function DriverFinance() {
     note: '',
   })
   const [expenseForm, setExpenseForm] = useState({
-    amount: '',
-    category: 'fuel',
+    selected: ['fuel'],
+    amounts: { fuel: '', wash: '', service: '', fees: '', fines: '', rent: '', other: '' },
     happened_on: new Date().toISOString().slice(0, 10),
     note: '',
   })
@@ -54,12 +54,27 @@ export function DriverFinance() {
   const [period, setPeriod] = useState('month')
 
   const incomeCats = ['rides', 'tips', 'bonus', 'other']
-  const expenseCats = ['fuel', 'wash', 'service', 'fees', 'fines', 'other']
+  const expenseCats = ['fuel', 'wash', 'service', 'fees', 'fines', 'rent', 'other']
 
   const fmtMoney = useCallback(
     (v) => Number(v || 0).toLocaleString(lc, { style: 'currency', currency: 'PLN', maximumFractionDigits: 0 }),
     [lc]
   )
+  const autoWeeklyRent = parseAmount(assignment?.weeklyRentPln)
+
+  useEffect(() => {
+    if (autoWeeklyRent <= 0) return
+    setExpenseForm((prev) => {
+      if (String(prev.amounts.rent || '').trim() !== '') return prev
+      return {
+        ...prev,
+        amounts: {
+          ...prev.amounts,
+          rent: String(autoWeeklyRent),
+        },
+      }
+    })
+  }, [autoWeeklyRent])
 
   const reload = useCallback(async () => {
     if (!user?.id) return
@@ -108,14 +123,23 @@ export function DriverFinance() {
     () => expenseRows.filter((r) => String(r.happened_on || '') >= periodStartIso),
     [expenseRows, periodStartIso]
   )
+  const autoRentForPeriod = useMemo(() => {
+    if (autoWeeklyRent <= 0) return 0
+    if (period === 'day') return autoWeeklyRent / 7
+    if (period === 'week') return autoWeeklyRent
+    return autoWeeklyRent * 4
+  }, [autoWeeklyRent, period])
   const monthlyIncome = useMemo(
     () => visibleIncomeRows.reduce((s, r) => s + parseAmount(r.amount), 0),
     [visibleIncomeRows]
   )
-  const monthlyExpenses = useMemo(
-    () => visibleExpenseRows.reduce((s, r) => s + parseAmount(r.amount), 0),
-    [visibleExpenseRows]
-  )
+  const monthlyExpenses = useMemo(() => {
+    const loggedTotal = visibleExpenseRows.reduce((s, r) => s + parseAmount(r.amount), 0)
+    const loggedRent = visibleExpenseRows
+      .filter((r) => String(r.category || '') === 'rent')
+      .reduce((s, r) => s + parseAmount(r.amount), 0)
+    return loggedTotal + (loggedRent > 0 ? 0 : autoRentForPeriod)
+  }, [visibleExpenseRows, autoRentForPeriod])
   const monthlyNet = monthlyIncome - monthlyExpenses
   const goalTarget = parseAmount(goal?.target_amount)
   const goalProgress = goalTarget > 0 ? Math.min(100, Math.max(0, (monthlyNet / goalTarget) * 100)) : 0
@@ -132,11 +156,16 @@ export function DriverFinance() {
     const monthIncome = incomeRows
       .filter((r) => String(r.happened_on || '').startsWith(monthKey))
       .reduce((s, r) => s + parseAmount(r.amount), 0)
-    const monthExpenses = expenseRows
+    const monthExpensesLogged = expenseRows
       .filter((r) => String(r.happened_on || '').startsWith(monthKey))
       .reduce((s, r) => s + parseAmount(r.amount), 0)
+    const monthRentLogged = expenseRows
+      .filter((r) => String(r.happened_on || '').startsWith(monthKey) && String(r.category || '') === 'rent')
+      .reduce((s, r) => s + parseAmount(r.amount), 0)
+    const monthAutoRent = monthRentLogged > 0 ? 0 : autoWeeklyRent * 4
+    const monthExpenses = monthExpensesLogged + monthAutoRent
     return { monthIncome, monthExpenses, monthNet: monthIncome - monthExpenses }
-  }, [incomeRows, expenseRows, monthKey])
+  }, [incomeRows, expenseRows, monthKey, autoWeeklyRent])
   const monthlyForecast = useMemo(() => {
     const now = new Date()
     const dayOfMonth = Math.max(1, now.getDate())
@@ -151,11 +180,17 @@ export function DriverFinance() {
     }
   }, [monthTotals.monthNet, goalTarget])
   const expenseBreakdown = useMemo(() => {
-    const total = visibleExpenseRows.reduce((s, r) => s + parseAmount(r.amount), 0)
+    const loggedRent = visibleExpenseRows
+      .filter((r) => String(r.category || '') === 'rent')
+      .reduce((s, r) => s + parseAmount(r.amount), 0)
+    const total = visibleExpenseRows.reduce((s, r) => s + parseAmount(r.amount), 0) + (loggedRent > 0 ? 0 : autoRentForPeriod)
     const map = new Map()
     for (const row of visibleExpenseRows) {
       const key = String(row.category || 'other')
       map.set(key, (map.get(key) || 0) + parseAmount(row.amount))
+    }
+    if (loggedRent <= 0 && autoRentForPeriod > 0) {
+      map.set('rent', (map.get('rent') || 0) + autoRentForPeriod)
     }
     const rows = [...map.entries()]
       .map(([category, amount]) => ({
@@ -165,7 +200,7 @@ export function DriverFinance() {
       }))
       .sort((a, b) => b.amount - a.amount)
     return { total, rows, top: rows[0] ?? null }
-  }, [visibleExpenseRows])
+  }, [visibleExpenseRows, autoRentForPeriod])
   const insightTips = useMemo(() => {
     const tips = []
     if (goalTarget <= 0) {
@@ -201,12 +236,13 @@ export function DriverFinance() {
 
   const calcRequiredGross = useMemo(() => {
     const targetNet = parseAmount(calcForm.targetNet)
-    const expectedExpenses = parseAmount(calcForm.expectedExpenses)
+    const expectedExpensesInput = parseAmount(calcForm.expectedExpenses)
+    const expectedExpenses = expectedExpensesInput > 0 ? expectedExpensesInput : monthlyExpenses
     const commissionPct = parseAmount(calcForm.commissionPct)
     const keepPct = Math.max(0, 100 - commissionPct)
     if (keepPct <= 0) return null
     return ((targetNet + expectedExpenses) * 100) / keepPct
-  }, [calcForm])
+  }, [calcForm, monthlyExpenses])
 
   async function addIncome(e) {
     e.preventDefault()
@@ -235,23 +271,48 @@ export function DriverFinance() {
     e.preventDefault()
     if (!user?.id) return
     setBanner('')
-    const amount = parseAmount(expenseForm.amount)
-    if (amount <= 0) return
-    const { error: insErr } = await supabase.from('driver_expense_entries').insert({
-      driver_id: user.id,
-      car_id: assignment?.carId ?? null,
-      amount,
-      category: expenseForm.category,
-      happened_on: expenseForm.happened_on,
-      note: expenseForm.note.trim() || null,
-    })
+    const payload = expenseForm.selected
+      .map((cat) => ({
+        driver_id: user.id,
+        car_id: assignment?.carId ?? null,
+        amount: parseAmount(expenseForm.amounts?.[cat]),
+        category: cat,
+        happened_on: expenseForm.happened_on,
+        note: expenseForm.note.trim() || null,
+      }))
+      .filter((row) => row.amount > 0)
+    if (payload.length === 0) {
+      setError(t('driverFinance.expenseSelectHint'))
+      return
+    }
+    const { error: insErr } = await supabase.from('driver_expense_entries').insert(payload)
     if (insErr) {
       setError(insErr.message)
       return
     }
-    setExpenseForm((prev) => ({ ...prev, amount: '', note: '' }))
+    setExpenseForm((prev) => ({
+      ...prev,
+      amounts: {
+        fuel: '',
+        wash: '',
+        service: '',
+        fees: '',
+        fines: '',
+        rent: prev.selected.includes('rent') && autoWeeklyRent > 0 ? String(autoWeeklyRent) : '',
+        other: '',
+      },
+      note: '',
+    }))
     setBanner(t('driverFinance.saved'))
     await reload()
+  }
+
+  function toggleExpenseCategory(category) {
+    setExpenseForm((prev) => {
+      const exists = prev.selected.includes(category)
+      const selected = exists ? prev.selected.filter((x) => x !== category) : [...prev.selected, category]
+      return { ...prev, selected }
+    })
   }
 
   async function saveGoal(e) {
@@ -364,13 +425,43 @@ export function DriverFinance() {
 
         <form className="card pad-lg driver-finance-form" onSubmit={addExpense}>
           <h2>{t('driverFinance.addExpense')}</h2>
-          <input className="input" type="number" step="0.01" min="0" value={expenseForm.amount} onChange={(e) => setExpenseForm((p) => ({ ...p, amount: e.target.value }))} placeholder={t('driverFinance.amount')} required />
-          <select className="input" value={expenseForm.category} onChange={(e) => setExpenseForm((p) => ({ ...p, category: e.target.value }))}>
-            {expenseCats.map((c) => <option key={c} value={c}>{t(`driverFinance.expenseCat.${c}`)}</option>)}
-          </select>
+          <p className="muted small">{t('driverFinance.expenseSelectHint')}</p>
+          <div className="driver-finance-expense-cats">
+            {expenseCats.map((cat) => (
+              <label key={cat} className="driver-finance-expense-cat">
+                <input
+                  type="checkbox"
+                  checked={expenseForm.selected.includes(cat)}
+                  onChange={() => toggleExpenseCategory(cat)}
+                />
+                <span>{t(`driverFinance.expenseCat.${cat}`)}</span>
+              </label>
+            ))}
+          </div>
+          {expenseForm.selected.map((cat) => (
+            <input
+              key={`amount-${cat}`}
+              className="input"
+              type="number"
+              step="0.01"
+              min="0"
+              value={expenseForm.amounts?.[cat] ?? ''}
+              onChange={(e) =>
+                setExpenseForm((p) => ({
+                  ...p,
+                  amounts: {
+                    ...p.amounts,
+                    [cat]: e.target.value,
+                  },
+                }))
+              }
+              placeholder={`${t(`driverFinance.expenseCat.${cat}`)} · ${t('driverFinance.amount')}`}
+            />
+          ))}
           <input className="input" type="date" value={expenseForm.happened_on} onChange={(e) => setExpenseForm((p) => ({ ...p, happened_on: e.target.value }))} required />
           <input className="input" value={expenseForm.note} onChange={(e) => setExpenseForm((p) => ({ ...p, note: e.target.value }))} placeholder={t('driverFinance.note')} />
-          <button type="submit" className="btn primary">{t('driverFinance.saveExpense')}</button>
+          {autoWeeklyRent > 0 ? <p className="muted tiny">{t('driverFinance.autoRentHint', { value: fmtMoney(autoWeeklyRent) })}</p> : null}
+          <button type="submit" className="btn primary">{t('driverFinance.saveExpenses')}</button>
         </form>
       </section>
 
@@ -385,6 +476,7 @@ export function DriverFinance() {
           <strong>{t('driverFinance.calcRequiredGross')}:</strong>{' '}
           {calcRequiredGross == null ? '—' : fmtMoney(calcRequiredGross)}
         </p>
+        <p className="muted tiny">{t('driverFinance.calcExpensesAutoHint', { value: fmtMoney(monthlyExpenses) })}</p>
       </section>
 
       <section className="card pad-lg driver-finance-breakdown">

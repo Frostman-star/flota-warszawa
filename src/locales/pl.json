@@ -975,15 +975,19 @@
     "saveGoal": "Zapisz cel",
     "addIncome": "Dodaj przychód",
     "addExpense": "Dodaj koszt",
+    "expenseSelectHint": "Wybierz jedną lub kilka kategorii i wpisz kwoty.",
     "amount": "Kwota (PLN)",
     "note": "Notatka (opcjonalnie)",
     "saveIncome": "Zapisz przychód",
     "saveExpense": "Zapisz koszt",
+    "saveExpenses": "Zapisz koszty",
+    "autoRentHint": "Czynsz tygodniowy auta: {{value}} (uzupełniany automatycznie).",
     "calcTitle": "Kalkulator zarobku",
     "calcTargetNet": "Docelowo na czysto (PLN)",
     "calcExpenses": "Planowane koszty (PLN)",
     "calcCommission": "Prowizja (%)",
     "calcRequiredGross": "Wymagany obrót brutto",
+    "calcExpensesAutoHint": "Jeśli pole kosztów jest puste, kalkulator używa kosztów z wybranego okresu: {{value}}.",
     "periodTitle": "Okres",
     "period": {
       "day": "Dzień",
@@ -1017,6 +1021,7 @@
       "service": "Serwis",
       "fees": "Opłaty",
       "fines": "Mandaty",
+      "rent": "Najem auta",
       "other": "Inne"
     }
   }

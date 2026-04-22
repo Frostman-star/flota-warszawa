@@ -975,15 +975,19 @@
     "saveGoal": "Зберегти ціль",
     "addIncome": "Додати дохід",
     "addExpense": "Додати витрату",
+    "expenseSelectHint": "Обери одну або кілька категорій і введи суми.",
     "amount": "Сума (PLN)",
     "note": "Нотатка (необов'язково)",
     "saveIncome": "Зберегти дохід",
     "saveExpense": "Зберегти витрату",
+    "saveExpenses": "Зберегти витрати",
+    "autoRentHint": "Тижнева оренда авто: {{value}} (підставляється автоматично).",
     "calcTitle": "Калькулятор заробітку",
     "calcTargetNet": "Ціль чистими (PLN)",
     "calcExpenses": "Очікувані витрати (PLN)",
     "calcCommission": "Комісія (%)",
     "calcRequiredGross": "Потрібний брутто-оборот",
+    "calcExpensesAutoHint": "Якщо поле витрат порожнє, калькулятор бере витрати з обраного періоду: {{value}}.",
     "periodTitle": "Період",
     "period": {
       "day": "День",
@@ -1017,6 +1021,7 @@
       "service": "Сервіс",
       "fees": "Збори",
       "fines": "Штрафи",
+      "rent": "Оренда авто",
       "other": "Інше"
     }
   }
