@@ -5948,31 +5948,18 @@ tr.tier-row-none td:first-child {
   min-height: 140px;
   border-radius: 14px;
   border: 1px solid rgba(34, 211, 238, 0.25);
-  background:
-    linear-gradient(135deg, rgba(34, 211, 238, 0.06), transparent 40%),
-    repeating-linear-gradient(-12deg, rgba(34, 211, 238, 0.04) 0 1px, transparent 1px 10px),
-    radial-gradient(ellipse at 70% 60%, rgba(56, 189, 248, 0.14), transparent 62%);
-  box-shadow: inset 0 0 32px rgba(2, 6, 23, 0.55);
+  background-color: #050c1a;
+  background-image:
+    linear-gradient(155deg, rgba(5, 12, 26, 0.72) 0%, rgba(5, 12, 26, 0.35) 42%, transparent 68%),
+    radial-gradient(ellipse 90% 70% at 70% 55%, rgba(34, 211, 238, 0.08), transparent 55%),
+    url('/images/marketplace-photo-panel-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: inset 0 0 32px rgba(2, 6, 23, 0.45);
 }
 .mvp-cyber-viz--car {
   position: relative;
-}
-.mvp-cyber-viz--car::after {
-  content: '';
-  position: absolute;
-  inset: 18% 14% 22% 18%;
-  border: 2px solid rgba(34, 211, 238, 0.45);
-  border-radius: 10px;
-  box-shadow: 0 0 18px rgba(34, 211, 238, 0.25);
-  transform: skewX(-6deg);
-}
-.mvp-cyber-viz--plate::after {
-  content: '';
-  position: absolute;
-  inset: 38% 22% 28% 22%;
-  border: 2px solid rgba(34, 211, 238, 0.55);
-  border-radius: 6px;
-  box-shadow: 0 0 22px rgba(34, 211, 238, 0.3);
 }
 .mvp-cyber-viz--plate {
   position: relative;
