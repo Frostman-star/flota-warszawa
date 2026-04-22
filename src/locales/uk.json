@@ -45,7 +45,8 @@
     "myApplications": "Мої заявки",
     "applicationsTab": "Заявки",
     "employmentRequests": "Співпраця",
-    "services": "Сервіси"
+    "services": "Сервіси",
+    "finance": "Заробіток"
   },
   "login": {
     "title": "Cario",
@@ -957,5 +958,48 @@
     "empty": "Немає документів, що закінчуються протягом 30 днів.",
     "legend": "Кольори: червоний — прострочено або <7 дн., помаранчевий — 7–14 дн., жовтий — 14–30 дн.",
     "dateLine": "Дата: {{date}} · {{relative}}"
+  },
+  "driverFinance": {
+    "title": "Фінанси водія",
+    "lead": "Відстежуй дохід, витрати та прогрес до місячної цілі.",
+    "car": "Авто: {{plate}}",
+    "saved": "Запис збережено.",
+    "goalSaved": "Ціль збережено.",
+    "kpiIncome": "Дохід (місяць)",
+    "kpiExpenses": "Витрати (місяць)",
+    "kpiNet": "Чистий (місяць)",
+    "goalTitle": "Місячна ціль",
+    "goalProgress": "Прогрес: {{pct}}%",
+    "requiredDaily": "Щоб виконати ціль, потрібно за день: {{value}}",
+    "goalPlaceholder": "Сума цілі (PLN)",
+    "saveGoal": "Зберегти ціль",
+    "addIncome": "Додати дохід",
+    "addExpense": "Додати витрату",
+    "amount": "Сума (PLN)",
+    "note": "Нотатка (необов'язково)",
+    "saveIncome": "Зберегти дохід",
+    "saveExpense": "Зберегти витрату",
+    "calcTitle": "Калькулятор заробітку",
+    "calcTargetNet": "Ціль чистими (PLN)",
+    "calcExpenses": "Очікувані витрати (PLN)",
+    "calcCommission": "Комісія (%)",
+    "calcRequiredGross": "Потрібний брутто-оборот",
+    "latestIncome": "Останні доходи",
+    "latestExpenses": "Останні витрати",
+    "empty": "Поки немає записів.",
+    "incomeCat": {
+      "rides": "Поїздки",
+      "tips": "Чайові",
+      "bonus": "Бонус",
+      "other": "Інше"
+    },
+    "expenseCat": {
+      "fuel": "Паливо",
+      "wash": "Мийка",
+      "service": "Сервіс",
+      "fees": "Збори",
+      "fines": "Штрафи",
+      "other": "Інше"
+    }
   }
 }

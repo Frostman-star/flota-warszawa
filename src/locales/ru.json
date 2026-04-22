@@ -45,7 +45,8 @@
     "myApplications": "Мои заявки",
     "applicationsTab": "Заявки",
     "employmentRequests": "Сотрудничество",
-    "services": "Сервисы"
+    "services": "Сервисы",
+    "finance": "Заработок"
   },
   "login": {
     "title": "Cario",
@@ -957,5 +958,48 @@
     "empty": "Нет документов, истекающих в течение 30 дней.",
     "legend": "Цвета: красный — просрочено или <7 дн., оранжевый — 7–14 дн., жёлтый — 14–30 дн.",
     "dateLine": "Дата: {{date}} · {{relative}}"
+  },
+  "driverFinance": {
+    "title": "Финансы водителя",
+    "lead": "Отслеживай доход, расходы и прогресс к месячной цели.",
+    "car": "Авто: {{plate}}",
+    "saved": "Запись сохранена.",
+    "goalSaved": "Цель сохранена.",
+    "kpiIncome": "Доход (месяц)",
+    "kpiExpenses": "Расходы (месяц)",
+    "kpiNet": "Чистыми (месяц)",
+    "goalTitle": "Месячная цель",
+    "goalProgress": "Прогресс: {{pct}}%",
+    "requiredDaily": "Чтобы закрыть цель, нужно в день: {{value}}",
+    "goalPlaceholder": "Сумма цели (PLN)",
+    "saveGoal": "Сохранить цель",
+    "addIncome": "Добавить доход",
+    "addExpense": "Добавить расход",
+    "amount": "Сумма (PLN)",
+    "note": "Заметка (необязательно)",
+    "saveIncome": "Сохранить доход",
+    "saveExpense": "Сохранить расход",
+    "calcTitle": "Калькулятор заработка",
+    "calcTargetNet": "Цель чистыми (PLN)",
+    "calcExpenses": "Ожидаемые расходы (PLN)",
+    "calcCommission": "Комиссия (%)",
+    "calcRequiredGross": "Требуемый валовый оборот",
+    "latestIncome": "Последние доходы",
+    "latestExpenses": "Последние расходы",
+    "empty": "Пока нет записей.",
+    "incomeCat": {
+      "rides": "Поездки",
+      "tips": "Чаевые",
+      "bonus": "Бонус",
+      "other": "Другое"
+    },
+    "expenseCat": {
+      "fuel": "Топливо",
+      "wash": "Мойка",
+      "service": "Сервис",
+      "fees": "Сборы",
+      "fines": "Штрафы",
+      "other": "Другое"
+    }
   }
 }

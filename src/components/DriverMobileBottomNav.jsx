@@ -18,7 +18,8 @@ export function DriverMobileBottomNav() {
     <nav className="mob-nav mob-nav--driver" aria-label={t('panel.quick')}>
       {item('/marketplace', `🛒 ${t('nav.marketplace')}`, { exact: true })}
       {item('/obrane', `❤️ ${t('favorites.title')}`, { exact: true })}
-      {item('/profil', `👤 ${t('nav.profile')}`)}
+      {item('/zarobki', `💸 ${t('nav.finance')}`, { exact: true })}
+      {item('/profil', `👤 ${t('nav.profile')}`, { exact: true })}
       {item('/moje-wnioski', `📋 ${t('nav.myApplications')}`)}
     </nav>
   )

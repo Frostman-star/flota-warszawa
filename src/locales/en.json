@@ -45,7 +45,8 @@
     "myApplications": "My applications",
     "applicationsTab": "Applications",
     "employmentRequests": "Cooperation",
-    "services": "Services"
+    "services": "Services",
+    "finance": "Earnings"
   },
   "login": {
     "title": "Cario",
@@ -957,5 +958,48 @@
     "empty": "No documents expiring within 30 days.",
     "legend": "Colours: red — expired or <7 days, orange — 7–14 days, yellow — 14–30 days.",
     "dateLine": "Date: {{date}} · {{relative}}"
+  },
+  "driverFinance": {
+    "title": "Driver finance",
+    "lead": "Track income, costs, and progress toward your monthly goal.",
+    "car": "Car: {{plate}}",
+    "saved": "Entry saved.",
+    "goalSaved": "Goal saved.",
+    "kpiIncome": "Income (month)",
+    "kpiExpenses": "Expenses (month)",
+    "kpiNet": "Net (month)",
+    "goalTitle": "Monthly goal",
+    "goalProgress": "Progress: {{pct}}%",
+    "requiredDaily": "Required per day to hit goal: {{value}}",
+    "goalPlaceholder": "Goal amount (PLN)",
+    "saveGoal": "Save goal",
+    "addIncome": "Add income",
+    "addExpense": "Add expense",
+    "amount": "Amount (PLN)",
+    "note": "Note (optional)",
+    "saveIncome": "Save income",
+    "saveExpense": "Save expense",
+    "calcTitle": "Earnings calculator",
+    "calcTargetNet": "Target net (PLN)",
+    "calcExpenses": "Expected expenses (PLN)",
+    "calcCommission": "Commission (%)",
+    "calcRequiredGross": "Required gross",
+    "latestIncome": "Latest income",
+    "latestExpenses": "Latest expenses",
+    "empty": "No entries yet.",
+    "incomeCat": {
+      "rides": "Rides",
+      "tips": "Tips",
+      "bonus": "Bonus",
+      "other": "Other"
+    },
+    "expenseCat": {
+      "fuel": "Fuel",
+      "wash": "Car wash",
+      "service": "Service",
+      "fees": "Fees",
+      "fines": "Fines",
+      "other": "Other"
+    }
   }
 }

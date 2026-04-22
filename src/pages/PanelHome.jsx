@@ -168,7 +168,11 @@ export function PanelHome() {
         </header>
         <div className="panel-priority-inbox-grid">
           {priorityItems.map((item) => (
-            <Link key={item.id} to={item.href} className={`panel-priority-tile${item.score > 0 ? ' panel-priority-tile--alert' : ''}`}>
+            <Link
+              key={item.id}
+              to={item.href}
+              className={`panel-priority-tile${item.score > 0 ? ' panel-priority-tile--alert' : ''}${item.id === 'chat' || item.id === 'applications' ? ' panel-priority-tile--button' : ' panel-priority-tile--full'}`}
+            >
               <span className="panel-priority-tile-emoji" aria-hidden>
                 <item.Icon size={17} strokeWidth={2.1} />
               </span>

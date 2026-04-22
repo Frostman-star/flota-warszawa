@@ -45,7 +45,8 @@
     "myApplications": "Moje wnioski",
     "applicationsTab": "Wnioski",
     "employmentRequests": "Współpraca",
-    "services": "Serwisy"
+    "services": "Serwisy",
+    "finance": "Zarobki"
   },
   "login": {
     "title": "Cario",
@@ -957,5 +958,48 @@
     "empty": "Brak dokumentów wygasających w ciągu 30 dni.",
     "legend": "Kolory: czerwony — wygasło lub <7 dni, pomarańczowy — 7–14 dni, żółty — 14–30 dni.",
     "dateLine": "Data: {{date}} · {{relative}}"
+  },
+  "driverFinance": {
+    "title": "Finanse kierowcy",
+    "lead": "Kontroluj przychody, koszty i progres do miesięcznego celu.",
+    "car": "Auto: {{plate}}",
+    "saved": "Zapisano wpis.",
+    "goalSaved": "Cel zapisany.",
+    "kpiIncome": "Przychód (miesiąc)",
+    "kpiExpenses": "Koszty (miesiąc)",
+    "kpiNet": "Na czysto (miesiąc)",
+    "goalTitle": "Cel miesięczny",
+    "goalProgress": "Progres: {{pct}}%",
+    "requiredDaily": "Aby domknąć cel, potrzebujesz dziennie: {{value}}",
+    "goalPlaceholder": "Kwota celu (PLN)",
+    "saveGoal": "Zapisz cel",
+    "addIncome": "Dodaj przychód",
+    "addExpense": "Dodaj koszt",
+    "amount": "Kwota (PLN)",
+    "note": "Notatka (opcjonalnie)",
+    "saveIncome": "Zapisz przychód",
+    "saveExpense": "Zapisz koszt",
+    "calcTitle": "Kalkulator zarobku",
+    "calcTargetNet": "Docelowo na czysto (PLN)",
+    "calcExpenses": "Planowane koszty (PLN)",
+    "calcCommission": "Prowizja (%)",
+    "calcRequiredGross": "Wymagany obrót brutto",
+    "latestIncome": "Ostatnie przychody",
+    "latestExpenses": "Ostatnie koszty",
+    "empty": "Brak wpisów.",
+    "incomeCat": {
+      "rides": "Kursy",
+      "tips": "Napiwki",
+      "bonus": "Bonus",
+      "other": "Inne"
+    },
+    "expenseCat": {
+      "fuel": "Paliwo",
+      "wash": "Myjnia",
+      "service": "Serwis",
+      "fees": "Opłaty",
+      "fines": "Mandaty",
+      "other": "Inne"
+    }
   }
 }

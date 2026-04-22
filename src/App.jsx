@@ -9,6 +9,7 @@ import { AlertsPage } from './pages/AlertsPage'
 import { CarDetail } from './pages/CarDetail'
 import { DriverMyApplications } from './pages/DriverMyApplications'
 import { DriverProfile } from './pages/DriverProfile'
+import { DriverFinance } from './pages/DriverFinance'
 import { Fleet } from './pages/Fleet'
 import { Marketplace } from './pages/Marketplace'
 import { OwnerApplications } from './pages/OwnerApplications'
@@ -64,6 +65,7 @@ export default function App() {
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/obrane" element={<Favorites />} />
         <Route path="/profil" element={<DriverProfile />} />
+        <Route path="/zarobki" element={<DriverFinance />} />
         <Route path="/moje-wnioski" element={<DriverMyApplications />} />
         <Route path="/rozmowa-wniosek/:applicationId" element={<ApplicationChatPage />} />
       </Route>
