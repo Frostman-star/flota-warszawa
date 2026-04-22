@@ -128,6 +128,28 @@ export function DriverFinance() {
     const remain = Math.max(0, goalTarget - monthlyNet)
     return remain / daysLeft
   }, [goalTarget, monthlyNet])
+  const monthTotals = useMemo(() => {
+    const monthIncome = incomeRows
+      .filter((r) => String(r.happened_on || '').startsWith(monthKey))
+      .reduce((s, r) => s + parseAmount(r.amount), 0)
+    const monthExpenses = expenseRows
+      .filter((r) => String(r.happened_on || '').startsWith(monthKey))
+      .reduce((s, r) => s + parseAmount(r.amount), 0)
+    return { monthIncome, monthExpenses, monthNet: monthIncome - monthExpenses }
+  }, [incomeRows, expenseRows, monthKey])
+  const monthlyForecast = useMemo(() => {
+    const now = new Date()
+    const dayOfMonth = Math.max(1, now.getDate())
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+    const avgNetPerDay = monthTotals.monthNet / dayOfMonth
+    const projectedNet = avgNetPerDay * daysInMonth
+    const deltaToGoal = goalTarget > 0 ? goalTarget - projectedNet : 0
+    return {
+      projectedNet,
+      deltaToGoal,
+      onTrack: goalTarget > 0 ? projectedNet >= goalTarget : projectedNet >= 0,
+    }
+  }, [monthTotals.monthNet, goalTarget])
   const expenseBreakdown = useMemo(() => {
     const total = visibleExpenseRows.reduce((s, r) => s + parseAmount(r.amount), 0)
     const map = new Map()
@@ -144,6 +166,38 @@ export function DriverFinance() {
       .sort((a, b) => b.amount - a.amount)
     return { total, rows, top: rows[0] ?? null }
   }, [visibleExpenseRows])
+  const insightTips = useMemo(() => {
+    const tips = []
+    if (goalTarget <= 0) {
+      tips.push(t('driverFinance.tipSetGoal'))
+    } else if (!monthlyForecast.onTrack) {
+      tips.push(t('driverFinance.tipBehindGoal', { value: fmtMoney(Math.max(0, monthlyForecast.deltaToGoal)) }))
+    }
+    if (expenseBreakdown.top && expenseBreakdown.top.pct >= 35) {
+      tips.push(
+        t('driverFinance.tipTopExpense', {
+          category: t(`driverFinance.expenseCat.${expenseBreakdown.top.category}`),
+          pct: Math.round(expenseBreakdown.top.pct),
+        })
+      )
+    }
+    if (monthTotals.monthNet <= 0 && monthTotals.monthIncome > 0) {
+      tips.push(t('driverFinance.tipNegativeNet'))
+    }
+    if (tips.length === 0) {
+      tips.push(t('driverFinance.tipStable'))
+    }
+    return tips.slice(0, 3)
+  }, [
+    goalTarget,
+    monthlyForecast.onTrack,
+    monthlyForecast.deltaToGoal,
+    expenseBreakdown.top,
+    t,
+    fmtMoney,
+    monthTotals.monthNet,
+    monthTotals.monthIncome,
+  ])
 
   const calcRequiredGross = useMemo(() => {
     const targetNet = parseAmount(calcForm.targetNet)
@@ -284,6 +338,18 @@ export function DriverFinance() {
         </form>
       </section>
 
+      <section className="card pad-lg driver-finance-forecast">
+        <h2>{t('driverFinance.forecastTitle')}</h2>
+        <p className="muted small">
+          {monthlyForecast.onTrack
+            ? t('driverFinance.forecastOnTrack')
+            : t('driverFinance.forecastBehind', { value: fmtMoney(Math.max(0, monthlyForecast.deltaToGoal)) })}
+        </p>
+        <p>
+          <strong>{t('driverFinance.forecastProjectedNet')}:</strong> {fmtMoney(monthlyForecast.projectedNet)}
+        </p>
+      </section>
+
       <section className="driver-finance-forms">
         <form className="card pad-lg driver-finance-form" onSubmit={addIncome}>
           <h2>{t('driverFinance.addIncome')}</h2>
@@ -342,6 +408,15 @@ export function DriverFinance() {
             </li>
           ))}
           {expenseBreakdown.rows.length === 0 ? <li className="muted small">{t('driverFinance.empty')}</li> : null}
+        </ul>
+      </section>
+
+      <section className="card pad-lg driver-finance-tips">
+        <h2>{t('driverFinance.tipsTitle')}</h2>
+        <ul className="driver-finance-tips-list">
+          {insightTips.map((tip, idx) => (
+            <li key={`tip-${idx}`}>{tip}</li>
+          ))}
         </ul>
       </section>
 
