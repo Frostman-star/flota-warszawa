@@ -5790,6 +5790,224 @@ tr.tier-row-none td:first-child {
   background: transparent;
 }
 
+/* Marketplace listing photos — cyber / split layout (embed in car detail) */
+.car-detail-section--photos-cyber {
+  background:
+    radial-gradient(90% 60% at 10% 0%, rgba(34, 211, 238, 0.12), transparent 55%),
+    linear-gradient(165deg, rgba(5, 12, 26, 0.96), rgba(8, 14, 24, 0.94));
+  border-color: rgba(45, 212, 191, 0.35);
+  box-shadow: 0 14px 42px rgba(2, 6, 23, 0.42);
+}
+.car-detail-section--photos-cyber .car-detail-section-title {
+  color: #f8fafc;
+  letter-spacing: 0.01em;
+}
+.mvp-section--cyber .mvp-cyber-card {
+  margin-bottom: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(45, 212, 191, 0.38);
+  background:
+    radial-gradient(120% 70% at 100% 0%, rgba(34, 211, 238, 0.1), transparent 50%),
+    linear-gradient(155deg, rgba(8, 16, 32, 0.98), rgba(4, 8, 18, 0.95));
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.07), 0 18px 46px rgba(2, 6, 23, 0.48);
+}
+.mvp-section--cyber .mvp-cyber-card--hero {
+  border-color: rgba(56, 189, 248, 0.42);
+}
+.mvp-cyber-split {
+  display: grid;
+  grid-template-columns: minmax(108px, 22%) 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+.mvp-cyber-rail {
+  min-height: 120px;
+  padding: 0.35rem 0.25rem;
+  border-radius: 12px;
+  border: 1px dashed rgba(103, 232, 249, 0.22);
+  background: rgba(2, 6, 23, 0.35);
+}
+.mvp-cyber-rail-kicker {
+  margin: 0 0 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(125, 211, 252, 0.75);
+}
+.mvp-cyber-rail-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.mvp-text-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.28rem 0.15rem;
+  border: none;
+  background: transparent;
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  font-family: inherit;
+}
+.mvp-text-link:hover {
+  color: #ecfeff;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.mvp-cyber-main {
+  min-width: 0;
+}
+.mvp-cyber-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 0.55rem;
+}
+.mvp-cyber-head--blur {
+  align-items: flex-start;
+}
+.mvp-cyber-blur-fields {
+  flex: 1;
+  min-width: 0;
+}
+.mvp-cyber-blur-fields .mvp-plate-blur-row {
+  margin: 0;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+.mvp-cyber-orb {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #a5f3fc;
+  border: 1px solid rgba(34, 211, 238, 0.45);
+  background: radial-gradient(circle at 30% 25%, rgba(34, 211, 238, 0.35), rgba(8, 47, 73, 0.35));
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.18);
+}
+.mvp-cyber-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1.25;
+}
+.mvp-cyber-lead {
+  margin: 0.25rem 0 0;
+  line-height: 1.45;
+}
+.mvp-cyber-progress {
+  margin: 0 0 0.55rem;
+  font-weight: 700;
+  color: rgba(165, 243, 252, 0.92);
+}
+.mvp-grid--cyber {
+  gap: 0.7rem;
+}
+.mvp-section--cyber .mvp-slot {
+  border-color: rgba(45, 212, 191, 0.32);
+  background: rgba(2, 6, 23, 0.42);
+}
+.mvp-section--cyber .mvp-slot--done {
+  border-color: rgba(34, 211, 238, 0.55);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.12);
+}
+.mvp-slot-lucide {
+  color: #67e8f9;
+}
+.mvp-slot-lucide--flip {
+  transform: scaleX(-1);
+}
+.mvp-slot-ph-icon {
+  color: rgba(103, 232, 249, 0.55);
+}
+.mvp-cyber-split--tips .mvp-cyber-copy {
+  min-width: 0;
+}
+.mvp-cyber-tip-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.05rem;
+  color: rgba(226, 232, 240, 0.92);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+.mvp-cyber-tip-list li {
+  margin-bottom: 0.35rem;
+}
+.mvp-cyber-tip-list li::marker {
+  color: #22d3ee;
+}
+.mvp-cyber-viz {
+  min-height: 140px;
+  border-radius: 14px;
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  background:
+    linear-gradient(135deg, rgba(34, 211, 238, 0.06), transparent 40%),
+    repeating-linear-gradient(-12deg, rgba(34, 211, 238, 0.04) 0 1px, transparent 1px 10px),
+    radial-gradient(ellipse at 70% 60%, rgba(56, 189, 248, 0.14), transparent 62%);
+  box-shadow: inset 0 0 32px rgba(2, 6, 23, 0.55);
+}
+.mvp-cyber-viz--car {
+  position: relative;
+}
+.mvp-cyber-viz--car::after {
+  content: '';
+  position: absolute;
+  inset: 18% 14% 22% 18%;
+  border: 2px solid rgba(34, 211, 238, 0.45);
+  border-radius: 10px;
+  box-shadow: 0 0 18px rgba(34, 211, 238, 0.25);
+  transform: skewX(-6deg);
+}
+.mvp-cyber-viz--plate::after {
+  content: '';
+  position: absolute;
+  inset: 38% 22% 28% 22%;
+  border: 2px solid rgba(34, 211, 238, 0.55);
+  border-radius: 6px;
+  box-shadow: 0 0 22px rgba(34, 211, 238, 0.3);
+}
+.mvp-cyber-viz--plate {
+  position: relative;
+}
+.mvp-cyber-optional {
+  margin-top: 0.25rem;
+}
+.mvp-section--cyber .mvp-expand.mvp-text-link {
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0;
+  font-size: 0.88rem;
+}
+@media (max-width: 640px) {
+  .mvp-cyber-split {
+    grid-template-columns: 1fr;
+  }
+  .mvp-cyber-rail {
+    min-height: 0;
+    padding: 0.5rem 0.55rem;
+  }
+  .mvp-cyber-rail-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+  }
+  .mvp-text-link {
+    width: auto;
+    padding: 0.2rem 0;
+  }
+  .mvp-cyber-split--tips .mvp-cyber-viz {
+    min-height: 100px;
+    order: -1;
+  }
+}
+
 /* --- Application chat (driver ↔ fleet, per wniosek) --- */
 .app-chat-page .app-chat-head {
   margin-bottom: 1rem;

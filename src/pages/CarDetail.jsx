@@ -351,7 +351,11 @@ export function CarDetail() {
 
       {isOwner ? (
         <>
-          <section ref={photosSectionRef} id="car-photos-marketplace" className="car-detail-section car-detail-section--photos card pad-lg">
+          <section
+            ref={photosSectionRef}
+            id="car-photos-marketplace"
+            className="car-detail-section car-detail-section--photos car-detail-section--photos-cyber card pad-lg"
+          >
             <h2 className="car-detail-section-title">{t('carDetail.sectionPhotosTitle')}</h2>
             <p className="muted small car-detail-section-lead">{t('carDetail.sectionPhotosLead')}</p>
             {user?.id ? <MarketplaceVehiclePhotos car={car} userId={user.id} embed onUpdated={() => refresh()} /> : null}

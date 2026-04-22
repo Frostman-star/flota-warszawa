@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { BadgeCheck, Camera, Car, ImagePlus, Lightbulb, Sofa } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { compressImageToJpeg } from '../utils/imageCanvasCompress'
 import { applyHeuristicPlateBlurToJpegBlob, supportsHeuristicPlateBlur } from '../utils/imagePlateBlur'
@@ -42,6 +43,9 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
   const [platePreviewBusy, setPlatePreviewBusy] = useState(false)
   const inputRef = useRef(null)
   const pendingAngleRef = useRef(null)
+  const tipsRef = useRef(null)
+  const blurRef = useRef(null)
+  const optionalRef = useRef(null)
 
   const byAngle = useMemo(() => {
     const m = new Map()
@@ -208,19 +212,31 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
   }
 
   function slotIcon(angleKey) {
+    const ic = { size: 22, strokeWidth: 2, className: 'mvp-slot-lucide' }
     switch (angleKey) {
       case 'front_left':
-        return <span className="mvp-slot-diag mvp-slot-diag--fl" aria-hidden>🚗↖</span>
+        return <Car {...ic} aria-hidden />
       case 'rear_right':
-        return <span className="mvp-slot-diag mvp-slot-diag--rr" aria-hidden>🚗↘</span>
+        return <Car {...ic} className="mvp-slot-lucide mvp-slot-lucide--flip" aria-hidden />
       case 'interior_front':
-        return <span aria-hidden>🪑</span>
+        return <Sofa {...ic} aria-hidden />
       case 'interior_rear':
-        return <span aria-hidden>🪑🪑</span>
+        return <Sofa {...ic} aria-hidden />
       default:
-        return <span aria-hidden>📷</span>
+        return <ImagePlus {...ic} aria-hidden />
     }
   }
+
+  const scrollTo = useCallback((el) => {
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [])
+
+  const openOptionalAndScroll = useCallback(() => {
+    setOptOpen(true)
+    requestAnimationFrame(() => {
+      optionalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    })
+  }, [])
 
   /**
    * @param {{ key: string, required: boolean }} def
@@ -254,7 +270,7 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
         ) : (
           <button type="button" className="mvp-slot-body" disabled={Boolean(busy)} onClick={() => onPickAngle(def.key)}>
             <span className="mvp-slot-ph" aria-hidden>
-              📷
+              <ImagePlus size={36} strokeWidth={1.6} className="mvp-slot-ph-icon" />
             </span>
             <span className="mvp-slot-cta muted small">{t('marketplacePhotos.addPhoto')}</span>
           </button>
@@ -264,49 +280,142 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
     )
   }
 
+  const tipsList = (
+    <ul className={embed ? 'mvp-cyber-tip-list' : 'mvp-tip-list muted small'}>
+      <li>{t('marketplacePhotos.tip1')}</li>
+      <li>{t('marketplacePhotos.tip2')}</li>
+      <li>{t('marketplacePhotos.tip3')}</li>
+      <li>{t('marketplacePhotos.tip4')}</li>
+    </ul>
+  )
+
+  const plateBlurBlock = (
+    <label className="mvp-plate-blur-row">
+      <input
+        type="checkbox"
+        checked={blurPlate}
+        onChange={(e) => {
+          const v = e.target.checked
+          setBlurPlate(v)
+          try {
+            localStorage.setItem(PLATE_BLUR_LS, v ? '1' : '0')
+          } catch {
+            /* ignore */
+          }
+        }}
+      />
+      <span>{t('marketplacePhotos.plateBlurCheckbox')}</span>
+    </label>
+  )
+
+  const plateBlurHint = <p className="muted small mvp-plate-blur-hint mb-0">{t('marketplacePhotos.plateBlurHint')}</p>
+
   return (
-    <section className={embed ? 'mvp-section mvp-section--embed' : 'detail-block mvp-section'}>
+    <section className={embed ? 'mvp-section mvp-section--embed mvp-section--cyber' : 'detail-block mvp-section'}>
       {embed ? null : <h2>{t('marketplacePhotos.sectionTitle')}</h2>}
 
-      <div className="mvp-tip card">
-        <p className="mvp-tip-title">💡 {t('marketplacePhotos.tipsTitle')}</p>
-        <ul className="mvp-tip-list muted small">
-          <li>{t('marketplacePhotos.tip1')}</li>
-          <li>{t('marketplacePhotos.tip2')}</li>
-          <li>{t('marketplacePhotos.tip3')}</li>
-          <li>{t('marketplacePhotos.tip4')}</li>
-        </ul>
+      {embed ? (
+        <>
+          <div className="mvp-cyber-card mvp-cyber-card--hero card pad-lg">
+            <div className="mvp-cyber-split">
+              <aside className="mvp-cyber-rail" aria-label={t('marketplacePhotos.railKicker')}>
+                <p className="mvp-cyber-rail-kicker">{t('marketplacePhotos.railKicker')}</p>
+                <nav className="mvp-cyber-rail-nav">
+                  <button type="button" className="mvp-text-link" onClick={() => scrollTo(tipsRef.current)}>
+                    {t('marketplacePhotos.railTips')}
+                  </button>
+                  <button type="button" className="mvp-text-link" onClick={() => scrollTo(blurRef.current)}>
+                    {t('marketplacePhotos.railPlate')}
+                  </button>
+                  <button type="button" className="mvp-text-link" onClick={openOptionalAndScroll}>
+                    {t('marketplacePhotos.railOptional')}
+                  </button>
+                </nav>
+              </aside>
+              <div className="mvp-cyber-main">
+                <div className="mvp-cyber-head">
+                  <span className="mvp-cyber-orb" aria-hidden>
+                    <Camera size={22} strokeWidth={2.1} />
+                  </span>
+                  <div>
+                    <h3 className="mvp-cyber-title">{t('marketplacePhotos.heroHeading')}</h3>
+                    <p className="mvp-cyber-lead muted small">{t('marketplacePhotos.heroLead')}</p>
+                  </div>
+                </div>
+                <p className="mvp-cyber-progress muted small">
+                  {t('marketplacePhotos.requiredHeading', { done: requiredDone, total: VEHICLE_PHOTO_REQUIRED.length })}
+                </p>
+                <div className="mvp-grid mvp-grid--cyber">{VEHICLE_PHOTO_REQUIRED.map((d) => renderSlot(d))}</div>
+              </div>
+            </div>
+          </div>
+
+          <div ref={tipsRef} className="mvp-cyber-card card pad-lg">
+            <div className="mvp-cyber-split mvp-cyber-split--tips">
+              <div className="mvp-cyber-copy">
+                <div className="mvp-cyber-head">
+                  <span className="mvp-cyber-orb" aria-hidden>
+                    <Lightbulb size={22} strokeWidth={2.1} />
+                  </span>
+                  <h3 className="mvp-cyber-title">{t('marketplacePhotos.tipsTitle')}</h3>
+                </div>
+                {tipsList}
+              </div>
+              <div className="mvp-cyber-viz mvp-cyber-viz--car" aria-hidden />
+            </div>
+          </div>
+
+          <div ref={blurRef} className="mvp-cyber-card mvp-cyber-plate card pad-lg">
+            <div className="mvp-cyber-split mvp-cyber-split--tips">
+              <div className="mvp-cyber-copy">
+                <div className="mvp-cyber-head mvp-cyber-head--blur">
+                  <span className="mvp-cyber-orb" aria-hidden>
+                    <BadgeCheck size={22} strokeWidth={2.1} />
+                  </span>
+                  <div className="mvp-cyber-blur-fields">
+                    {plateBlurBlock}
+                    {plateBlurHint}
+                  </div>
+                </div>
+              </div>
+              <div className="mvp-cyber-viz mvp-cyber-viz--plate" aria-hidden />
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="mvp-tip card">
+            <p className="mvp-tip-title">💡 {t('marketplacePhotos.tipsTitle')}</p>
+            {tipsList}
+          </div>
+
+          <div className="mvp-plate-blur card pad-lg">
+            {plateBlurBlock}
+            {plateBlurHint}
+          </div>
+
+          <h3 className="mvp-subhead">
+            {t('marketplacePhotos.requiredHeading', { done: requiredDone, total: VEHICLE_PHOTO_REQUIRED.length })}
+          </h3>
+          <div className="mvp-grid">{VEHICLE_PHOTO_REQUIRED.map((d) => renderSlot(d))}</div>
+        </>
+      )}
+
+      <div ref={optionalRef} className={embed ? 'mvp-cyber-optional' : undefined}>
+        {embed ? (
+          <button type="button" className="mvp-expand mvp-text-link" onClick={() => setOptOpen((o) => !o)}>
+            {optOpen ? '▼ ' : '▶ '}
+            {t('marketplacePhotos.optionalHeading')}
+          </button>
+        ) : (
+          <button type="button" className="mvp-expand btn ghost" onClick={() => setOptOpen((o) => !o)}>
+            {optOpen ? '▼' : '▶'} {t('marketplacePhotos.optionalHeading')}
+          </button>
+        )}
+        {optOpen ? (
+          <div className={`mvp-grid mvp-grid--opt${embed ? ' mvp-grid--cyber' : ''}`}>{VEHICLE_PHOTO_OPTIONAL.map((d) => renderSlot(d))}</div>
+        ) : null}
       </div>
-
-      <div className="mvp-plate-blur card pad-lg">
-        <label className="mvp-plate-blur-row">
-          <input
-            type="checkbox"
-            checked={blurPlate}
-            onChange={(e) => {
-              const v = e.target.checked
-              setBlurPlate(v)
-              try {
-                localStorage.setItem(PLATE_BLUR_LS, v ? '1' : '0')
-              } catch {
-                /* ignore */
-              }
-            }}
-          />
-          <span>{t('marketplacePhotos.plateBlurCheckbox')}</span>
-        </label>
-        <p className="muted small mvp-plate-blur-hint mb-0">{t('marketplacePhotos.plateBlurHint')}</p>
-      </div>
-
-      <h3 className="mvp-subhead">
-        {t('marketplacePhotos.requiredHeading', { done: requiredDone, total: VEHICLE_PHOTO_REQUIRED.length })}
-      </h3>
-      <div className="mvp-grid">{VEHICLE_PHOTO_REQUIRED.map((d) => renderSlot(d))}</div>
-
-      <button type="button" className="mvp-expand btn ghost" onClick={() => setOptOpen((o) => !o)}>
-        {optOpen ? '▼' : '▶'} {t('marketplacePhotos.optionalHeading')}
-      </button>
-      {optOpen ? <div className="mvp-grid mvp-grid--opt">{VEHICLE_PHOTO_OPTIONAL.map((d) => renderSlot(d))}</div> : null}
 
       <input
         ref={inputRef}
