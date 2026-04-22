@@ -240,13 +240,14 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
 
   /**
    * @param {{ key: string, required: boolean }} def
+   * @param {boolean} [quad] — єдина сітка 2×2 у верхній картці (макет «фото оголошення»)
    */
-  function renderSlot(def) {
+  function renderSlot(def, quad = false) {
     const row = byAngle.get(def.key)
     const has = Boolean(row?.photo_url)
     const busy = busyAngle === def.key
     return (
-      <div key={def.key} className={`mvp-slot${has ? ' mvp-slot--done' : ''}`}>
+      <div key={def.key} className={`mvp-slot${has ? ' mvp-slot--done' : ''}${quad ? ' mvp-slot--quad' : ''}`}>
         <p className="mvp-slot-label">{t(`marketplacePhotos.angle.${def.key}`)}</p>
         <div className="mvp-slot-icon muted small">{slotIcon(def.key)}</div>
         {has ? (
@@ -317,22 +318,8 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
       {embed ? (
         <>
           <div className="mvp-cyber-card mvp-cyber-card--hero card pad-lg">
-            <div className="mvp-cyber-split">
-              <aside className="mvp-cyber-rail" aria-label={t('marketplacePhotos.railKicker')}>
-                <p className="mvp-cyber-rail-kicker">{t('marketplacePhotos.railKicker')}</p>
-                <nav className="mvp-cyber-rail-nav">
-                  <button type="button" className="mvp-text-link" onClick={() => scrollTo(tipsRef.current)}>
-                    {t('marketplacePhotos.railTips')}
-                  </button>
-                  <button type="button" className="mvp-text-link" onClick={() => scrollTo(blurRef.current)}>
-                    {t('marketplacePhotos.railPlate')}
-                  </button>
-                  <button type="button" className="mvp-text-link" onClick={openOptionalAndScroll}>
-                    {t('marketplacePhotos.railOptional')}
-                  </button>
-                </nav>
-              </aside>
-              <div className="mvp-cyber-main">
+            <div className="mvp-cyber-hero-mock">
+              <div className="mvp-cyber-hero-copy">
                 <div className="mvp-cyber-head">
                   <span className="mvp-cyber-orb" aria-hidden>
                     <Camera size={22} strokeWidth={2.1} />
@@ -345,7 +332,26 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
                 <p className="mvp-cyber-progress muted small">
                   {t('marketplacePhotos.requiredHeading', { done: requiredDone, total: VEHICLE_PHOTO_REQUIRED.length })}
                 </p>
-                <div className="mvp-grid mvp-grid--cyber">{VEHICLE_PHOTO_REQUIRED.map((d) => renderSlot(d))}</div>
+                <nav className="mvp-cyber-hero-nav" aria-label={t('marketplacePhotos.railKicker')}>
+                  <button type="button" className="mvp-text-link" onClick={() => scrollTo(tipsRef.current)}>
+                    {t('marketplacePhotos.railTips')}
+                  </button>
+                  <span className="mvp-cyber-hero-nav-sep" aria-hidden>
+                    ·
+                  </span>
+                  <button type="button" className="mvp-text-link" onClick={() => scrollTo(blurRef.current)}>
+                    {t('marketplacePhotos.railPlate')}
+                  </button>
+                  <span className="mvp-cyber-hero-nav-sep" aria-hidden>
+                    ·
+                  </span>
+                  <button type="button" className="mvp-text-link" onClick={openOptionalAndScroll}>
+                    {t('marketplacePhotos.railOptional')}
+                  </button>
+                </nav>
+              </div>
+              <div className="mvp-cyber-hero-quad" role="group" aria-label={t('marketplacePhotos.requiredHeading', { done: requiredDone, total: VEHICLE_PHOTO_REQUIRED.length })}>
+                {VEHICLE_PHOTO_REQUIRED.map((d) => renderSlot(d, true))}
               </div>
             </div>
           </div>
