@@ -271,7 +271,7 @@ export function MarketplaceVehiclePhotos({ car, userId, onUpdated, embed = false
         ) : (
           <button type="button" className="mvp-slot-body" disabled={Boolean(busy)} onClick={() => onPickAngle(def.key)}>
             <span className="mvp-slot-ph" aria-hidden>
-              <ImagePlus size={36} strokeWidth={1.6} className="mvp-slot-ph-icon" />
+              <ImagePlus size={quad ? 40 : 36} strokeWidth={1.6} className="mvp-slot-ph-icon" />
             </span>
             <span className="mvp-slot-cta muted small">{t('marketplacePhotos.addPhoto')}</span>
           </button>

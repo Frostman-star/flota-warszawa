@@ -5852,7 +5852,7 @@ tr.tier-row-none td:first-child {
 .mvp-cyber-hero-quad {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: minmax(104px, auto) minmax(104px, auto);
+  grid-template-rows: minmax(118px, auto) minmax(118px, auto);
   gap: 1px;
   align-self: stretch;
   border-radius: 14px;
@@ -5869,15 +5869,17 @@ tr.tier-row-none td:first-child {
   border: none;
   border-radius: 0;
   padding: 0.38rem 0.32rem 0.42rem;
-  background:
-    linear-gradient(165deg, rgba(6, 14, 28, 0.97) 0%, rgba(3, 8, 18, 0.99) 100%),
-    url('/images/marketplace-photo-panel-bg.png');
-  background-size: auto, 220% auto;
-  background-position: 0 0, 58% 42%;
-  background-repeat: no-repeat;
+  /* Порожні слоти — без фон-картинки (не виглядає як «битий» прев’ю); з фото — легкий шум */
+  background: linear-gradient(165deg, rgba(6, 14, 28, 0.98) 0%, rgba(3, 8, 18, 1) 100%);
 }
 .mvp-section--cyber .mvp-cyber-hero-quad .mvp-slot--done {
   box-shadow: none;
+  background:
+    linear-gradient(165deg, rgba(6, 14, 28, 0.92) 0%, rgba(3, 8, 18, 0.96) 100%),
+    url('/images/marketplace-photo-panel-bg.png');
+  background-size: auto, 200% auto;
+  background-position: 0 0, 55% 40%;
+  background-repeat: no-repeat;
 }
 .mvp-slot--quad .mvp-slot-label {
   margin-bottom: 0.18rem;
@@ -5893,20 +5895,33 @@ tr.tier-row-none td:first-child {
   height: 18px;
 }
 .mvp-slot--quad .mvp-slot-body {
-  min-height: 72px;
-  padding: 0.28rem;
+  min-height: 92px;
+  padding: 0.4rem 0.3rem;
   border-radius: 8px;
-  background: rgba(2, 6, 23, 0.45);
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px dashed rgba(103, 232, 249, 0.28);
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.mvp-slot--quad .mvp-slot-body:hover:not(:disabled) {
+  border-color: rgba(45, 212, 191, 0.55);
+  background: rgba(15, 23, 42, 0.72);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.12);
 }
 .mvp-slot--quad .mvp-slot-body--has {
   padding: 0.28rem;
+  border-style: solid;
+  border-color: rgba(45, 212, 191, 0.25);
 }
 .mvp-slot--quad .mvp-slot-thumb {
   height: 52px;
 }
 .mvp-slot--quad .mvp-slot-ph-icon {
-  width: 28px;
-  height: 28px;
+  width: 38px;
+  height: 38px;
+  color: rgba(103, 232, 249, 0.75);
 }
 .mvp-slot--quad .mvp-slot-cta {
   font-size: 0.72rem;
@@ -6084,7 +6099,7 @@ tr.tier-row-none td:first-child {
     gap: 1rem;
   }
   .mvp-cyber-hero-quad {
-    grid-template-rows: minmax(96px, auto) minmax(96px, auto);
+    grid-template-rows: minmax(108px, auto) minmax(108px, auto);
   }
   .mvp-cyber-split {
     grid-template-columns: 1fr;
