@@ -1032,5 +1032,159 @@
       "partner_payout": "Opłata partnera / harmonogram wypłat",
       "other": "Inne"
     }
+  },
+  "landing": {
+    "navAria": "Nawigacja strony głównej",
+    "nav": {
+      "owners": "Dla właścicieli / Для власників",
+      "drivers": "Dla kierowców / Для водіїв",
+      "pricing": "Cennik / Тарифи",
+      "login": "Zaloguj się",
+      "startFree": "Zacznij za darmo"
+    },
+    "hero": {
+      "title": "Cario — platforma dla flot i kierowców taksówek",
+      "owner": {
+        "title": "Jestem właścicielem floty",
+        "desc": "Zarządzaj autami, dokumentami i kierowcami",
+        "cta": "Zacznij zarządzać →"
+      },
+      "driver": {
+        "title": "Jestem kierowcą",
+        "desc": "Znajdź auto i śledź swoje zarobki",
+        "cta": "Szukaj auta →"
+      }
+    },
+    "owners": {
+      "kicker": "Dla właścicieli flot",
+      "title": "Dla właścicieli flot",
+      "subtitle": "Przestań trzymać wszystko w głowie",
+      "pain": {
+        "1": {
+          "title": "📝 Notatki z datami ubezpieczeń",
+          "desc": "Automatyczne alerty 30/14/7/1 dzień przed"
+        },
+        "2": {
+          "title": "😰 Nie wiem gdzie są moje auta",
+          "desc": "Pełny przegląd floty w jednym miejscu"
+        },
+        "3": {
+          "title": "📱 Szukam kierowców przez Telegram",
+          "desc": "Marketplace — kierowcy sami do Ciebie piszą"
+        }
+      },
+      "features": {
+        "1": "🔔 Alerty dokumentów (OC/AC, przegląd, serwis)",
+        "2": "📊 Statystyki rentowności każdego auta",
+        "3": "📸 Protokół zdjęć przy przekazaniu",
+        "4": "🌐 Publiczny profil floty do udostępnienia",
+        "5": "🔧 Katalog serwisów w Warszawie",
+        "6": "👥 Zarządzanie kierowcami"
+      }
+    },
+    "drivers": {
+      "kicker": "Dla kierowców",
+      "title": "Dla kierowców",
+      "subtitle": "Znajdź auto i zarabiaj więcej",
+      "pain": {
+        "1": {
+          "title": "🔍 Szukam auta przez znajomych",
+          "desc": "Marketplace z dostępnymi autami w Warszawie"
+        },
+        "2": {
+          "title": "💰 Nie wiem ile tak naprawdę zarabiam",
+          "desc": "Kalkulator zarobków z uwzględnieniem wszystkich kosztów"
+        },
+        "3": {
+          "title": "📋 Nie znam warunków wynajmu",
+          "desc": "Wszystkie info: partner, aplikacje, wymagania"
+        }
+      },
+      "features": {
+        "1": {
+          "title": "🚗 Marketplace dostępnych aut",
+          "desc": "Filtruj po cenie, partnerze (Promin/Qiwi), aplikacjach"
+        },
+        "2": {
+          "title": "💰 Kalkulator zarobków",
+          "desc": "Uber/Bolt/FreeNow, podatki, czynsz — ile zostaje na rękę"
+        },
+        "3": {
+          "title": "📱 Automatyczne podpięcie auta",
+          "desc": "Po przypisaniu auto i koszty wczytują się same"
+        },
+        "4": {
+          "title": "❤️ Ulubione ogłoszenia",
+          "desc": "Zapisuj interesujące auta"
+        }
+      }
+    },
+    "flow": {
+      "title": "Jak to działa",
+      "owner": {
+        "tab": "Dla właściciela / Для власника",
+        "steps": {
+          "1": "Zarejestruj się jako właściciel floty",
+          "2": "Dodaj swoje auta z datami dokumentów",
+          "3": "Ustaw Marketplace — kierowcy sami piszą",
+          "4": "Otrzymuj alerty zanim coś wygaśnie"
+        }
+      },
+      "driver": {
+        "tab": "Dla kierowcy / Для водія",
+        "steps": {
+          "1": "Zarejestruj się jako kierowca",
+          "2": "Przeglądaj dostępne auta w Warszawie",
+          "3": "Wyślij zgłoszenie — dostaniesz kontakt właściciela",
+          "4": "Śledź zarobki w kalkulatorze"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Prosty cennik",
+      "owner": {
+        "free": {
+          "name": "FREE",
+          "price": "0 zł",
+          "desc": "do 3 aut, dokumenty, alerty"
+        },
+        "start": {
+          "name": "START",
+          "price": "49 zł/mies",
+          "desc": "do 15 aut, push, zdjęcia, statystyki"
+        },
+        "pro": {
+          "name": "PRO",
+          "price": "99 zł/mies",
+          "desc": "bez limitu, AI, geolokalizacja, PDF"
+        }
+      },
+      "driver": {
+        "title": "Dla kierowców — zawsze bezpłatnie! 🎉",
+        "desc": "Marketplace, kalkulator zarobków i profil kierowcy — 0 zł na zawsze"
+      }
+    },
+    "proof": {
+      "title": "Już z nami:",
+      "stats": {
+        "1": "🚗 Floty w Warszawie",
+        "2": "👤 Aktywni kierowcy",
+        "3": "🌍 4 języki"
+      }
+    },
+    "cta": {
+      "title": "Dołącz do Cario",
+      "owner": "Jestem właścicielem →",
+      "driver": "Jestem kierowcą →",
+      "note": "Bez karty kredytowej • Bezpłatny plan na zawsze"
+    },
+    "footer": {
+      "tagline": "Platforma dla flot i kierowców taksówek",
+      "terms": "Regulamin",
+      "privacy": "Polityka prywatności",
+      "contact": "Kontakt",
+      "telegram": "Kanał Telegram",
+      "copyright": "© 2026 Cario"
+    }
   }
 }

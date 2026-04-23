@@ -1,4 +1,4 @@
-﻿{
+{
   "app": {
     "settings": "Settings",
     "logout": "Log out",
@@ -1031,6 +1031,160 @@
       "rent": "Car rent",
       "partner_payout": "Partner payout fee",
       "other": "Other"
+    }
+  },
+  "landing": {
+    "navAria": "Landing page navigation",
+    "nav": {
+      "owners": "For owners",
+      "drivers": "For drivers",
+      "pricing": "Pricing",
+      "login": "Log in",
+      "startFree": "Start free"
+    },
+    "hero": {
+      "title": "Cario — platform for taxi fleets and drivers",
+      "owner": {
+        "title": "I am a fleet owner",
+        "desc": "Manage cars, documents, and drivers",
+        "cta": "Start managing →"
+      },
+      "driver": {
+        "title": "I am a driver",
+        "desc": "Find a car and track your earnings",
+        "cta": "Find a car →"
+      }
+    },
+    "owners": {
+      "kicker": "For fleet owners",
+      "title": "For fleet owners",
+      "subtitle": "Stop keeping everything in your head",
+      "pain": {
+        "1": {
+          "title": "📝 Insurance dates in notes",
+          "desc": "Automatic alerts 30/14/7/1 days before expiry"
+        },
+        "2": {
+          "title": "😰 I do not know where my cars are",
+          "desc": "Full fleet overview in one place"
+        },
+        "3": {
+          "title": "📱 I search drivers via Telegram",
+          "desc": "Marketplace — drivers message you directly"
+        }
+      },
+      "features": {
+        "1": "🔔 Document alerts (OC/AC, inspection, service)",
+        "2": "📊 Profitability stats for each car",
+        "3": "📸 Photo handover protocol",
+        "4": "🌐 Public fleet profile to share",
+        "5": "🔧 Service directory in Warsaw",
+        "6": "👥 Driver management"
+      }
+    },
+    "drivers": {
+      "kicker": "For drivers",
+      "title": "For drivers",
+      "subtitle": "Find a car and earn more",
+      "pain": {
+        "1": {
+          "title": "🔍 I search for a car through friends",
+          "desc": "Marketplace with available cars in Warsaw"
+        },
+        "2": {
+          "title": "💰 I do not know my real net earnings",
+          "desc": "Earnings calculator with all costs included"
+        },
+        "3": {
+          "title": "📋 I do not know rental terms",
+          "desc": "Everything in one place: partner, apps, requirements"
+        }
+      },
+      "features": {
+        "1": {
+          "title": "🚗 Marketplace of available cars",
+          "desc": "Filter by price, partner (Promin/Qiwi), and apps"
+        },
+        "2": {
+          "title": "💰 Earnings calculator",
+          "desc": "Uber/Bolt/FreeNow, taxes, rent — see what stays in your pocket"
+        },
+        "3": {
+          "title": "📱 Automatic car linking",
+          "desc": "After assignment, car and costs load automatically"
+        },
+        "4": {
+          "title": "❤️ Favorite listings",
+          "desc": "Save cars you are interested in"
+        }
+      }
+    },
+    "flow": {
+      "title": "How it works",
+      "owner": {
+        "tab": "For owner",
+        "steps": {
+          "1": "Register as a fleet owner",
+          "2": "Add your cars and document dates",
+          "3": "Set up Marketplace — drivers will message you",
+          "4": "Receive alerts before anything expires"
+        }
+      },
+      "driver": {
+        "tab": "For driver",
+        "steps": {
+          "1": "Register as a driver",
+          "2": "Browse available cars in Warsaw",
+          "3": "Send an application — get owner contact details",
+          "4": "Track your earnings in the calculator"
+        }
+      }
+    },
+    "pricing": {
+      "title": "Simple pricing",
+      "owner": {
+        "free": {
+          "name": "FREE",
+          "price": "0 PLN",
+          "desc": "up to 3 cars, documents, alerts"
+        },
+        "start": {
+          "name": "START",
+          "price": "49 PLN/mo",
+          "desc": "up to 15 cars, push, photos, stats"
+        },
+        "pro": {
+          "name": "PRO",
+          "price": "99 PLN/mo",
+          "desc": "unlimited, AI, geolocation, PDF"
+        }
+      },
+      "driver": {
+        "title": "For drivers — always free! 🎉",
+        "desc": "Marketplace, earnings calculator and driver profile — 0 forever"
+      }
+    },
+    "proof": {
+      "title": "Already with us:",
+      "stats": {
+        "1": "🚗 Fleets in Warsaw",
+        "2": "👤 Active drivers",
+        "3": "🌍 4 languages"
+      }
+    },
+    "cta": {
+      "title": "Join Cario",
+      "owner": "I am an owner →",
+      "driver": "I am a driver →",
+      "note": "No credit card • Free plan forever"
+    },
+    "footer": {
+      "tagline": "Platform for taxi fleets and drivers",
+      "terms": "Terms",
+      "privacy": "Privacy policy",
+      "contact": "Contact",
+      "telegram": "Telegram channel",
+      "copyright": "© 2026 Cario"
     }
   }
 }
