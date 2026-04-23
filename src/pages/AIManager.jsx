@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Bot, Check, Lock, Mic, Paperclip, Pencil, PlusCircle, SendHorizontal, Sparkles } from 'lucide-react'
+import { Bot, Check, Loader2, Lock, Mic, Paperclip, Pencil, PlusCircle, SendHorizontal, Settings, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { analyzeDocument, buildAlertsFromCars, callClaudeMessages, compressImage, extractClaudeText, extractTrailingAction } from '../lib/aiManager'
 
 const QUICK_ACTION_KEYS = ['addVehicle', 'checkDocs', 'showStats', 'addDriver']
+const VOICE_AUTO_SEND_KEY = 'ai_voice_auto_send'
+const VOICE_LANG_MODE_KEY = 'ai_voice_lang_mode'
+const VOICE_LANG_MANUAL_KEY = 'ai_voice_lang_manual'
+const VOICE_TIP_SEEN_KEY = 'ai_voice_tooltip_seen'
+const VOICE_LANGS = ['uk', 'pl', 'en', 'ru']
 
 function makeSystemPrompt({ vehicles, alerts, language }) {
   const languageHint = language === 'uk' ? 'українська' : 'polski'
@@ -74,15 +79,28 @@ export function AIManager() {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [photoBusy, setPhotoBusy] = useState(false)
+  const [isListening, setIsListening] = useState(false)
+  const [isVoiceProcessing, setIsVoiceProcessing] = useState(false)
+  const [voiceText, setVoiceText] = useState('')
+  const [voiceDurationSec, setVoiceDurationSec] = useState(0)
+  const [voiceAutoSend, setVoiceAutoSend] = useState(true)
+  const [voiceLangMode, setVoiceLangMode] = useState('auto')
+  const [voiceManualLang, setVoiceManualLang] = useState('pl')
+  const [voiceTooltipOpen, setVoiceTooltipOpen] = useState(false)
+  const [voiceSettingsOpen, setVoiceSettingsOpen] = useState(false)
   const fileRef = useRef(null)
   const bottomRef = useRef(null)
+  const recognitionRef = useRef(null)
+  const listenStartedAtRef = useRef(null)
 
   const isOwner = profile?.role === 'owner'
   const isAdminRole = profile?.role === 'admin'
   const isPro = isAdminRole || (isOwner && profile?.plan_tier === 'pro')
   const localeCode = i18n.resolvedLanguage || i18n.language || 'pl'
-  const lang = localeCode.startsWith('uk') ? 'uk' : 'pl'
+  const lang = localeCode.startsWith('uk') ? 'uk' : localeCode.startsWith('en') ? 'en' : localeCode.startsWith('ru') ? 'ru' : 'pl'
   const alerts = useMemo(() => buildAlertsFromCars(cars), [cars])
+  const voiceSupported = typeof window !== 'undefined' && Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
+  const voiceLanguage = voiceLangMode === 'manual' ? voiceManualLang : lang
 
   const welcomeMessage = useMemo(
     () => ({
@@ -96,6 +114,34 @@ export function AIManager() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [messages, busy, photoBusy])
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    setVoiceAutoSend(window.localStorage.getItem(VOICE_AUTO_SEND_KEY) !== '0')
+    setVoiceLangMode(window.localStorage.getItem(VOICE_LANG_MODE_KEY) === 'manual' ? 'manual' : 'auto')
+    const savedManual = window.localStorage.getItem(VOICE_LANG_MANUAL_KEY) || 'pl'
+    setVoiceManualLang(VOICE_LANGS.includes(savedManual) ? savedManual : 'pl')
+  }, [])
+
+  useEffect(() => {
+    if (!isListening) return
+    const timer = window.setInterval(() => {
+      const started = listenStartedAtRef.current
+      if (!started) return
+      setVoiceDurationSec(Math.max(0, Math.floor((Date.now() - started) / 1000)))
+    }, 250)
+    return () => window.clearInterval(timer)
+  }, [isListening])
+
+  useEffect(() => {
+    return () => {
+      try {
+        recognitionRef.current?.stop()
+      } catch {
+        // no-op on unmount
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!user?.id) return
@@ -362,19 +408,89 @@ export function AIManager() {
   }
 
   function onVoiceInput() {
-    const Recognition = window.webkitSpeechRecognition || window.SpeechRecognition
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!Recognition) {
       setError(t('aiManager.errors.voiceUnsupported'))
       return
     }
+    if (busy || photoBusy || isVoiceProcessing) return
+    const langMap = { uk: 'uk-UA', pl: 'pl-PL', en: 'en-US', ru: 'ru-RU' }
     const recognition = new Recognition()
-    recognition.lang = lang === 'uk' ? 'uk-UA' : 'pl-PL'
-    recognition.onresult = (e) => {
-      const transcript = e?.results?.[0]?.[0]?.transcript ?? ''
-      if (transcript) setInput(transcript)
+    recognitionRef.current = recognition
+    recognition.lang = langMap[voiceLanguage] || 'pl-PL'
+    recognition.continuous = false
+    recognition.interimResults = true
+    recognition.maxAlternatives = 1
+    recognition.onstart = () => {
+      listenStartedAtRef.current = Date.now()
+      setVoiceDurationSec(0)
+      setIsListening(true)
+      setIsVoiceProcessing(false)
+      setVoiceText('')
     }
-    recognition.onerror = () => setError(t('aiManager.errors.voiceFailed'))
+    recognition.onresult = (e) => {
+      const result = e?.results?.[0]
+      const transcript = result?.[0]?.transcript ?? ''
+      if (!transcript) return
+      setVoiceText(transcript)
+      if (result?.isFinal) {
+        setInput(transcript)
+        setIsListening(false)
+        setIsVoiceProcessing(false)
+        if (voiceAutoSend) {
+          window.setTimeout(() => {
+            void sendMessage(transcript)
+          }, 450)
+        }
+      }
+    }
+    recognition.onerror = (event) => {
+      setIsListening(false)
+      setIsVoiceProcessing(false)
+      if (event?.error === 'no-speech') {
+        setError(t('aiManager.errors.voiceNoSpeech'))
+      } else if (event?.error === 'not-allowed' || event?.error === 'service-not-allowed') {
+        setError(t('aiManager.errors.voicePermission'))
+      } else {
+        setError(t('aiManager.errors.voiceFailed'))
+      }
+    }
+    recognition.onend = () => {
+      setIsListening(false)
+      setIsVoiceProcessing(false)
+    }
     recognition.start()
+    if (typeof window !== 'undefined' && window.localStorage.getItem(VOICE_TIP_SEEN_KEY) !== '1') {
+      setVoiceTooltipOpen(true)
+      window.localStorage.setItem(VOICE_TIP_SEEN_KEY, '1')
+      window.setTimeout(() => setVoiceTooltipOpen(false), 5200)
+    }
+  }
+
+  function onVoiceRelease() {
+    if (!isListening) return
+    setIsVoiceProcessing(true)
+    try {
+      recognitionRef.current?.stop()
+    } catch {
+      setIsVoiceProcessing(false)
+    }
+  }
+
+  function onVoiceAutoSendToggle() {
+    const next = !voiceAutoSend
+    setVoiceAutoSend(next)
+    if (typeof window !== 'undefined') window.localStorage.setItem(VOICE_AUTO_SEND_KEY, next ? '1' : '0')
+  }
+
+  function onVoiceLangModeChange(nextMode) {
+    setVoiceLangMode(nextMode)
+    if (typeof window !== 'undefined') window.localStorage.setItem(VOICE_LANG_MODE_KEY, nextMode)
+  }
+
+  function onVoiceManualLangChange(nextLang) {
+    setVoiceManualLang(nextLang)
+    if (typeof window !== 'undefined') window.localStorage.setItem(VOICE_LANG_MANUAL_KEY, nextLang)
   }
 
   async function onUpgrade() {
@@ -427,9 +543,43 @@ export function AIManager() {
           <h1>🤖 {t('aiManager.title')}</h1>
           <span className="ai-pro-badge">Pro</span>
         </div>
-        <button type="button" className="btn ghost small" onClick={onNewConversation} disabled={busy || photoBusy}>
-          {t('aiManager.newConversation')}
-        </button>
+        <div className="ai-header-actions">
+          <div className="ai-settings-wrap">
+            <button type="button" className="btn ghost small" onClick={() => setVoiceSettingsOpen((s) => !s)} aria-label={t('aiManager.voiceSettings.title')}>
+              <Settings size={15} />
+            </button>
+            {voiceSettingsOpen ? (
+              <div className="ai-settings-pop card">
+                <p className="small muted">{t('aiManager.voiceSettings.title')}</p>
+                <label className="ai-settings-toggle">
+                  <span>{t('aiManager.voiceSettings.autoSend')}</span>
+                  <input type="checkbox" checked={voiceAutoSend} onChange={onVoiceAutoSendToggle} />
+                </label>
+                <label className="ai-settings-select">
+                  <span>{t('aiManager.voiceSettings.language')}</span>
+                  <select className="input" value={voiceLangMode} onChange={(e) => onVoiceLangModeChange(e.target.value)}>
+                    <option value="auto">{t('aiManager.voiceSettings.autoLanguage')}</option>
+                    <option value="manual">{t('aiManager.voiceSettings.manualLanguage')}</option>
+                  </select>
+                </label>
+                {voiceLangMode === 'manual' ? (
+                  <label className="ai-settings-select">
+                    <span>{t('aiManager.voiceSettings.manualLanguageLabel')}</span>
+                    <select className="input" value={voiceManualLang} onChange={(e) => onVoiceManualLangChange(e.target.value)}>
+                      <option value="uk">Українська</option>
+                      <option value="pl">Polski</option>
+                      <option value="en">English</option>
+                      <option value="ru">Русский</option>
+                    </select>
+                  </label>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+          <button type="button" className="btn ghost small" onClick={onNewConversation} disabled={busy || photoBusy || isListening}>
+            {t('aiManager.newConversation')}
+          </button>
+        </div>
       </header>
 
       <section className="ai-manager-messages card">
@@ -514,14 +664,46 @@ export function AIManager() {
             </button>
           ))}
         </div>
+        {!voiceSupported ? <p className="muted small">{t('aiManager.voiceUnsupportedInfo')}</p> : null}
+        {isListening ? (
+          <div className="ai-voice-live">
+            <div className="ai-voice-live__top">
+              <span className="ai-voice-dot" />
+              <span>{t('aiManager.listening')}</span>
+              <span className="ai-voice-timer">{String(Math.floor(voiceDurationSec / 60)).padStart(2, '0')}:{String(voiceDurationSec % 60).padStart(2, '0')}</span>
+            </div>
+            <div className="ai-voice-wave" aria-hidden>
+              <span />
+              <span />
+              <span />
+            </div>
+            <p className="small muted">
+              {t('aiManager.listeningPreview')}: <em>{voiceText || '…'}</em>
+            </p>
+          </div>
+        ) : null}
+        {voiceTooltipOpen ? (
+          <p className="small ai-voice-tip">{t('aiManager.voiceTip')}</p>
+        ) : null}
         {error ? <p className="form-error">{error}</p> : null}
         <div className="ai-compose-row">
           <button type="button" className="btn ghost small" onClick={() => fileRef.current?.click()} disabled={busy || photoBusy} aria-label={t('aiManager.attach')}>
             <Paperclip size={16} />
           </button>
-          <button type="button" className="btn ghost small" onClick={onVoiceInput} disabled={busy || photoBusy} aria-label={t('aiManager.voice')}>
-            <Mic size={16} />
-          </button>
+          {voiceSupported ? (
+            <button
+              type="button"
+              className={`btn ghost small ai-voice-btn ${isListening ? 'is-listening' : ''}`}
+              onPointerDown={onVoiceInput}
+              onPointerUp={onVoiceRelease}
+              onPointerCancel={onVoiceRelease}
+              onPointerLeave={onVoiceRelease}
+              disabled={busy || photoBusy || isVoiceProcessing}
+              aria-label={t('aiManager.tapToSpeak')}
+            >
+              {isVoiceProcessing ? <Loader2 size={16} className="ai-spin" /> : <Mic size={16} />}
+            </button>
+          ) : null}
           <input
             className="input ai-input"
             placeholder={t('aiManager.placeholder')}

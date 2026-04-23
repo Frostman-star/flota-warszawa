@@ -519,6 +519,20 @@
     "photoAnalyzing": "🔍 Анализирую документ…",
     "attach": "Добавить фото",
     "voice": "Голосовой ввод",
+    "voiceInput": "Голосовой ввод",
+    "tapToSpeak": "Нажми чтобы говорить",
+    "listening": "Слушаю…",
+    "listeningPreview": "Слушаю",
+    "voiceUnsupportedInfo": "Голосовой ввод доступен в Chrome и Safari",
+    "voiceTip": "💡 Попробуй сказать: «Добавь машину WX4821K Toyota, аренда 850 злотых»",
+    "voiceSettings": {
+      "title": "Настройки голоса",
+      "autoSend": "Авто-отправка голоса",
+      "language": "Язык голоса",
+      "autoLanguage": "Авто (язык приложения)",
+      "manualLanguage": "Ручной выбор",
+      "manualLanguageLabel": "Выберите язык"
+    },
     "locked": "Заблокировано для не-Pro",
     "done": "✅ Выполнено!",
     "emptyAnswer": "AI не вернул текстовый ответ.",
@@ -573,6 +587,8 @@
       "invalidDocumentField": "AI вернул недопустимое поле документа.",
       "voiceUnsupported": "Голосовой ввод не поддерживается в этом браузере.",
       "voiceFailed": "Не удалось распознать голос.",
+      "voiceNoSpeech": "Не слышу голос. Попробуй ещё раз.",
+      "voicePermission": "Разреши доступ к микрофону в настройках браузера.",
       "upgradeFailed": "Не удалось обновить план до Pro."
     }
   },

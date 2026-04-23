@@ -519,6 +519,20 @@
     "photoAnalyzing": "🔍 Аналізую документ…",
     "attach": "Додати фото",
     "voice": "Голосовий ввід",
+    "voiceInput": "Голосовий ввід",
+    "tapToSpeak": "Натисни щоб говорити",
+    "listening": "Слухаю…",
+    "listeningPreview": "Слухаю",
+    "voiceUnsupportedInfo": "Голосовий ввід доступний у Chrome та Safari",
+    "voiceTip": "💡 Спробуй сказати: «Додай машину WX4821K Toyota, оренда 850 злотих»",
+    "voiceSettings": {
+      "title": "Налаштування голосу",
+      "autoSend": "Авто-відправка голосу",
+      "language": "Мова голосу",
+      "autoLanguage": "Авто (мова застосунку)",
+      "manualLanguage": "Ручний вибір",
+      "manualLanguageLabel": "Оберіть мову"
+    },
     "locked": "Заблоковано для не-Pro",
     "done": "✅ Виконано!",
     "emptyAnswer": "AI не надав текстової відповіді.",
@@ -573,6 +587,8 @@
       "invalidDocumentField": "AI передав недозволене поле документа.",
       "voiceUnsupported": "Голосовий ввід не підтримується у цьому браузері.",
       "voiceFailed": "Не вдалося розпізнати голос.",
+      "voiceNoSpeech": "Не чую голосу. Спробуй ще раз.",
+      "voicePermission": "Дозволь доступ до мікрофону в налаштуваннях браузера.",
       "upgradeFailed": "Не вдалося оновити план до Pro."
     }
   },

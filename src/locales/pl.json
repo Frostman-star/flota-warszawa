@@ -519,6 +519,20 @@
     "photoAnalyzing": "🔍 Analizuję dokument…",
     "attach": "Dodaj zdjęcie",
     "voice": "Wprowadzanie głosowe",
+    "voiceInput": "Wprowadzanie głosowe",
+    "tapToSpeak": "Naciśnij aby mówić",
+    "listening": "Słucham…",
+    "listeningPreview": "Słucham",
+    "voiceUnsupportedInfo": "Wprowadzanie głosowe dostępne w Chrome i Safari",
+    "voiceTip": "💡 Spróbuj powiedzieć: „Dodaj auto WX4821K Toyota, czynsz 850 zł”",
+    "voiceSettings": {
+      "title": "Ustawienia głosu",
+      "autoSend": "Auto-wysyłanie głosu",
+      "language": "Język głosu",
+      "autoLanguage": "Auto (język aplikacji)",
+      "manualLanguage": "Wybór ręczny",
+      "manualLanguageLabel": "Wybierz język"
+    },
     "locked": "Zablokowane dla planu innego niż Pro",
     "done": "✅ Wykonano!",
     "emptyAnswer": "AI nie zwróciło odpowiedzi tekstowej.",
@@ -573,6 +587,8 @@
       "invalidDocumentField": "AI zwróciło niedozwolone pole dokumentu.",
       "voiceUnsupported": "Ten browser nie wspiera rozpoznawania mowy.",
       "voiceFailed": "Nie udało się rozpoznać mowy.",
+      "voiceNoSpeech": "Nie słyszę głosu. Spróbuj ponownie.",
+      "voicePermission": "Zezwól na dostęp do mikrofonu w ustawieniach przeglądarki.",
       "upgradeFailed": "Nie udało się przełączyć na plan Pro."
     }
   },

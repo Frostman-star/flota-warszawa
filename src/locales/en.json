@@ -519,6 +519,20 @@
     "photoAnalyzing": "🔍 Analyzing document…",
     "attach": "Attach photo",
     "voice": "Voice input",
+    "voiceInput": "Voice input",
+    "tapToSpeak": "Tap to speak",
+    "listening": "Listening…",
+    "listeningPreview": "Listening",
+    "voiceUnsupportedInfo": "Voice input is available in Chrome and Safari",
+    "voiceTip": "💡 Try saying: \"Add car WX4821K Toyota, rent 850 zloty\"",
+    "voiceSettings": {
+      "title": "Voice settings",
+      "autoSend": "Auto-send voice",
+      "language": "Voice language",
+      "autoLanguage": "Auto (app language)",
+      "manualLanguage": "Manual select",
+      "manualLanguageLabel": "Select language"
+    },
     "locked": "Locked for non-Pro users",
     "done": "✅ Done!",
     "emptyAnswer": "AI returned no text response.",
@@ -573,6 +587,8 @@
       "invalidDocumentField": "AI returned an unsupported document field.",
       "voiceUnsupported": "Voice input is not supported in this browser.",
       "voiceFailed": "Could not recognize speech.",
+      "voiceNoSpeech": "I cannot hear your voice. Try again.",
+      "voicePermission": "Allow microphone access in browser settings.",
       "upgradeFailed": "Failed to upgrade to Pro."
     }
   },
