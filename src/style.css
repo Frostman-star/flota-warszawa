@@ -6691,6 +6691,109 @@ tr.tier-row-none td:first-child {
   margin-bottom: 1.6rem;
 }
 
+.landing-hero-bg,
+.landing-owners-bg,
+.landing-drivers-bg,
+.landing-flow-bg,
+.landing-cta-bg {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+.landing-hero-bg::before,
+.landing-owners-bg::before,
+.landing-drivers-bg::before,
+.landing-flow-bg::before,
+.landing-cta-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.landing-hero-bg::before,
+.landing-owners-bg::before {
+  background-image:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.86), rgba(2, 6, 23, 0.7)),
+    url('/images/landing-top-bg.png');
+}
+
+.landing-drivers-bg::before,
+.landing-flow-bg::before {
+  background-image:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.9), rgba(2, 6, 23, 0.74)),
+    url('/images/landing-bottom-bg.png');
+}
+
+.landing-hero-bg > *,
+.landing-owners-bg > *,
+.landing-drivers-bg > *,
+.landing-flow-bg > *,
+.landing-cta-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-hero-bg,
+.landing-owners-bg,
+.landing-drivers-bg,
+.landing-flow-bg {
+  padding: 1rem;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.landing-cta-bg {
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: transparent;
+}
+
+.landing-lowest-bg-wrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 0.25rem 0.25rem 0.4rem;
+  margin-top: 0.9rem;
+}
+
+.landing-lowest-bg-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.78), rgba(2, 6, 23, 0.7)),
+    url('/images/landing-lowest-bg.png');
+  background-size: cover;
+  background-position: center;
+}
+
+.landing-lowest-bg-wrap > .landing-section {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0.9rem;
+}
+
+.landing-lowest-bg-wrap > .landing-section:last-child {
+  margin-bottom: 0;
+}
+
+.landing-lowest-bg-wrap .landing-flow-bg,
+.landing-lowest-bg-wrap .landing-cta-bg,
+.landing-lowest-bg-wrap #pricing,
+.landing-lowest-bg-wrap #proof {
+  background: rgba(2, 6, 23, 0.38);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 16px;
+  padding: 0.95rem;
+}
+
 .landing-hero h1 {
   margin: 0 0 1rem;
   font-size: clamp(1.55rem, 4vw, 2.45rem);

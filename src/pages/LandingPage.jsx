@@ -87,7 +87,7 @@ export function LandingPage() {
       </header>
 
       <main id="top" className="landing-main page-pad">
-        <FadeSection id="hero" className="landing-hero is-visible">
+        <FadeSection id="hero" className="landing-hero landing-hero-bg is-visible">
           <h1>{t('landing.hero.title')}</h1>
           <div className="landing-audience-grid">
             <article className="landing-audience-card owner">
@@ -114,7 +114,7 @@ export function LandingPage() {
           </div>
         </FadeSection>
 
-        <FadeSection id="owners">
+        <FadeSection id="owners" className="landing-owners-bg">
           <p className="landing-kicker">{t('landing.owners.kicker')}</p>
           <h2>{t('landing.owners.title')}</h2>
           <p className="landing-subhead">{t('landing.owners.subtitle')}</p>
@@ -137,7 +137,7 @@ export function LandingPage() {
           </div>
         </FadeSection>
 
-        <FadeSection id="drivers">
+        <FadeSection id="drivers" className="landing-drivers-bg">
           <p className="landing-kicker">{t('landing.drivers.kicker')}</p>
           <h2>{t('landing.drivers.title')}</h2>
           <p className="landing-subhead">{t('landing.drivers.subtitle')}</p>
@@ -161,71 +161,73 @@ export function LandingPage() {
           </div>
         </FadeSection>
 
-        <FadeSection id="flow">
-          <h2>{t('landing.flow.title')}</h2>
-          <div className="landing-tabs">
-            <button
-              type="button"
-              className={`landing-tab ${activeFlowTab === 'owner' ? 'is-active' : ''}`}
-              onClick={() => setActiveFlowTab('owner')}
-            >
-              {t('landing.flow.owner.tab')}
-            </button>
-            <button
-              type="button"
-              className={`landing-tab ${activeFlowTab === 'driver' ? 'is-active' : ''}`}
-              onClick={() => setActiveFlowTab('driver')}
-            >
-              {t('landing.flow.driver.tab')}
-            </button>
-          </div>
-          <ol className="landing-steps">
-            {(activeFlowTab === 'owner' ? ownerFlowSteps : driverFlowSteps).map((step) => (
-              <li key={`${activeFlowTab}-step-${step}`}>{t(`landing.flow.${activeFlowTab}.steps.${step}`)}</li>
-            ))}
-          </ol>
-        </FadeSection>
+        <div className="landing-lowest-bg-wrap reveal" data-reveal>
+          <FadeSection id="flow" className="landing-flow-bg">
+            <h2>{t('landing.flow.title')}</h2>
+            <div className="landing-tabs">
+              <button
+                type="button"
+                className={`landing-tab ${activeFlowTab === 'owner' ? 'is-active' : ''}`}
+                onClick={() => setActiveFlowTab('owner')}
+              >
+                {t('landing.flow.owner.tab')}
+              </button>
+              <button
+                type="button"
+                className={`landing-tab ${activeFlowTab === 'driver' ? 'is-active' : ''}`}
+                onClick={() => setActiveFlowTab('driver')}
+              >
+                {t('landing.flow.driver.tab')}
+              </button>
+            </div>
+            <ol className="landing-steps">
+              {(activeFlowTab === 'owner' ? ownerFlowSteps : driverFlowSteps).map((step) => (
+                <li key={`${activeFlowTab}-step-${step}`}>{t(`landing.flow.${activeFlowTab}.steps.${step}`)}</li>
+              ))}
+            </ol>
+          </FadeSection>
 
-        <FadeSection id="pricing">
-          <h2>{t('landing.pricing.title')}</h2>
-          <div className="landing-grid three">
-            {['free', 'start', 'pro'].map((tier) => (
-              <article key={tier} className={`landing-card tier ${tier}`}>
-                <p className="tier-name">{t(`landing.pricing.owner.${tier}.name`)}</p>
-                <p className="tier-price">{t(`landing.pricing.owner.${tier}.price`)}</p>
-                <p className="muted">{t(`landing.pricing.owner.${tier}.desc`)}</p>
-              </article>
-            ))}
-          </div>
-          <article className="landing-driver-banner">
-            <h3>{t('landing.pricing.driver.title')}</h3>
-            <p>{t('landing.pricing.driver.desc')}</p>
-          </article>
-        </FadeSection>
+          <FadeSection id="pricing">
+            <h2>{t('landing.pricing.title')}</h2>
+            <div className="landing-grid three">
+              {['free', 'start', 'pro'].map((tier) => (
+                <article key={tier} className={`landing-card tier ${tier}`}>
+                  <p className="tier-name">{t(`landing.pricing.owner.${tier}.name`)}</p>
+                  <p className="tier-price">{t(`landing.pricing.owner.${tier}.price`)}</p>
+                  <p className="muted">{t(`landing.pricing.owner.${tier}.desc`)}</p>
+                </article>
+              ))}
+            </div>
+            <article className="landing-driver-banner">
+              <h3>{t('landing.pricing.driver.title')}</h3>
+              <p>{t('landing.pricing.driver.desc')}</p>
+            </article>
+          </FadeSection>
 
-        <FadeSection id="proof">
-          <h2>{t('landing.proof.title')}</h2>
-          <div className="landing-grid three">
-            {[1, 2, 3].map((idx) => (
-              <article key={`stat-${idx}`} className="landing-card compact">
-                <p className="landing-stat-label">{t(`landing.proof.stats.${idx}`)}</p>
-              </article>
-            ))}
-          </div>
-        </FadeSection>
+          <FadeSection id="proof">
+            <h2>{t('landing.proof.title')}</h2>
+            <div className="landing-grid three">
+              {[1, 2, 3].map((idx) => (
+                <article key={`stat-${idx}`} className="landing-card compact">
+                  <p className="landing-stat-label">{t(`landing.proof.stats.${idx}`)}</p>
+                </article>
+              ))}
+            </div>
+          </FadeSection>
 
-        <FadeSection id="cta" className="landing-final-cta">
-          <h2>{t('landing.cta.title')}</h2>
-          <div className="landing-cta-actions">
-            <Link to="/register?role=owner" className="btn primary">
-              {t('landing.cta.owner')}
-            </Link>
-            <Link to="/register?role=driver" className="btn landing-driver-btn">
-              {t('landing.cta.driver')}
-            </Link>
-          </div>
-          <p className="muted small">{t('landing.cta.note')}</p>
-        </FadeSection>
+          <FadeSection id="cta" className="landing-final-cta landing-cta-bg">
+            <h2>{t('landing.cta.title')}</h2>
+            <div className="landing-cta-actions">
+              <Link to="/register?role=owner" className="btn primary">
+                {t('landing.cta.owner')}
+              </Link>
+              <Link to="/register?role=driver" className="btn landing-driver-btn">
+                {t('landing.cta.driver')}
+              </Link>
+            </div>
+            <p className="muted small">{t('landing.cta.note')}</p>
+          </FadeSection>
+        </div>
       </main>
 
       <footer className="landing-footer">
