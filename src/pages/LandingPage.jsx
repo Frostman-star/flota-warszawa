@@ -114,7 +114,7 @@ export function LandingPage() {
           </div>
         </FadeSection>
 
-        <FadeSection id="owners" className="landing-owners-bg">
+        <FadeSection id="owners">
           <p className="landing-kicker">{t('landing.owners.kicker')}</p>
           <h2>{t('landing.owners.title')}</h2>
           <p className="landing-subhead">{t('landing.owners.subtitle')}</p>
@@ -137,7 +137,7 @@ export function LandingPage() {
           </div>
         </FadeSection>
 
-        <FadeSection id="drivers" className="landing-drivers-bg">
+        <FadeSection id="drivers">
           <p className="landing-kicker">{t('landing.drivers.kicker')}</p>
           <h2>{t('landing.drivers.title')}</h2>
           <p className="landing-subhead">{t('landing.drivers.subtitle')}</p>
@@ -162,7 +162,7 @@ export function LandingPage() {
         </FadeSection>
 
         <div className="landing-lowest-bg-wrap reveal" data-reveal>
-          <FadeSection id="flow" className="landing-flow-bg">
+          <FadeSection id="flow" className="landing-flow-panel">
             <h2>{t('landing.flow.title')}</h2>
             <div className="landing-tabs">
               <button
@@ -215,7 +215,7 @@ export function LandingPage() {
             </div>
           </FadeSection>
 
-          <FadeSection id="cta" className="landing-final-cta landing-cta-bg">
+          <FadeSection id="cta" className="landing-final-cta landing-cta-panel">
             <h2>{t('landing.cta.title')}</h2>
             <div className="landing-cta-actions">
               <Link to="/register?role=owner" className="btn primary">
