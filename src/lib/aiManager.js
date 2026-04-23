@@ -96,3 +96,124 @@ export function toBase64(file) {
     reader.readAsDataURL(file)
   })
 }
+
+export function compressImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      const maxWidth = 1200
+      const scale = Math.min(maxWidth / img.width, 1)
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(img.width * scale)
+      canvas.height = Math.round(img.height * scale)
+      const ctx = canvas.getContext('2d')
+      if (!ctx) {
+        reject(new Error('Canvas context unavailable'))
+        return
+      }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      const base64 = canvas.toDataURL('image/jpeg', 0.85).split(',')[1]
+      resolve(base64)
+      URL.revokeObjectURL(img.src)
+    }
+    img.onerror = () => reject(new Error('Image compression failed'))
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+function parseJsonFromClaudeText(text) {
+  if (!text || typeof text !== 'string') return null
+  const trimmed = text.trim()
+  try {
+    return JSON.parse(trimmed)
+  } catch {
+    const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i)?.[1]
+    if (fenced) {
+      try {
+        return JSON.parse(fenced.trim())
+      } catch {
+        return null
+      }
+    }
+    const objectMatch = trimmed.match(/\{[\s\S]*\}/)
+    if (!objectMatch) return null
+    try {
+      return JSON.parse(objectMatch[0])
+    } catch {
+      return null
+    }
+  }
+}
+
+export async function analyzeDocument({ base64Image, mediaType = 'image/jpeg' }) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: getClaudeHeaders(),
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              source: { type: 'base64', media_type: mediaType, data: base64Image },
+            },
+            {
+              type: 'text',
+              text: `Przeanalizuj ten dokument samochodowy i wyciągnij wszystkie dostępne informacje.
+
+Szukaj następujących danych:
+
+- Typ dokumentu (ubezpieczenie OC/AC, dowód rejestracyjny, przegląd techniczny, faktura serwisowa)
+- Data ważności / data wygaśnięcia
+- Numer polisy lub rejestracji
+- Marka i model pojazdu
+- Numer rejestracyjny pojazdu
+- Właściciel pojazdu
+- Kwota (jeśli faktura)
+- Nazwa firmy ubezpieczeniowej lub warsztatu
+
+Odpowiedz TYLKO w formacie JSON bez żadnego dodatkowego tekstu:
+{
+  "document_type": "insurance_oc|insurance_ac|registration|technical_inspection|service_invoice|other",
+  "expiry_date": "YYYY-MM-DD or null",
+  "policy_number": "string or null",
+  "plate_number": "string or null",
+  "car_make": "string or null",
+  "car_model": "string or null",
+  "owner_name": "string or null",
+  "amount": "number or null",
+  "company_name": "string or null",
+  "confidence": "high|medium|low",
+  "notes": "any other relevant info"
+}`,
+            },
+          ],
+        },
+      ],
+    }),
+  })
+  if (!response.ok) {
+    const body = await response.text()
+    throw new Error(`Claude API error: ${response.status} ${body}`)
+  }
+  const payload = await response.json()
+  const text = extractClaudeText(payload)
+  const parsed = parseJsonFromClaudeText(text)
+  if (!parsed || typeof parsed !== 'object') throw new Error('DOCUMENT_PARSE_FAILED')
+  return {
+    document_type: parsed.document_type ?? 'other',
+    expiry_date: parsed.expiry_date ?? null,
+    policy_number: parsed.policy_number ?? null,
+    plate_number: parsed.plate_number ?? null,
+    car_make: parsed.car_make ?? null,
+    car_model: parsed.car_model ?? null,
+    owner_name: parsed.owner_name ?? null,
+    amount: typeof parsed.amount === 'number' ? parsed.amount : parsed.amount ? Number(parsed.amount) : null,
+    company_name: parsed.company_name ?? null,
+    confidence: parsed.confidence ?? 'low',
+    notes: parsed.notes ?? '',
+  }
+}

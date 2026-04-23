@@ -516,15 +516,46 @@
     "placeholder": "Napisz wiadomość…",
     "newConversation": "Nowa rozmowa",
     "thinking": "AI myśli…",
-    "photoAnalyzing": "AI analizuje zdjęcie…",
+    "photoAnalyzing": "🔍 Analizuję dokument…",
     "attach": "Dodaj zdjęcie",
     "voice": "Wprowadzanie głosowe",
     "locked": "Zablokowane dla planu innego niż Pro",
     "done": "✅ Wykonano!",
     "emptyAnswer": "AI nie zwróciło odpowiedzi tekstowej.",
     "photoUploaded": "📎 Zdjęcie dokumentu zostało wysłane do analizy.",
-    "photoPrompt": "Przeanalizuj ten dokument ubezpieczeniowy/rejestracyjny i wyciągnij: datę ważności, numer polisy/rejestracji, markę i model auta jeśli widoczne. Odpowiedz w formacie JSON.",
-    "photoConfirm": "Czy chcesz dodać te dane do pojazdu?",
+    "lowConfidence": "⚠️ Niska pewność — sprawdź dane przed zapisaniem",
+    "savedForVehicle": "✅ Dokument zapisano dla {{plate}}!",
+    "docType": {
+      "insurance_oc": "🛡️ Ubezpieczenie OC",
+      "insurance_ac": "🛡️ Ubezpieczenie AC",
+      "registration": "📝 Dowód rejestracyjny",
+      "technical_inspection": "📋 Przegląd techniczny",
+      "service_invoice": "🔧 Faktura serwisowa",
+      "other": "📄 Inny dokument"
+    },
+    "docCard": {
+      "title": "📄 Znaleziono dokument",
+      "policy": "Numer",
+      "expiry": "Ważny do",
+      "car": "Auto",
+      "company": "Firma",
+      "chooseVehicle": "Do którego auta dodać?",
+      "save": "Zapisz",
+      "edit": "Edytuj",
+      "confidence": {
+        "high": "Wysoka pewność ✅",
+        "medium": "Średnia pewność",
+        "low": "Niska pewność ⚠️"
+      },
+      "fields": {
+        "policy": "Numer dokumentu",
+        "plate": "Numer rejestracyjny",
+        "make": "Marka",
+        "model": "Model",
+        "company": "Firma",
+        "amount": "Kwota"
+      }
+    },
     "welcome": "Cześć! Jestem Twoim menedżerem floty AI. Mogę Ci pomóc:\n• Dodać nowe auto — powiedz mi szczegóły\n• Sprawdzić dokumenty — zapytaj \"jakie dokumenty wygasają?\"\n• Zaktualizować przebieg — powiedz \"WX4821K przejechał 125000 km\"\n• Przeanalizować zdjęcie dokumentu — wyślij zdjęcie 📎\n\nCzym mogę pomóc?",
     "quick": {
       "addVehicle": "Dodaj pojazd",
@@ -534,7 +565,11 @@
     },
     "errors": {
       "generic": "Nie udało się wykonać zapytania AI.",
+      "notRecognized": "🤔 Nie udało się rozpoznać dokumentu. Spróbuj zrobić wyraźniejsze zdjęcie albo wpisz dane ręcznie.",
+      "lowQuality": "📸 Jakość zdjęcia jest zbyt niska. Spróbuj ponownie przy lepszym oświetleniu.",
       "missingPlate": "Do dodania pojazdu potrzebny jest numer rejestracyjny.",
+      "selectVehicle": "Wybierz pojazd przed zapisaniem dokumentu.",
+      "unsupportedDocumentSave": "Ten typ dokumentu nie ma automatycznego mapowania pól. Użyj trybu edycji i zapisz ręcznie.",
       "invalidDocumentField": "AI zwróciło niedozwolone pole dokumentu.",
       "voiceUnsupported": "Ten browser nie wspiera rozpoznawania mowy.",
       "voiceFailed": "Nie udało się rozpoznać mowy.",

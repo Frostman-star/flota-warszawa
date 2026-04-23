@@ -7533,6 +7533,62 @@ tr.tier-row-none td:first-child {
   word-break: break-word;
 }
 
+.ai-doc-card {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.ai-doc-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.ai-doc-card__confidence {
+  font-size: 0.74rem;
+  padding: 0.16rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  color: #cbd5e1;
+}
+
+.ai-doc-card__confidence--high {
+  border-color: rgba(74, 222, 128, 0.45);
+  color: #86efac;
+}
+
+.ai-doc-card__confidence--medium {
+  border-color: rgba(250, 204, 21, 0.45);
+  color: #fde047;
+}
+
+.ai-doc-card__confidence--low {
+  border-color: rgba(248, 113, 113, 0.45);
+  color: #fca5a5;
+}
+
+.ai-doc-card__warning {
+  color: #fca5a5;
+  font-size: 0.84rem;
+}
+
+.ai-doc-card__form {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.ai-doc-card__edit-grid {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.ai-doc-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
 .ai-manager-compose {
   padding: 0.7rem;
   display: grid;

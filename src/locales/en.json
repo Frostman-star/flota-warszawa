@@ -516,15 +516,46 @@
     "placeholder": "Type a message…",
     "newConversation": "New conversation",
     "thinking": "AI is thinking…",
-    "photoAnalyzing": "AI is analyzing the photo…",
+    "photoAnalyzing": "🔍 Analyzing document…",
     "attach": "Attach photo",
     "voice": "Voice input",
     "locked": "Locked for non-Pro users",
     "done": "✅ Done!",
     "emptyAnswer": "AI returned no text response.",
     "photoUploaded": "📎 Document photo uploaded for analysis.",
-    "photoPrompt": "Analyze this insurance/registration document and extract: expiration date, policy/registration number, and car make/model if visible. Reply in JSON format.",
-    "photoConfirm": "Do you want to add this data to a vehicle?",
+    "lowConfidence": "⚠️ Low confidence — verify data before saving",
+    "savedForVehicle": "✅ Document saved for {{plate}}!",
+    "docType": {
+      "insurance_oc": "🛡️ OC insurance",
+      "insurance_ac": "🛡️ AC insurance",
+      "registration": "📝 Registration certificate",
+      "technical_inspection": "📋 Technical inspection",
+      "service_invoice": "🔧 Service invoice",
+      "other": "📄 Other vehicle document"
+    },
+    "docCard": {
+      "title": "📄 Document detected",
+      "policy": "Number",
+      "expiry": "Valid until",
+      "car": "Car",
+      "company": "Company",
+      "chooseVehicle": "Which vehicle to apply this to?",
+      "save": "Save",
+      "edit": "Edit",
+      "confidence": {
+        "high": "High confidence ✅",
+        "medium": "Medium confidence",
+        "low": "Low confidence ⚠️"
+      },
+      "fields": {
+        "policy": "Document number",
+        "plate": "Plate number",
+        "make": "Make",
+        "model": "Model",
+        "company": "Company",
+        "amount": "Amount"
+      }
+    },
     "welcome": "Hi! I'm your AI fleet manager. I can help you:\n• Add a new car — just send details\n• Check documents — ask \"which documents are expiring?\"\n• Update mileage — say \"WX4821K has 125000 km\"\n• Analyze a document photo — send a photo 📎\n\nHow can I help?",
     "quick": {
       "addVehicle": "Add vehicle",
@@ -534,7 +565,11 @@
     },
     "errors": {
       "generic": "Failed to process AI request.",
+      "notRecognized": "🤔 Could not recognize the document. Try a clearer photo or enter the data manually.",
+      "lowQuality": "📸 Photo quality is too low. Try again with better lighting.",
       "missingPlate": "Plate number is required to add a vehicle.",
+      "selectVehicle": "Select a vehicle before saving the document.",
+      "unsupportedDocumentSave": "This document type has no automatic field mapping. Use edit mode and save manually.",
       "invalidDocumentField": "AI returned an unsupported document field.",
       "voiceUnsupported": "Voice input is not supported in this browser.",
       "voiceFailed": "Could not recognize speech.",

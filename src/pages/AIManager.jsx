@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Bot, Lock, Mic, Paperclip, PlusCircle, SendHorizontal, Sparkles } from 'lucide-react'
+import { Bot, Check, Lock, Mic, Paperclip, Pencil, PlusCircle, SendHorizontal, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { buildAlertsFromCars, callClaudeMessages, extractClaudeText, extractTrailingAction, toBase64 } from '../lib/aiManager'
+import { analyzeDocument, buildAlertsFromCars, callClaudeMessages, compressImage, extractClaudeText, extractTrailingAction } from '../lib/aiManager'
 
 const QUICK_ACTION_KEYS = ['addVehicle', 'checkDocs', 'showStats', 'addDriver']
 
@@ -38,8 +38,29 @@ function nowTs() {
 function normalizeMessages(raw) {
   if (!Array.isArray(raw)) return []
   return raw
-    .filter((m) => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+    .filter((m) => {
+      if (!m || (m.role !== 'user' && m.role !== 'assistant')) return false
+      if (typeof m.content === 'string') return true
+      return m.kind === 'doc_card' && m.card && typeof m.card === 'object'
+    })
     .slice(-50)
+}
+
+function normalizePlate(value) {
+  return String(value ?? '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '')
+}
+
+function formatDate(value, locale) {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return new Intl.DateTimeFormat(locale).format(date)
+}
+
+function hasUsefulExtraction(doc) {
+  return Boolean(doc.expiry_date || doc.policy_number || doc.plate_number || doc.car_make || doc.car_model || doc.owner_name || doc.amount || doc.company_name)
 }
 
 export function AIManager() {
@@ -59,7 +80,8 @@ export function AIManager() {
   const isOwner = profile?.role === 'owner'
   const isAdminRole = profile?.role === 'admin'
   const isPro = isAdminRole || (isOwner && profile?.plan_tier === 'pro')
-  const lang = (i18n.resolvedLanguage || i18n.language || 'pl').startsWith('uk') ? 'uk' : 'pl'
+  const localeCode = i18n.resolvedLanguage || i18n.language || 'pl'
+  const lang = localeCode.startsWith('uk') ? 'uk' : 'pl'
   const alerts = useMemo(() => buildAlertsFromCars(cars), [cars])
 
   const welcomeMessage = useMemo(
@@ -180,7 +202,9 @@ export function AIManager() {
     setMessages(next)
     try {
       const systemPrompt = makeSystemPrompt({ vehicles: cars, alerts, language: lang })
-      const conversationHistory = next.map((m) => ({ role: m.role, content: m.content }))
+      const conversationHistory = next
+        .filter((m) => typeof m.content === 'string')
+        .map((m) => ({ role: m.role, content: m.content }))
       const payload = await callClaudeMessages({
         systemPrompt,
         messages: extraUserContent
@@ -237,29 +261,103 @@ export function AIManager() {
     setPhotoBusy(true)
     setError('')
     try {
-      const b64 = await toBase64(file)
-      const prompt = t('aiManager.photoPrompt')
-      const photoContent = [
-        { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: b64 } },
-        { type: 'text', text: prompt },
-      ]
       const userPhotoMsg = { role: 'user', content: t('aiManager.photoUploaded'), ts: nowTs() }
       const next = [...messages, userPhotoMsg]
       setMessages(next)
-      const payload = await callClaudeMessages({
-        systemPrompt: makeSystemPrompt({ vehicles: cars, alerts, language: lang }),
-        messages: [...next.map((m) => ({ role: m.role, content: m.content })), { role: 'user', content: photoContent }],
-        maxTokens: 1000,
+      const b64 = await compressImage(file)
+      const extracted = await analyzeDocument({
+        base64Image: b64,
+        mediaType: 'image/jpeg',
       })
-      const extracted = extractClaudeText(payload) || t('aiManager.emptyAnswer')
-      const assistant = { role: 'assistant', content: `${extracted}\n\n${t('aiManager.photoConfirm')}`, ts: nowTs() }
+      if (!hasUsefulExtraction(extracted)) throw new Error('DOCUMENT_NOT_RECOGNIZED')
+      const matched = cars.find((car) => normalizePlate(car.plate_number) && normalizePlate(car.plate_number) === normalizePlate(extracted.plate_number))
+      const cardId = `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`
+      const assistant = {
+        role: 'assistant',
+        kind: 'doc_card',
+        card: {
+          id: cardId,
+          document_type: extracted.document_type || 'other',
+          expiry_date: extracted.expiry_date || '',
+          policy_number: extracted.policy_number || '',
+          plate_number: extracted.plate_number || '',
+          car_make: extracted.car_make || '',
+          car_model: extracted.car_model || '',
+          owner_name: extracted.owner_name || '',
+          amount: Number.isFinite(extracted.amount) ? extracted.amount : '',
+          company_name: extracted.company_name || '',
+          confidence: extracted.confidence || 'low',
+          notes: extracted.notes || '',
+          selectedVehicleId: matched?.id || cars[0]?.id || '',
+          editing: false,
+          saving: false,
+          saved: false,
+        },
+        ts: nowTs(),
+      }
       const finalMessages = [...next, assistant]
       setMessages(finalMessages)
       await persistMessages(finalMessages)
     } catch (e) {
-      setError(e.message ?? t('aiManager.errors.generic'))
+      const rawMessage = String(e?.message || '')
+      if (rawMessage.includes('DOCUMENT_NOT_RECOGNIZED') || rawMessage.includes('DOCUMENT_PARSE_FAILED')) {
+        setError(t('aiManager.errors.notRecognized'))
+      } else if (rawMessage.toLowerCase().includes('image') || rawMessage.toLowerCase().includes('compress')) {
+        setError(t('aiManager.errors.lowQuality'))
+      } else {
+        setError(e.message ?? t('aiManager.errors.generic'))
+      }
     } finally {
       setPhotoBusy(false)
+    }
+  }
+
+  function updateCard(cardId, updater) {
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.kind !== 'doc_card' || m.card?.id !== cardId) return m
+        return { ...m, card: updater(m.card) }
+      })
+    )
+  }
+
+  async function onSaveDocCard(cardId) {
+    const docMessage = messages.find((m) => m.kind === 'doc_card' && m.card?.id === cardId)
+    const card = docMessage?.card
+    if (!card?.selectedVehicleId) {
+      setError(t('aiManager.errors.selectVehicle'))
+      return
+    }
+    setError('')
+    updateCard(cardId, (prev) => ({ ...prev, saving: true }))
+    try {
+      const updates = {}
+      if (card.document_type === 'insurance_oc' || card.document_type === 'insurance_ac') {
+        updates.insurance_expiry = card.expiry_date || null
+      } else if (card.document_type === 'technical_inspection') {
+        updates.przeglad_expiry = card.expiry_date || null
+      } else if (card.document_type === 'service_invoice') {
+        updates.last_service_date = card.expiry_date || new Date().toISOString().slice(0, 10)
+        if (card.amount !== '' && card.amount !== null) updates.service_cost = Number(card.amount) || 0
+      } else {
+        throw new Error(t('aiManager.errors.unsupportedDocumentSave'))
+      }
+      const { error: saveErr } = await supabase.from('cars').update(updates).eq('id', card.selectedVehicleId).eq('owner_id', user?.id)
+      if (saveErr) throw saveErr
+      const savedCar = cars.find((car) => car.id === card.selectedVehicleId)
+      const successText = t('aiManager.savedForVehicle', { plate: savedCar?.plate_number || '—' })
+      const updatedMessages = messages.map((m) => {
+        if (m.kind === 'doc_card' && m.card?.id === cardId) {
+          return { ...m, card: { ...m.card, editing: false, saving: false, saved: true } }
+        }
+        return m
+      })
+      const withSuccess = [...updatedMessages, { role: 'assistant', content: successText, ts: nowTs() }]
+      setMessages(withSuccess)
+      await persistMessages(withSuccess)
+    } catch (e) {
+      updateCard(cardId, (prev) => ({ ...prev, saving: false }))
+      setError(e.message ?? t('aiManager.errors.generic'))
     }
   }
 
@@ -341,7 +439,67 @@ export function AIManager() {
               {m.role === 'assistant' ? <Bot size={16} /> : <Sparkles size={16} />}
             </div>
             <div className="ai-msg-bubble">
-              <p>{m.content}</p>
+              {m.kind === 'doc_card' && m.card ? (
+                <div className="ai-doc-card">
+                  <div className="ai-doc-card__head">
+                    <strong>{t('aiManager.docCard.title')}</strong>
+                    <span className={`ai-doc-card__confidence ai-doc-card__confidence--${m.card.confidence || 'low'}`}>
+                      {t(`aiManager.docCard.confidence.${m.card.confidence || 'low'}`)}
+                    </span>
+                  </div>
+                  <p>{t(`aiManager.docType.${m.card.document_type || 'other'}`)}</p>
+                  <p>
+                    {t('aiManager.docCard.policy')}: {m.card.policy_number || '—'}
+                  </p>
+                  <p>
+                    {t('aiManager.docCard.expiry')}: {formatDate(m.card.expiry_date, localeCode)}
+                  </p>
+                  <p>
+                    {t('aiManager.docCard.car')}:{' '}
+                    {[m.card.car_make, m.card.car_model, m.card.plate_number].filter(Boolean).join(' ') || '—'}
+                  </p>
+                  <p>
+                    {t('aiManager.docCard.company')}: {m.card.company_name || '—'}
+                  </p>
+                  {m.card.confidence === 'low' ? <p className="ai-doc-card__warning">{t('aiManager.lowConfidence')}</p> : null}
+                  <div className="ai-doc-card__form">
+                    <label className="small muted">{t('aiManager.docCard.chooseVehicle')}</label>
+                    <select
+                      className="input"
+                      value={m.card.selectedVehicleId || ''}
+                      onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, selectedVehicleId: e.target.value }))}
+                      disabled={m.card.saving}
+                    >
+                      {cars.map((car) => (
+                        <option key={car.id} value={car.id}>
+                          {[car.plate_number, car.model].filter(Boolean).join(' · ')}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {m.card.editing ? (
+                    <div className="ai-doc-card__edit-grid">
+                      <input className="input" placeholder={t('aiManager.docCard.fields.policy')} value={m.card.policy_number || ''} onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, policy_number: e.target.value }))} />
+                      <input className="input" type="date" value={m.card.expiry_date || ''} onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, expiry_date: e.target.value }))} />
+                      <input className="input" placeholder={t('aiManager.docCard.fields.plate')} value={m.card.plate_number || ''} onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, plate_number: e.target.value }))} />
+                      <input className="input" placeholder={t('aiManager.docCard.fields.make')} value={m.card.car_make || ''} onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, car_make: e.target.value }))} />
+                      <input className="input" placeholder={t('aiManager.docCard.fields.model')} value={m.card.car_model || ''} onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, car_model: e.target.value }))} />
+                      <input className="input" placeholder={t('aiManager.docCard.fields.company')} value={m.card.company_name || ''} onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, company_name: e.target.value }))} />
+                      <input className="input" type="number" placeholder={t('aiManager.docCard.fields.amount')} value={m.card.amount ?? ''} onChange={(e) => updateCard(m.card.id, (prev) => ({ ...prev, amount: e.target.value }))} />
+                    </div>
+                  ) : null}
+                  <div className="ai-doc-card__actions">
+                    <button type="button" className="btn primary small" onClick={() => onSaveDocCard(m.card.id)} disabled={m.card.saving || !m.card.selectedVehicleId}>
+                      <Check size={14} /> {t('aiManager.docCard.save')}
+                    </button>
+                    <button type="button" className="btn ghost small" onClick={() => updateCard(m.card.id, (prev) => ({ ...prev, editing: !prev.editing }))} disabled={m.card.saving}>
+                      <Pencil size={14} /> {t('aiManager.docCard.edit')}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p>{m.content}</p>
+              )}
             </div>
           </article>
         ))}
