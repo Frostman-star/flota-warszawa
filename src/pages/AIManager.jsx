@@ -57,7 +57,8 @@ export function AIManager() {
   const bottomRef = useRef(null)
 
   const isOwner = profile?.role === 'owner'
-  const isPro = isOwner && profile?.plan_tier === 'pro'
+  const isAdminRole = profile?.role === 'admin'
+  const isPro = isAdminRole || (isOwner && profile?.plan_tier === 'pro')
   const lang = (i18n.resolvedLanguage || i18n.language || 'pl').startsWith('uk') ? 'uk' : 'pl'
   const alerts = useMemo(() => buildAlertsFromCars(cars), [cars])
 
@@ -311,7 +312,7 @@ export function AIManager() {
           <button type="button" className="btn primary" onClick={onUpgrade} disabled={busy}>
             {t('aiManager.upgradeCta')}
           </button>
-          {!isOwner ? (
+          {!isOwner && !isAdminRole ? (
             <p className="muted small ai-upgrade-note">
               <Lock size={14} /> {t('aiManager.ownerOnly')}
             </p>

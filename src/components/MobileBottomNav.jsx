@@ -11,7 +11,7 @@ export function MobileBottomNav() {
   const { user, profile } = useAuth()
   const { count: pendingApps } = useOwnerPendingApplicationCount(user?.id, Boolean(user?.id))
   const [menuOpen, setMenuOpen] = useState(false)
-  const aiLocked = !(profile?.role === 'owner' && profile?.plan_tier === 'pro')
+  const aiLocked = !(profile?.role === 'admin' || (profile?.role === 'owner' && profile?.plan_tier === 'pro'))
 
   useEffect(() => {
     setMenuOpen(false)

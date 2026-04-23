@@ -11,7 +11,7 @@ function navCls({ isActive }) {
 export function DesktopOwnerSidebar() {
   const { t } = useTranslation()
   const { profile, signOut } = useAuth()
-  const aiLocked = !(profile?.role === 'owner' && profile?.plan_tier === 'pro')
+  const aiLocked = !(profile?.role === 'admin' || (profile?.role === 'owner' && profile?.plan_tier === 'pro'))
 
   const links = [
     { to: '/panel', end: true, label: t('app.panel'), Icon: LayoutGrid },
