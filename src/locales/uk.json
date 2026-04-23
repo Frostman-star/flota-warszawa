@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "settings": "Налаштування",
     "logout": "Вийти",
@@ -484,7 +484,18 @@
     "companyLogoHint": "Завантажте логотип для публічного профілю.",
     "companyLocation": "Локація компанії",
     "companyPhone": "Телефон компанії",
-    "publicProfilePreview": "Подивитися публічний профіль →"
+    "publicProfilePreview": "Подивитися публічний профіль →",
+    "referralTitle": "Реферальна програма та план",
+    "referralLead": "Запрошуй інших власників флоту в Cario. 1 активний реферал = +1 місяць PRO.",
+    "currentPlan": "Поточний план",
+    "planExpires": "План дійсний до",
+    "planNoExpiry": "немає",
+    "referralLink": "Твоє реферальне посилання",
+    "referralCopied": "Реферальне посилання скопійовано.",
+    "referralPending": "Реферали в очікуванні: {{count}}",
+    "referralRewarded": "Нагороджені реферали: {{count}}",
+    "referralBonusMonths": "Бонусні місяці PRO: {{count}}",
+    "planChangeFailed": "Не вдалося змінити план"
   },
   "pwaInstall": {
     "banner": {
@@ -1158,6 +1169,10 @@
           "price": "99 zł/міс",
           "desc": "без ліміту, AI, геолокація, PDF"
         }
+      },
+      "referral": {
+        "title": "Реферальна програма для флотів 🚀",
+        "desc": "Запроси іншого власника флоту до Cario. 1 активний реферал = +1 місяць PRO безкоштовно."
       },
       "driver": {
         "title": "Для водіїв — завжди безкоштовно! 🎉",

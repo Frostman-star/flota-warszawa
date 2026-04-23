@@ -1,9 +1,12 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Car, CircleUserRound } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { normalizeProfileRole } from '../utils/profileRole'
 import { supabase } from '../lib/supabase'
+
+const PENDING_OWNER_REF_CODE_KEY = 'cario_owner_ref_code'
 
 /** @param {string | null | undefined} profileRole */
 function postLoginPath(profileRole, fromState) {
@@ -37,8 +40,12 @@ export function Login() {
   }, [mode])
   useEffect(() => {
     const roleQ = searchParams.get('role')
+    const refCode = searchParams.get('ref')
     if (searchParams.get('mode') === 'register') setMode('register')
     if (roleQ === 'driver' || roleQ === 'owner') setRegisterRole(roleQ)
+    if (typeof window !== 'undefined' && refCode) {
+      window.localStorage.setItem(PENDING_OWNER_REF_CODE_KEY, String(refCode).trim().toLowerCase())
+    }
   }, [searchParams])
 
   if (!loading && session) return <Navigate to={target} replace />
@@ -58,6 +65,12 @@ export function Login() {
           return
         }
         const data = await signUp(email, password, fullName, registerRole)
+        if (registerRole === 'owner' && data?.session && typeof window !== 'undefined') {
+          const pendingCode = window.localStorage.getItem(PENDING_OWNER_REF_CODE_KEY)
+          if (pendingCode) {
+            await supabase.rpc('claim_owner_referral', { p_code: pendingCode })
+          }
+        }
         setInfo(data?.session ? t('login.accountCreated') : t('login.checkEmail'))
       }
     } catch (err) {
@@ -134,7 +147,7 @@ export function Login() {
                 onClick={() => setRegisterRole('owner')}
               >
                 <span className="big-action-emoji" aria-hidden>
-                  🚗
+                  <Car />
                 </span>
                 <span className="big-action-text">{t('login.owner')}</span>
               </button>
@@ -147,7 +160,7 @@ export function Login() {
                 onClick={() => setRegisterRole('driver')}
               >
                 <span className="big-action-emoji" aria-hidden>
-                  👤
+                  <CircleUserRound />
                 </span>
                 <span className="big-action-text">{t('login.driver')}</span>
               </button>

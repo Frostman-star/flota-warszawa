@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "settings": "Настройки",
     "logout": "Выйти",
@@ -484,7 +484,18 @@
     "companyLogoHint": "Загрузите логотип для публичного профиля.",
     "companyLocation": "Локация компании",
     "companyPhone": "Телефон компании",
-    "publicProfilePreview": "Посмотреть публичный профиль →"
+    "publicProfilePreview": "Посмотреть публичный профиль →",
+    "referralTitle": "Реферальная программа и план",
+    "referralLead": "Приглашай других владельцев автопарка в Cario. 1 активный реферал = +1 месяц PRO.",
+    "currentPlan": "Текущий план",
+    "planExpires": "План действует до",
+    "planNoExpiry": "нет",
+    "referralLink": "Твоя реферальная ссылка",
+    "referralCopied": "Реферальная ссылка скопирована.",
+    "referralPending": "Рефералы в ожидании: {{count}}",
+    "referralRewarded": "Награжденные рефералы: {{count}}",
+    "referralBonusMonths": "Бонусные месяцы PRO: {{count}}",
+    "planChangeFailed": "Не удалось изменить план"
   },
   "pwaInstall": {
     "banner": {
@@ -1158,6 +1169,10 @@
           "price": "99 zł/мес",
           "desc": "без лимита, AI, геолокация, PDF"
         }
+      },
+      "referral": {
+        "title": "Реферальная программа для флотов 🚀",
+        "desc": "Пригласи другого владельца автопарка в Cario. 1 активный реферал = +1 месяц PRO бесплатно."
       },
       "driver": {
         "title": "Для водителей — всегда бесплатно! 🎉",

@@ -4,6 +4,7 @@ import { subscribeToPush } from '../lib/push'
 import { normalizeProfileRole } from '../utils/profileRole'
 
 /** @typedef {'admin' | 'driver' | 'owner'} UserRole */
+const PENDING_OWNER_REF_CODE_KEY = 'cario_owner_ref_code'
 
 const AuthContext = createContext(null)
 
@@ -23,7 +24,7 @@ export function AuthProvider({ children }) {
       const { data, error } = await supabase
         .from('profiles')
         .select(
-          'id, email, full_name, role, phone, experience_years, bio, gender, birth_year, poland_status, poland_status_doc_url, avatar_url'
+          'id, email, full_name, role, phone, experience_years, bio, gender, birth_year, poland_status, poland_status_doc_url, avatar_url, plan_tier, plan_expires_at, pro_bonus_months'
         )
         .eq('id', userId)
         .maybeSingle()
@@ -92,6 +93,30 @@ export function AuthProvider({ children }) {
       console.error('[Cario] auto subscribe failed', e)
     })
   }, [session?.user])
+
+  useEffect(() => {
+    if (!session?.user?.id || !profile?.id) return
+    if (normalizeProfileRole(profile?.role) !== 'owner') return
+    if (typeof window === 'undefined') return
+
+    const pendingCode = window.localStorage.getItem(PENDING_OWNER_REF_CODE_KEY)
+    if (!pendingCode) return
+
+    supabase
+      .rpc('claim_owner_referral', { p_code: pendingCode })
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('[Cario] claim referral failed', error)
+          return
+        }
+        if (data && data !== 'unauthorized' && data !== 'not_owner') {
+          window.localStorage.removeItem(PENDING_OWNER_REF_CODE_KEY)
+        }
+      })
+      .catch((err) => {
+        console.error('[Cario] claim referral failed', err)
+      })
+  }, [session?.user?.id, profile?.id, profile?.role])
 
   const signIn = useCallback(async (email, password) => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })

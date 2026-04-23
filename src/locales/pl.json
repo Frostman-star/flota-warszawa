@@ -484,7 +484,18 @@
     "companyLogoHint": "Wgraj logo do publicznego profilu.",
     "companyLocation": "Lokalizacja firmy",
     "companyPhone": "Telefon firmy",
-    "publicProfilePreview": "Zobacz swój profil publiczny →"
+    "publicProfilePreview": "Zobacz swój profil publiczny →",
+    "referralTitle": "Program poleceń i plan",
+    "referralLead": "Poleć Cario innym właścicielom flot. 1 aktywny referral = +1 miesiąc PRO.",
+    "currentPlan": "Aktualny plan",
+    "planExpires": "Plan ważny do",
+    "planNoExpiry": "brak",
+    "referralLink": "Twój link polecający",
+    "referralCopied": "Link polecający skopiowany.",
+    "referralPending": "Oczekujące referral: {{count}}",
+    "referralRewarded": "Nagradzane referral: {{count}}",
+    "referralBonusMonths": "Bonusowe miesiące PRO: {{count}}",
+    "planChangeFailed": "Nie udało się zmienić planu"
   },
   "pwaInstall": {
     "banner": {
@@ -1158,6 +1169,10 @@
           "price": "99 zł/mies",
           "desc": "bez limitu, AI, geolokalizacja, PDF"
         }
+      },
+      "referral": {
+        "title": "Program poleceń dla flot 🚀",
+        "desc": "Poleć Cario innemu właścicielowi floty. 1 aktywny referral = +1 miesiąc planu PRO za darmo."
       },
       "driver": {
         "title": "Dla kierowców — zawsze bezpłatnie! 🎉",

@@ -34,6 +34,8 @@ export function Settings() {
   const [inviteName, setInviteName] = useState('')
   const [inviteBusy, setInviteBusy] = useState(false)
   const [pwaInstallOpen, setPwaInstallOpen] = useState(false)
+  const [referralProgram, setReferralProgram] = useState(null)
+  const [planBusy, setPlanBusy] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -69,6 +71,13 @@ export function Settings() {
           .maybeSingle()
         if (prefs?.alert_days?.length) setAlertDays(prefs.alert_days)
         if (prefs) setEmailEnabled(Boolean(prefs.email_enabled))
+        const { data: referralData, error: referralErr } = await supabase.rpc('get_my_owner_referral_program')
+        if (referralErr) throw referralErr
+        if (Array.isArray(referralData) && referralData[0]) {
+          setReferralProgram(referralData[0])
+        } else {
+          setReferralProgram(null)
+        }
       }
     } catch (e) {
       setErr(e.message ?? t('errors.loadFailed'))
@@ -193,6 +202,24 @@ export function Settings() {
     }
   }
 
+  async function changePlan(nextTier) {
+    setPlanBusy(true)
+    setErr(null)
+    try {
+      const { data, error } = await supabase.rpc('set_my_owner_plan', { p_tier: nextTier })
+      if (error) throw error
+      if (data !== 'ok') throw new Error(t('settings.planChangeFailed'))
+      const { data: referralData, error: referralErr } = await supabase.rpc('get_my_owner_referral_program')
+      if (referralErr) throw referralErr
+      if (Array.isArray(referralData) && referralData[0]) setReferralProgram(referralData[0])
+      setMsg(t('settings.saved'))
+    } catch (e) {
+      setErr(e.message ?? t('settings.planChangeFailed'))
+    } finally {
+      setPlanBusy(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="page-pad">
@@ -311,6 +338,76 @@ export function Settings() {
           {saving ? t('settings.saving') : t('settings.saveButton')}
         </button>
       </form>
+
+      <section className="card pad-lg settings-block">
+        <h2>{t('settings.referralTitle')}</h2>
+        <p className="muted">{t('settings.referralLead')}</p>
+        <label className="field">
+          <span className="field-label">{t('settings.currentPlan')}</span>
+          <div className="chip-row">
+            <button
+              type="button"
+              className={referralProgram?.plan_tier === 'free' ? 'chip active' : 'chip'}
+              onClick={() => changePlan('free')}
+              disabled={planBusy}
+            >
+              FREE
+            </button>
+            <button
+              type="button"
+              className={referralProgram?.plan_tier === 'start' ? 'chip active' : 'chip'}
+              onClick={() => changePlan('start')}
+              disabled={planBusy}
+            >
+              START
+            </button>
+            <button
+              type="button"
+              className={referralProgram?.plan_tier === 'pro' ? 'chip active' : 'chip'}
+              onClick={() => changePlan('pro')}
+              disabled={planBusy}
+            >
+              PRO
+            </button>
+          </div>
+        </label>
+        <p className="muted small">
+          {t('settings.planExpires')}: {referralProgram?.plan_expires_at || t('settings.planNoExpiry')}
+        </p>
+        <label className="field">
+          <span className="field-label">{t('settings.referralLink')}</span>
+          <div className="btn-row">
+            <input
+              className="input"
+              value={
+                referralProgram?.referral_code
+                  ? `${window.location.origin}/register?mode=register&role=owner&ref=${referralProgram.referral_code}`
+                  : ''
+              }
+              readOnly
+            />
+            <button
+              type="button"
+              className="btn secondary small"
+              onClick={() => {
+                const link = referralProgram?.referral_code
+                  ? `${window.location.origin}/register?mode=register&role=owner&ref=${referralProgram.referral_code}`
+                  : ''
+                if (!link) return
+                navigator.clipboard.writeText(link)
+                setMsg(t('settings.referralCopied'))
+              }}
+            >
+              {t('panel.copyLink')}
+            </button>
+          </div>
+        </label>
+        <div className="chip-row">
+          <span className="chip active">{t('settings.referralPending', { count: referralProgram?.pending_count ?? 0 })}</span>
+          <span className="chip active">{t('settings.referralRewarded', { count: referralProgram?.rewarded_count ?? 0 })}</span>
+          <span className="chip active">{t('settings.referralBonusMonths', { count: referralProgram?.bonus_months ?? 0 })}</span>
+        </div>
+      </section>
 
       <section className="card pad-lg settings-block">
         <h2>{t('settings.driversBlock')}</h2>

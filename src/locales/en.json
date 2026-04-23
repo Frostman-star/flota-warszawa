@@ -1,4 +1,4 @@
-{
+﻿{
   "app": {
     "settings": "Settings",
     "logout": "Log out",
@@ -484,7 +484,18 @@
     "companyLogoHint": "Upload a logo for your public profile.",
     "companyLocation": "Company location",
     "companyPhone": "Company phone",
-    "publicProfilePreview": "View your public profile →"
+    "publicProfilePreview": "View your public profile →",
+    "referralTitle": "Referral program and plan",
+    "referralLead": "Invite other fleet owners to Cario. 1 active referral = +1 month of PRO.",
+    "currentPlan": "Current plan",
+    "planExpires": "Plan valid until",
+    "planNoExpiry": "none",
+    "referralLink": "Your referral link",
+    "referralCopied": "Referral link copied.",
+    "referralPending": "Pending referrals: {{count}}",
+    "referralRewarded": "Rewarded referrals: {{count}}",
+    "referralBonusMonths": "Bonus PRO months: {{count}}",
+    "planChangeFailed": "Failed to change plan"
   },
   "pwaInstall": {
     "banner": {
@@ -1158,6 +1169,10 @@
           "price": "99 PLN/mo",
           "desc": "unlimited, AI, geolocation, PDF"
         }
+      },
+      "referral": {
+        "title": "Referral program for fleet owners 🚀",
+        "desc": "Invite another fleet owner to Cario. 1 active referral = +1 month of PRO for free."
       },
       "driver": {
         "title": "For drivers — always free! 🎉",

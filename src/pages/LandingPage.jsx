@@ -11,6 +11,7 @@ import {
   CircleUserRound,
   Clock3,
   FileCheck2,
+  Gift,
   Globe,
   Handshake,
   Heart,
@@ -62,7 +63,7 @@ function LandingLanguageSwitcher() {
 }
 
 export function LandingPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [activeFlowTab, setActiveFlowTab] = useState('owner')
   const ownerPainIcons = [FileCheck2, Search, Handshake]
   const ownerFeatureIcons = [Bell, ChartNoAxesCombined, Smartphone, Globe, Wrench, Users]
@@ -70,16 +71,73 @@ export function LandingPage() {
   const driverFeatureIcons = [Car, Calculator, Sparkles, Heart]
   const proofIcons = [Car, CircleUserRound, Globe]
 
+  const uiLang = (i18n.resolvedLanguage || i18n.language || 'pl').split('-')[0]
+  const flowCopyByLang = {
+    pl: {
+      subtitle: 'Wszystko proste w trzech krokach',
+      benefits: [
+        { title: 'Bezpiecznie i pewnie', desc: 'Zweryfikowani właściciele i bezpieczne kontakty' },
+        { title: 'Szybko i wygodnie', desc: 'Oszczędzaj czas na szukaniu i ustaleniach' },
+        { title: 'Większy zysk', desc: 'Lepsze warunki, więcej zamówień i stałe kursy' },
+        { title: 'Aplikacja mobilna', desc: 'Wszystko pod ręką w Cario' },
+        { title: 'Inteligentne powiadomienia', desc: 'Dostawaj sygnały o nowych autach i ważnych zdarzeniach' },
+        { title: 'Wsparcie 24/7', desc: 'Zespół Cario zawsze jest dostępny' },
+      ],
+      popular: 'popularny',
+      ctaMeta: ['Darmowy start', 'Wsparcie 24/7', 'Bez ukrytych opłat'],
+    },
+    uk: {
+      subtitle: 'Все просто в три кроки',
+      benefits: [
+        { title: 'Безпечно та надійно', desc: 'Перевірені власники та захищені контакти' },
+        { title: 'Швидко та зручно', desc: 'Економія часу на пошук і домовленості' },
+        { title: 'Більше прибутку', desc: 'Кращі умови, більше замовлень та постійні поїздки' },
+        { title: 'Мобільний додаток', desc: 'Усі можливості під рукою в Cario' },
+        { title: 'Розумні сповіщення', desc: 'Отримуй сигнали про нові авто та важливі події' },
+        { title: 'Підтримка 24/7', desc: 'Команда Cario завжди на звʼязку' },
+      ],
+      popular: 'популярний',
+      ctaMeta: ['Безкоштовний старт', 'Підтримка 24/7', 'Без прихованих платежів'],
+    },
+    en: {
+      subtitle: 'Everything is simple in three steps',
+      benefits: [
+        { title: 'Safe and reliable', desc: 'Verified owners and protected contacts' },
+        { title: 'Fast and convenient', desc: 'Save time on search and communication' },
+        { title: 'More profit', desc: 'Better terms, more rides, and steady demand' },
+        { title: 'Mobile app', desc: 'Everything at your fingertips in Cario' },
+        { title: 'Smart notifications', desc: 'Get updates on new cars and important events' },
+        { title: '24/7 support', desc: 'The Cario team is always available' },
+      ],
+      popular: 'popular',
+      ctaMeta: ['Free start', '24/7 support', 'No hidden fees'],
+    },
+    ru: {
+      subtitle: 'Все просто в три шага',
+      benefits: [
+        { title: 'Безопасно и надежно', desc: 'Проверенные владельцы и защищенные контакты' },
+        { title: 'Быстро и удобно', desc: 'Экономия времени на поиск и договоренности' },
+        { title: 'Больше прибыли', desc: 'Лучшие условия, больше заказов и постоянные поездки' },
+        { title: 'Мобильное приложение', desc: 'Все возможности под рукой в Cario' },
+        { title: 'Умные уведомления', desc: 'Получай сигналы о новых авто и важных событиях' },
+        { title: 'Поддержка 24/7', desc: 'Команда Cario всегда на связи' },
+      ],
+      popular: 'популярный',
+      ctaMeta: ['Бесплатный старт', 'Поддержка 24/7', 'Без скрытых платежей'],
+    },
+  }
+  const flowUiCopy = flowCopyByLang[uiLang] || flowCopyByLang.pl
+
   const flowBenefitCards = useMemo(
     () => [
-      { icon: Shield, title: t('landing.flow.benefits.1.title', { defaultValue: 'Безпечно та надійно' }), desc: t('landing.flow.benefits.1.desc', { defaultValue: 'Перевірені власники та захищені контакти' }) },
-      { icon: Clock3, title: t('landing.flow.benefits.2.title', { defaultValue: 'Швидко та зручно' }), desc: t('landing.flow.benefits.2.desc', { defaultValue: 'Економія часу на пошук і домовленості' }) },
-      { icon: ChartNoAxesCombined, title: t('landing.flow.benefits.3.title', { defaultValue: 'Більше прибутку' }), desc: t('landing.flow.benefits.3.desc', { defaultValue: 'Кращі умови, більше замовлень та постійні поїздки' }) },
-      { icon: Smartphone, title: t('landing.flow.benefits.4.title', { defaultValue: 'Мобільний додаток' }), desc: t('landing.flow.benefits.4.desc', { defaultValue: 'Усі можливості під рукою в Cario' }) },
-      { icon: Bell, title: t('landing.flow.benefits.5.title', { defaultValue: 'Розумні сповіщення' }), desc: t('landing.flow.benefits.5.desc', { defaultValue: 'Отримуй сигнали про нові авто та важливі події' }) },
-      { icon: PhoneCall, title: t('landing.flow.benefits.6.title', { defaultValue: 'Підтримка 24/7' }), desc: t('landing.flow.benefits.6.desc', { defaultValue: 'Команда Cario завжди на звʼязку' }) },
+      { icon: Shield, title: flowUiCopy.benefits[0].title, desc: flowUiCopy.benefits[0].desc },
+      { icon: Clock3, title: flowUiCopy.benefits[1].title, desc: flowUiCopy.benefits[1].desc },
+      { icon: ChartNoAxesCombined, title: flowUiCopy.benefits[2].title, desc: flowUiCopy.benefits[2].desc },
+      { icon: Smartphone, title: flowUiCopy.benefits[3].title, desc: flowUiCopy.benefits[3].desc },
+      { icon: Bell, title: flowUiCopy.benefits[4].title, desc: flowUiCopy.benefits[4].desc },
+      { icon: PhoneCall, title: flowUiCopy.benefits[5].title, desc: flowUiCopy.benefits[5].desc },
     ],
-    [t]
+    [flowUiCopy]
   )
 
   useEffect(() => {
@@ -234,7 +292,7 @@ export function LandingPage() {
         <div className="landing-combined-cyber reveal" data-reveal>
           <section id="flow" className="landing-flow-column landing-panel">
             <p className="landing-kicker">{t('landing.flow.title')}</p>
-            <h2>{t('landing.flow.subtitle', { defaultValue: 'Все просто в три кроки' })}</h2>
+            <h2>{flowUiCopy.subtitle}</h2>
             <div className="landing-tabs">
               <button
                 type="button"
@@ -285,11 +343,20 @@ export function LandingPage() {
                   <p className="tier-price">{t(`landing.pricing.owner.${tier}.price`)}</p>
                   <p className="muted">{t(`landing.pricing.owner.${tier}.desc`)}</p>
                   {tier === 'start' ? (
-                    <span className="landing-tier-badge">{t('landing.pricing.popular', { defaultValue: 'популярний' })}</span>
+                    <span className="landing-tier-badge">{flowUiCopy.popular}</span>
                   ) : null}
                 </article>
               ))}
             </div>
+            <article className="landing-referral-banner">
+              <div className="landing-referral-icon">
+                <Gift size={22} />
+              </div>
+              <div>
+                <h3>{t('landing.pricing.referral.title')}</h3>
+                <p>{t('landing.pricing.referral.desc')}</p>
+              </div>
+            </article>
             <article className="landing-driver-banner">
               <div className="landing-driver-banner-icon">
                 <BadgeCheck size={24} />
@@ -314,13 +381,13 @@ export function LandingPage() {
             <p className="muted small">{t('landing.cta.note')}</p>
             <div className="landing-cta-meta">
               <p>
-                <Check size={14} /> {t('landing.cta.meta1', { defaultValue: 'Безкоштовний старт' })}
+                <Check size={14} /> {flowUiCopy.ctaMeta[0]}
               </p>
               <p>
-                <Bell size={14} /> {t('landing.cta.meta2', { defaultValue: 'Підтримка 24/7' })}
+                <Bell size={14} /> {flowUiCopy.ctaMeta[1]}
               </p>
               <p>
-                <Shield size={14} /> {t('landing.cta.meta3', { defaultValue: 'Без прихованих платежів' })}
+                <Shield size={14} /> {flowUiCopy.ctaMeta[2]}
               </p>
             </div>
           </section>
