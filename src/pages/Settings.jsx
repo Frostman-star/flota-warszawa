@@ -403,8 +403,11 @@ export function Settings() {
           </div>
         </label>
         <div className="chip-row">
-          <span className="chip active">{t('settings.referralPending', { count: referralProgram?.pending_count ?? 0 })}</span>
+          <span className="chip active">{t('settings.referralRegistered', { count: referralProgram?.registered_count ?? 0 })}</span>
+          <span className="chip active">{t('settings.referralPendingPaid', { count: referralProgram?.pending_count ?? 0 })}</span>
+          <span className="chip active">{t('settings.referralQualified', { count: referralProgram?.qualified_count ?? 0 })}</span>
           <span className="chip active">{t('settings.referralRewarded', { count: referralProgram?.rewarded_count ?? 0 })}</span>
+          <span className="chip active">{t('settings.referralRejected', { count: referralProgram?.rejected_count ?? 0 })}</span>
           <span className="chip active">{t('settings.referralBonusMonths', { count: referralProgram?.bonus_months ?? 0 })}</span>
         </div>
       </section>

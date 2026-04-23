@@ -166,6 +166,7 @@ declare
   me uuid := auth.uid();
   me_role public.user_role;
   referrer uuid;
+  inserted_count int := 0;
 begin
   if me is null then
     return 'unauthorized';
@@ -193,12 +194,14 @@ begin
     return 'self_referral';
   end if;
 
-  if exists (select 1 from public.owner_referrals r where r.referred_owner_id = me) then
+  insert into public.owner_referrals (referrer_owner_id, referred_owner_id, referral_code, status)
+  values (referrer, me, lower(trim(p_code)), 'pending')
+  on conflict (referred_owner_id) do nothing;
+
+  get diagnostics inserted_count = row_count;
+  if inserted_count = 0 then
     return 'already_claimed';
   end if;
-
-  insert into public.owner_referrals (referrer_owner_id, referred_owner_id, referral_code, status)
-  values (referrer, me, lower(trim(p_code)), 'pending');
 
   return 'claimed';
 end;
@@ -302,8 +305,11 @@ $$;
 create or replace function public.get_my_owner_referral_program()
 returns table (
   referral_code text,
+  registered_count int,
   pending_count int,
+  qualified_count int,
   rewarded_count int,
+  rejected_count int,
   bonus_months int,
   plan_tier text,
   plan_expires_at date
@@ -322,8 +328,11 @@ begin
   return query
   select
     public.ensure_owner_referral_code(me) as referral_code,
+    coalesce((select count(*)::int from public.owner_referrals r where r.referrer_owner_id = me), 0) as registered_count,
     coalesce((select count(*)::int from public.owner_referrals r where r.referrer_owner_id = me and r.status = 'pending'), 0) as pending_count,
+    coalesce((select count(*)::int from public.owner_referrals r where r.referrer_owner_id = me and r.status = 'qualified'), 0) as qualified_count,
     coalesce((select count(*)::int from public.owner_referrals r where r.referrer_owner_id = me and r.status = 'rewarded'), 0) as rewarded_count,
+    coalesce((select count(*)::int from public.owner_referrals r where r.referrer_owner_id = me and r.status = 'rejected'), 0) as rejected_count,
     coalesce(p.pro_bonus_months, 0) as bonus_months,
     p.plan_tier,
     p.plan_expires_at

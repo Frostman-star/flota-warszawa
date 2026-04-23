@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-import { AlertTriangle, Car, Handshake, LayoutGrid, Plus, Settings, ShoppingCart, Wrench, BarChart3 } from 'lucide-react'
+import { AlertTriangle, Car, Handshake, LayoutGrid, Plus, Settings, ShoppingCart, Wrench, BarChart3, Bot, Lock } from 'lucide-react'
 
 function navCls({ isActive }) {
   const base = 'desktop-sidebar__link'
@@ -11,6 +11,7 @@ function navCls({ isActive }) {
 export function DesktopOwnerSidebar() {
   const { t } = useTranslation()
   const { profile, signOut } = useAuth()
+  const aiLocked = !(profile?.role === 'owner' && profile?.plan_tier === 'pro')
 
   const links = [
     { to: '/panel', end: true, label: t('app.panel'), Icon: LayoutGrid },
@@ -19,6 +20,7 @@ export function DesktopOwnerSidebar() {
     { to: '/dodaj', end: true, label: t('panel.addCar'), Icon: Plus },
     { to: '/alerty', end: true, label: t('nav.alerts'), Icon: AlertTriangle },
     { to: '/statystyki', end: true, label: t('nav.statistics'), Icon: BarChart3 },
+    { to: '/ai-manager', end: true, label: t('nav.aiManager'), Icon: Bot, pro: true, locked: aiLocked },
     { to: '/marketplace', end: true, label: t('nav.marketplace'), Icon: ShoppingCart },
     { to: '/serwisy', end: true, label: t('nav.services'), Icon: Wrench },
     { to: '/ustawienia', end: true, label: t('app.settings'), Icon: Settings },
@@ -44,6 +46,12 @@ export function DesktopOwnerSidebar() {
               <l.Icon size={15} strokeWidth={2.1} />
             </span>
             <span>{l.label}</span>
+            {l.pro ? <span className="desktop-sidebar__pro-badge">PRO</span> : null}
+            {l.locked ? (
+              <span className="desktop-sidebar__pro-lock" aria-label={t('aiManager.locked')}>
+                <Lock size={13} />
+              </span>
+            ) : null}
           </NavLink>
         ))}
       </nav>

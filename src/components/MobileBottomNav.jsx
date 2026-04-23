@@ -1,16 +1,17 @@
 ﻿import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Bell, Car, ClipboardList, LayoutGrid, Menu, Plus, Settings, Sparkles, Wrench } from 'lucide-react'
+import { Bell, Bot, Car, ClipboardList, LayoutGrid, Lock, Menu, Plus, Settings, Sparkles, Wrench } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 
 export function MobileBottomNav() {
   const { pathname } = useLocation()
   const { t } = useTranslation()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { count: pendingApps } = useOwnerPendingApplicationCount(user?.id, Boolean(user?.id))
   const [menuOpen, setMenuOpen] = useState(false)
+  const aiLocked = !(profile?.role === 'owner' && profile?.plan_tier === 'pro')
 
   useEffect(() => {
     setMenuOpen(false)
@@ -84,6 +85,16 @@ export function MobileBottomNav() {
               <Link to="/statystyki" className={`mob-nav-menu-link${pathname === '/statystyki' ? ' active' : ''}`}>
                 <span className="mob-nav-item-icon" aria-hidden><LayoutGrid size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.statistics')}</span>
+              </Link>
+              <Link to="/ai-manager" className={`mob-nav-menu-link${pathname === '/ai-manager' ? ' active' : ''}`}>
+                <span className="mob-nav-item-icon" aria-hidden><Bot size={18} strokeWidth={2.1} /></span>
+                <span>{t('nav.aiManager')}</span>
+                <span className="mob-nav-menu-pro-badge">PRO</span>
+                {aiLocked ? (
+                  <span className="mob-nav-menu-lock" aria-label={t('aiManager.locked')}>
+                    <Lock size={13} />
+                  </span>
+                ) : null}
               </Link>
               <Link to="/serwisy" className={`mob-nav-menu-link${pathname === '/serwisy' ? ' active' : ''}`}>
                 <span className="mob-nav-item-icon" aria-hidden><Wrench size={18} strokeWidth={2.1} /></span>

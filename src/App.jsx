@@ -27,6 +27,7 @@ import { RoleSelection } from './pages/RoleSelection'
 import { PublicFleetProfile } from './pages/PublicFleetProfile'
 import { Favorites } from './pages/Favorites'
 import { ApplicationChatPage } from './pages/ApplicationChatPage'
+import { AIManager } from './pages/AIManager'
 
 export default function App() {
   return (
@@ -81,6 +82,7 @@ export default function App() {
         <Route path="/flota" element={<Fleet />} />
         <Route path="/alerty" element={<AlertsPage />} />
         <Route path="/statystyki" element={<Statistics />} />
+        <Route path="/ai-manager" element={<AIManager />} />
         <Route path="/serwisy" element={<Services />} />
         <Route path="/ustawienia" element={<Settings />} />
         <Route path="/wnioski" element={<OwnerApplications />} />

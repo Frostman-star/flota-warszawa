@@ -46,7 +46,8 @@
     "applicationsTab": "Applications",
     "employmentRequests": "Cooperation",
     "services": "Services",
-    "finance": "Earnings"
+    "finance": "Earnings",
+    "aiManager": "🤖 AI"
   },
   "login": {
     "title": "Cario",
@@ -128,7 +129,9 @@
     "noCarTitle": "No vehicle assigned",
     "noCarDesc": "No active car assignment in Cario — contact your fleet owner.",
     "servicesTitle": "Services",
-    "servicesDesc": "Car service directory in Cario — Warsaw area, ratings and contact."
+    "servicesDesc": "Car service directory in Cario — Warsaw area, ratings and contact.",
+    "aiManagerTitle": "AI Manager",
+    "aiManagerDesc": "Cario AI assistant for conversational fleet management."
   },
   "panel": {
     "title": "Attention today",
@@ -492,10 +495,51 @@
     "planNoExpiry": "none",
     "referralLink": "Your referral link",
     "referralCopied": "Referral link copied.",
+    "referralRegistered": "Registered referrals: {{count}}",
+    "referralPendingPaid": "Registered but not paid yet: {{count}}",
+    "referralQualified": "Qualified referrals: {{count}}",
     "referralPending": "Pending referrals: {{count}}",
     "referralRewarded": "Rewarded referrals: {{count}}",
+    "referralRejected": "Rejected referrals: {{count}}",
     "referralBonusMonths": "Bonus PRO months: {{count}}",
     "planChangeFailed": "Failed to change plan"
+  },
+  "aiManager": {
+    "title": "AI Manager",
+    "proFeature": "Pro Feature",
+    "proOnly": "This feature is available in the Pro plan.",
+    "ownerOnly": "Available only for fleet owner accounts.",
+    "upgradeCta": "Upgrade to Pro — 99 PLN/mo",
+    "proItem1": "Add a vehicle from your chat description",
+    "proItem2": "Check expiring documents and priorities",
+    "proItem3": "Update mileage and show key stats",
+    "placeholder": "Type a message…",
+    "newConversation": "New conversation",
+    "thinking": "AI is thinking…",
+    "photoAnalyzing": "AI is analyzing the photo…",
+    "attach": "Attach photo",
+    "voice": "Voice input",
+    "locked": "Locked for non-Pro users",
+    "done": "✅ Done!",
+    "emptyAnswer": "AI returned no text response.",
+    "photoUploaded": "📎 Document photo uploaded for analysis.",
+    "photoPrompt": "Analyze this insurance/registration document and extract: expiration date, policy/registration number, and car make/model if visible. Reply in JSON format.",
+    "photoConfirm": "Do you want to add this data to a vehicle?",
+    "welcome": "Hi! I'm your AI fleet manager. I can help you:\n• Add a new car — just send details\n• Check documents — ask \"which documents are expiring?\"\n• Update mileage — say \"WX4821K has 125000 km\"\n• Analyze a document photo — send a photo 📎\n\nHow can I help?",
+    "quick": {
+      "addVehicle": "Add vehicle",
+      "checkDocs": "Check documents",
+      "showStats": "Show statistics",
+      "addDriver": "Add driver"
+    },
+    "errors": {
+      "generic": "Failed to process AI request.",
+      "missingPlate": "Plate number is required to add a vehicle.",
+      "invalidDocumentField": "AI returned an unsupported document field.",
+      "voiceUnsupported": "Voice input is not supported in this browser.",
+      "voiceFailed": "Could not recognize speech.",
+      "upgradeFailed": "Failed to upgrade to Pro."
+    }
   },
   "pwaInstall": {
     "banner": {

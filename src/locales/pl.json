@@ -46,7 +46,8 @@
     "applicationsTab": "Wnioski",
     "employmentRequests": "Współpraca",
     "services": "Serwisy",
-    "finance": "Zarobki"
+    "finance": "Zarobki",
+    "aiManager": "🤖 AI"
   },
   "login": {
     "title": "Cario",
@@ -128,7 +129,9 @@
     "noCarTitle": "Brak przypisanego auta",
     "noCarDesc": "Brak aktywnego przypisania auta w Cario — skontaktuj się z właścicielem floty.",
     "servicesTitle": "Serwisy",
-    "servicesDesc": "Katalog serwisów samochodowych w Cario — Warszawa i okolice, opinie i kontakt."
+    "servicesDesc": "Katalog serwisów samochodowych w Cario — Warszawa i okolice, opinie i kontakt.",
+    "aiManagerTitle": "Menedżer AI",
+    "aiManagerDesc": "Asystent AI Cario do zarządzania flotą w formie czatu."
   },
   "panel": {
     "title": "Uwaga na dziś",
@@ -492,10 +495,51 @@
     "planNoExpiry": "brak",
     "referralLink": "Twój link polecający",
     "referralCopied": "Link polecający skopiowany.",
+    "referralRegistered": "Zarejestrowane referral: {{count}}",
+    "referralPendingPaid": "Zarejestrowani bez płatnego planu: {{count}}",
+    "referralQualified": "Zakwalifikowane referral: {{count}}",
     "referralPending": "Oczekujące referral: {{count}}",
     "referralRewarded": "Nagradzane referral: {{count}}",
+    "referralRejected": "Odrzucone referral: {{count}}",
     "referralBonusMonths": "Bonusowe miesiące PRO: {{count}}",
     "planChangeFailed": "Nie udało się zmienić planu"
+  },
+  "aiManager": {
+    "title": "Menedżer AI",
+    "proFeature": "Funkcja Pro",
+    "proOnly": "Ta funkcja dostępna w planie Pro.",
+    "ownerOnly": "Dostępne tylko dla właściciela floty.",
+    "upgradeCta": "Ulepsz do Pro — 99 zł/mies",
+    "proItem1": "Doda auto na podstawie opisu w czacie",
+    "proItem2": "Sprawdzi dokumenty i terminy",
+    "proItem3": "Zaktualizuje przebieg i pokaże metryki",
+    "placeholder": "Napisz wiadomość…",
+    "newConversation": "Nowa rozmowa",
+    "thinking": "AI myśli…",
+    "photoAnalyzing": "AI analizuje zdjęcie…",
+    "attach": "Dodaj zdjęcie",
+    "voice": "Wprowadzanie głosowe",
+    "locked": "Zablokowane dla planu innego niż Pro",
+    "done": "✅ Wykonano!",
+    "emptyAnswer": "AI nie zwróciło odpowiedzi tekstowej.",
+    "photoUploaded": "📎 Zdjęcie dokumentu zostało wysłane do analizy.",
+    "photoPrompt": "Przeanalizuj ten dokument ubezpieczeniowy/rejestracyjny i wyciągnij: datę ważności, numer polisy/rejestracji, markę i model auta jeśli widoczne. Odpowiedz w formacie JSON.",
+    "photoConfirm": "Czy chcesz dodać te dane do pojazdu?",
+    "welcome": "Cześć! Jestem Twoim menedżerem floty AI. Mogę Ci pomóc:\n• Dodać nowe auto — powiedz mi szczegóły\n• Sprawdzić dokumenty — zapytaj \"jakie dokumenty wygasają?\"\n• Zaktualizować przebieg — powiedz \"WX4821K przejechał 125000 km\"\n• Przeanalizować zdjęcie dokumentu — wyślij zdjęcie 📎\n\nCzym mogę pomóc?",
+    "quick": {
+      "addVehicle": "Dodaj pojazd",
+      "checkDocs": "Sprawdź dokumenty",
+      "showStats": "Pokaż statystyki",
+      "addDriver": "Dodaj kierowcę"
+    },
+    "errors": {
+      "generic": "Nie udało się wykonać zapytania AI.",
+      "missingPlate": "Do dodania pojazdu potrzebny jest numer rejestracyjny.",
+      "invalidDocumentField": "AI zwróciło niedozwolone pole dokumentu.",
+      "voiceUnsupported": "Ten browser nie wspiera rozpoznawania mowy.",
+      "voiceFailed": "Nie udało się rozpoznać mowy.",
+      "upgradeFailed": "Nie udało się przełączyć na plan Pro."
+    }
   },
   "pwaInstall": {
     "banner": {

@@ -14,6 +14,7 @@ const ROUTES = [
   { test: (p) => /^\/samochod\/[^/]+$/.test(p), titleMode: 'suffix', titleKey: 'pageMeta.carTitle', descKey: 'pageMeta.carDesc' },
   { test: (p) => p === '/alerty', titleMode: 'suffix', titleKey: 'pageMeta.alertsTitle', descKey: 'pageMeta.alertsDesc' },
   { test: (p) => p === '/statystyki', titleMode: 'suffix', titleKey: 'pageMeta.statsTitle', descKey: 'pageMeta.statsDesc' },
+  { test: (p) => p === '/ai-manager', titleMode: 'suffix', titleKey: 'pageMeta.aiManagerTitle', descKey: 'pageMeta.aiManagerDesc' },
   { test: (p) => p === '/ustawienia', titleMode: 'suffix', titleKey: 'pageMeta.settingsTitle', descKey: 'pageMeta.settingsDesc' },
   { test: (p) => p === '/marketplace', titleMode: 'suffix', titleKey: 'pageMeta.marketplaceTitle', descKey: 'pageMeta.marketplaceDesc' },
   { test: (p) => p === '/serwisy', titleMode: 'suffix', titleKey: 'pageMeta.servicesTitle', descKey: 'pageMeta.servicesDesc' },
