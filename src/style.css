@@ -6691,37 +6691,35 @@ tr.tier-row-none td:first-child {
   margin-bottom: 1.6rem;
 }
 
-.landing-hero-bg {
+.landing-hero-static {
   position: relative;
   overflow: hidden;
   border-radius: 18px;
-}
-
-.landing-hero-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}
-
-.landing-hero-bg::before {
-  background-image:
-    linear-gradient(180deg, rgba(2, 6, 23, 0.9), rgba(2, 6, 23, 0.8)),
-    url('/images/landing-top-bg.png');
-}
-
-.landing-hero-bg > * {
-  position: relative;
-  z-index: 1;
-}
-
-.landing-hero-bg {
-  padding: 1rem;
   border: 1px solid rgba(56, 189, 248, 0.2);
+  padding: 0;
+}
+
+.landing-hero-static-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.landing-hero-overlay-panel {
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: 9%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.landing-hero-overlay-btn {
+  justify-content: center;
+  min-height: 42px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.4);
 }
 
 .landing-lowest-bg-wrap {
@@ -6976,5 +6974,16 @@ tr.tier-row-none td:first-child {
     margin-left: 0;
     overflow-x: auto;
     padding-bottom: 0.1rem;
+  }
+  .landing-hero-overlay-panel {
+    left: 3.5%;
+    right: 3.5%;
+    bottom: 8%;
+    gap: 0.55rem;
+  }
+  .landing-hero-overlay-btn {
+    min-height: 36px;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.45rem;
   }
 }

@@ -87,30 +87,22 @@ export function LandingPage() {
       </header>
 
       <main id="top" className="landing-main page-pad">
-        <FadeSection id="hero" className="landing-hero landing-hero-bg is-visible">
-          <h1>{t('landing.hero.title')}</h1>
-          <div className="landing-audience-grid">
-            <article className="landing-audience-card owner">
-              <p className="landing-audience-emoji" aria-hidden>
-                🚗
-              </p>
-              <h2>{t('landing.hero.owner.title')}</h2>
-              <p>{t('landing.hero.owner.desc')}</p>
-              <Link className="btn primary" to="/register?role=owner">
-                {t('landing.hero.owner.cta')}
-              </Link>
-            </article>
-
-            <article className="landing-audience-card driver">
-              <p className="landing-audience-emoji" aria-hidden>
-                👤
-              </p>
-              <h2>{t('landing.hero.driver.title')}</h2>
-              <p>{t('landing.hero.driver.desc')}</p>
-              <Link className="btn small landing-driver-btn" to="/register?role=driver">
-                {t('landing.hero.driver.cta')}
-              </Link>
-            </article>
+        <FadeSection id="hero" className="landing-hero landing-hero-static is-visible">
+          <img
+            src="/images/landing-top-overlay-base.png"
+            alt={t('landing.hero.title')}
+            className="landing-hero-static-image"
+          />
+          <div
+            className="landing-hero-overlay-panel"
+            aria-label={t('landing.hero.overlayAria', { defaultValue: 'Quick role selection panel' })}
+          >
+            <Link className="btn primary landing-hero-overlay-btn" to="/register?role=owner">
+              {t('landing.hero.owner.cta')}
+            </Link>
+            <Link className="btn landing-driver-btn landing-hero-overlay-btn" to="/register?role=driver">
+              {t('landing.hero.driver.cta')}
+            </Link>
           </div>
         </FadeSection>
 
