@@ -46,6 +46,7 @@
     "applicationsTab": "Wnioski",
     "employmentRequests": "Współpraca",
     "services": "Serwisy",
+    "chats": "Czaty",
     "finance": "Zarobki",
     "aiManager": "🤖 AI"
   },
@@ -133,6 +134,8 @@
     "servicesDesc": "Katalog serwisów samochodowych w Cario — Warszawa i okolice, opinie i kontakt.",
     "serviceCabinetTitle": "Panel serwisu",
     "serviceCabinetDesc": "Zarządzaj terminami serwisu i zgłoszeniami napraw w Cario.",
+    "chatsTitle": "Czaty",
+    "chatsDesc": "Jeden czat dla kierowców, właścicieli floty i serwisów w Cario.",
     "aiManagerTitle": "Menedżer AI",
     "aiManagerDesc": "Asystent AI Cario do zarządzania flotą w formie czatu."
   },
@@ -202,6 +205,7 @@
     "allCategories": "Wszystkie",
     "addService": "Dodaj serwis",
     "verified": "Zweryfikowany",
+    "featured": "Polecany",
     "rate": "Oceń",
     "noReviews": "Brak opinii",
     "maps": "Google Maps",
@@ -235,6 +239,19 @@
     "unknownService": "Serwis",
     "noSlot": "Termin nie został jeszcze wybrany"
   },
+  "chats": {
+    "title": "Czaty",
+    "lead": "Rozmowy z kierowcami, właścicielami i serwisami.",
+    "empty": "Brak czatów.",
+    "unknownPeer": "Czat",
+    "unread": "Nieprzeczytane: {{count}}",
+    "noMessages": "Brak wiadomości.",
+    "open": "Otwórz czat",
+    "openApplicationThread": "Otwórz wątek zgłoszenia",
+    "threadTitle": "Rozmowa",
+    "message": "Napisz",
+    "serviceChatUnavailable": "Ten serwis nie ma jeszcze podłączonego konta czatu."
+  },
   "serviceBookingStatus": {
     "pending": "Oczekuje na potwierdzenie",
     "confirmed": "Potwierdzone",
@@ -259,7 +276,20 @@
     "markFree": "Oznacz jako wolny",
     "bookingsTitle": "Zgłoszenia napraw",
     "emptyBookings": "Brak nowych zgłoszeń.",
-    "noSlot": "Bez terminu"
+    "noSlot": "Bez terminu",
+    "adminPickService": "Podgląd admina jako serwis",
+    "planTitle": "Plan serwisu",
+    "planFree": "Plan darmowy",
+    "planFeatured": "Płatny plan polecany",
+    "featuredRequestNote": "Komentarz do zgłoszenia (opcjonalnie)",
+    "requestFeatured": "Poproś o wyróżnienie",
+    "setPlanFree": "Ustaw Free",
+    "setPlanFeatured": "Ustaw Featured",
+    "requestStatus": {
+      "pending": "Oczekuje na decyzję",
+      "approved": "Zaakceptowano",
+      "rejected": "Odrzucono"
+    }
   },
   "marketplacePhotos": {
     "sectionTitle": "Zdjęcia do Marketplace",

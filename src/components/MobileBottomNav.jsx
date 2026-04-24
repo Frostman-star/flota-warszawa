@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Bell, Bot, Car, ClipboardList, LayoutGrid, Lock, Menu, Plus, Settings, Sparkles, Wrench } from 'lucide-react'
+import { Bell, Bot, Car, ClipboardList, LayoutGrid, Lock, Menu, MessageCircleMore, Plus, Settings, Sparkles, Wrench } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 
@@ -31,6 +31,7 @@ export function MobileBottomNav() {
     pathname === '/wnioski' ||
     pathname === '/statystyki' ||
     pathname === '/serwisy' ||
+    pathname === '/chats' ||
     pathname === '/alerty' ||
     pathname === '/dodaj' ||
     pathname === '/ustawienia'
@@ -99,6 +100,10 @@ export function MobileBottomNav() {
               <Link to="/serwisy" className={`mob-nav-menu-link${pathname === '/serwisy' ? ' active' : ''}`}>
                 <span className="mob-nav-item-icon" aria-hidden><Wrench size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.services')}</span>
+              </Link>
+              <Link to="/chats" className={`mob-nav-menu-link${pathname.startsWith('/chats') ? ' active' : ''}`}>
+                <span className="mob-nav-item-icon" aria-hidden><MessageCircleMore size={18} strokeWidth={2.1} /></span>
+                <span>{t('nav.chats')}</span>
               </Link>
               <Link to="/alerty" className={`mob-nav-menu-link${pathname === '/alerty' ? ' active' : ''}`}>
                 <span className="mob-nav-item-icon" aria-hidden><Bell size={18} strokeWidth={2.1} /></span>

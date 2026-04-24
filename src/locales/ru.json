@@ -46,6 +46,7 @@
     "applicationsTab": "Заявки",
     "employmentRequests": "Сотрудничество",
     "services": "Сервисы",
+    "chats": "Чаты",
     "finance": "Заработок",
     "aiManager": "🤖 AI"
   },
@@ -133,6 +134,8 @@
     "servicesDesc": "Каталог автосервисов в Cario — Варшава и окрестности, отзывы и контакты.",
     "serviceCabinetTitle": "Кабинет сервиса",
     "serviceCabinetDesc": "Управляйте слотами автосервиса и заявками на ремонт в Cario.",
+    "chatsTitle": "Чаты",
+    "chatsDesc": "Единый чат для водителей, владельцев флота и сервисов в Cario.",
     "aiManagerTitle": "AI Менеджер",
     "aiManagerDesc": "AI-ассистент Cario для управления флотом через чат."
   },
@@ -202,6 +205,7 @@
     "allCategories": "Все",
     "addService": "Добавить сервис",
     "verified": "Проверенный",
+    "featured": "Рекомендовано",
     "rate": "Оценить",
     "noReviews": "Нет отзывов",
     "maps": "Google Maps",
@@ -235,6 +239,19 @@
     "unknownService": "Сервис",
     "noSlot": "Время еще не назначено"
   },
+  "chats": {
+    "title": "Чаты",
+    "lead": "Диалоги с водителями, владельцами и сервисами.",
+    "empty": "Пока нет чатов.",
+    "unknownPeer": "Чат",
+    "unread": "Непрочитано: {{count}}",
+    "noMessages": "Сообщений пока нет.",
+    "open": "Открыть чат",
+    "openApplicationThread": "Открыть тред заявки",
+    "threadTitle": "Диалог",
+    "message": "Написать",
+    "serviceChatUnavailable": "У этого сервиса еще нет подключенного чат-аккаунта."
+  },
   "serviceBookingStatus": {
     "pending": "Ожидает подтверждения",
     "confirmed": "Подтверждено",
@@ -259,7 +276,20 @@
     "markFree": "Пометить свободным",
     "bookingsTitle": "Заявки на ремонт",
     "emptyBookings": "Новых заявок пока нет.",
-    "noSlot": "Без слота"
+    "noSlot": "Без слота",
+    "adminPickService": "Просмотр админом как сервис",
+    "planTitle": "План сервиса",
+    "planFree": "Бесплатный план",
+    "planFeatured": "Платный рекомендованный план",
+    "featuredRequestNote": "Комментарий к запросу (необязательно)",
+    "requestFeatured": "Подать запрос на рекомендацию",
+    "setPlanFree": "Установить Free",
+    "setPlanFeatured": "Установить Featured",
+    "requestStatus": {
+      "pending": "Ожидает рассмотрения",
+      "approved": "Одобрено",
+      "rejected": "Отклонено"
+    }
   },
   "marketplacePhotos": {
     "sectionTitle": "Фото для Маркетплейса",

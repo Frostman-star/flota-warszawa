@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-import { AlertTriangle, Car, Handshake, LayoutGrid, Plus, Settings, ShoppingCart, Wrench, BarChart3, Bot, Lock } from 'lucide-react'
+import { AlertTriangle, Car, Handshake, LayoutGrid, Plus, Settings, ShoppingCart, Wrench, BarChart3, Bot, Lock, MessageCircleMore } from 'lucide-react'
 
 function navCls({ isActive }) {
   const base = 'desktop-sidebar__link'
@@ -20,6 +20,7 @@ export function DesktopOwnerSidebar() {
     { to: '/dodaj', end: true, label: t('panel.addCar'), Icon: Plus },
     { to: '/alerty', end: true, label: t('nav.alerts'), Icon: AlertTriangle },
     { to: '/statystyki', end: true, label: t('nav.statistics'), Icon: BarChart3 },
+    { to: '/chats', end: false, label: t('nav.chats'), Icon: MessageCircleMore },
     { to: '/ai-manager', end: true, label: t('nav.aiManager'), Icon: Bot, pro: true, locked: aiLocked },
     { to: '/marketplace', end: true, label: t('nav.marketplace'), Icon: ShoppingCart },
     { to: '/serwisy', end: true, label: t('nav.services'), Icon: Wrench },

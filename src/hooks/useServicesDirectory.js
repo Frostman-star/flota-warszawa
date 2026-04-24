@@ -63,14 +63,21 @@ export function useServicesDirectory({ city }) {
   }, [load])
 
   const enriched = useMemo(() => {
-    return services.map((s) => {
+    return services
+      .map((s) => {
       const sid = String(s.id)
       const agg = reviewStats.get(sid)
       const count = agg?.count ?? 0
       const sum = agg?.sum ?? 0
       const avg = count > 0 ? Math.round((sum / count) * 10) / 10 : null
       return { ...s, _reviewCount: count, _avgRating: avg }
-    })
+      })
+      .sort((a, b) => {
+        const aFeatured = a.plan_tier === 'featured' ? 1 : 0
+        const bFeatured = b.plan_tier === 'featured' ? 1 : 0
+        if (aFeatured !== bFeatured) return bFeatured - aFeatured
+        return String(a.name || '').localeCompare(String(b.name || ''), 'pl')
+      })
   }, [services, reviewStats])
 
   return { services: enriched, loading, error, refresh: load }

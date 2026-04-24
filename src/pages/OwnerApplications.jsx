@@ -211,7 +211,7 @@ export function OwnerApplications() {
               {actionBusyId === app.id ? t('ownerApplications.rejectBusy') : t('ownerApplications.reject')}
             </button>
           ) : null}
-          <Link className="btn ghost small" to={`/rozmowa-wniosek/${app.id}`}>
+          <Link className="btn ghost small" to={`/chats/application/${app.id}`}>
             {t('ownerApplications.openChat')}
           </Link>
         </div>

@@ -46,6 +46,7 @@
     "applicationsTab": "Applications",
     "employmentRequests": "Cooperation",
     "services": "Services",
+    "chats": "Chats",
     "finance": "Earnings",
     "aiManager": "🤖 AI"
   },
@@ -133,6 +134,8 @@
     "servicesDesc": "Car service directory in Cario — Warsaw area, ratings and contact.",
     "serviceCabinetTitle": "Service Cabinet",
     "serviceCabinetDesc": "Manage workshop slots and incoming repair requests in Cario.",
+    "chatsTitle": "Chats",
+    "chatsDesc": "Unified chats between drivers, fleet owners, and services in Cario.",
     "aiManagerTitle": "AI Manager",
     "aiManagerDesc": "Cario AI assistant for conversational fleet management."
   },
@@ -202,6 +205,7 @@
     "allCategories": "All",
     "addService": "Add service",
     "verified": "Verified",
+    "featured": "Featured",
     "rate": "Rate",
     "noReviews": "No reviews",
     "maps": "Google Maps",
@@ -235,6 +239,19 @@
     "unknownService": "Service",
     "noSlot": "Slot is not assigned yet"
   },
+  "chats": {
+    "title": "Chats",
+    "lead": "Conversations with drivers, owners, and services.",
+    "empty": "No chats yet.",
+    "unknownPeer": "Chat",
+    "unread": "Unread: {{count}}",
+    "noMessages": "No messages yet.",
+    "open": "Open chat",
+    "openApplicationThread": "Open application thread",
+    "threadTitle": "Conversation",
+    "message": "Message",
+    "serviceChatUnavailable": "This service has no linked chat account yet."
+  },
   "serviceBookingStatus": {
     "pending": "Pending confirmation",
     "confirmed": "Confirmed",
@@ -259,7 +276,20 @@
     "markFree": "Mark free",
     "bookingsTitle": "Repair bookings",
     "emptyBookings": "No bookings yet.",
-    "noSlot": "Without slot"
+    "noSlot": "Without slot",
+    "adminPickService": "Admin preview as service",
+    "planTitle": "Service plan",
+    "planFree": "Free plan",
+    "planFeatured": "Paid featured plan",
+    "featuredRequestNote": "Request note (optional)",
+    "requestFeatured": "Request featured placement",
+    "setPlanFree": "Set Free",
+    "setPlanFeatured": "Set Featured",
+    "requestStatus": {
+      "pending": "Pending review",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
   },
   "marketplacePhotos": {
     "sectionTitle": "Marketplace photos",

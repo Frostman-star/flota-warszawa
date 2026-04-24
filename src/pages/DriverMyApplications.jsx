@@ -102,7 +102,7 @@ export function DriverMyApplications() {
                 {row.created_at ? new Date(row.created_at).toLocaleString() : ''}
               </p>
               <div className="owner-app-actions">
-                <Link className="btn ghost small" to={`/rozmowa-wniosek/${row.id}`}>
+                <Link className="btn ghost small" to={`/chats/application/${row.id}`}>
                   {t('driverApplications.openChat')}
                 </Link>
               </div>

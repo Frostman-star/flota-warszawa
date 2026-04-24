@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -9,17 +9,22 @@ const STATUS_OPTIONS = ['pending', 'confirmed', 'in_progress', 'done', 'canceled
 
 export function ServiceCabinet() {
   const { t } = useTranslation()
-  const { user, profile, loading } = useAuth()
+  const { user, profile, loading, isAdmin } = useAuth()
   const [serviceProfile, setServiceProfile] = useState(null)
   const [services, setServices] = useState([])
   const [slots, setSlots] = useState([])
   const [bookings, setBookings] = useState([])
+  const [featuredRequests, setFeaturedRequests] = useState([])
+  const [adminServiceId, setAdminServiceId] = useState('')
+  const [requestNote, setRequestNote] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const [slotForm, setSlotForm] = useState({ slot_start_at: '', duration_minutes: 60 })
   const [profileForm, setProfileForm] = useState({ service_id: '', display_name: '', contact_phone: '', contact_email: '' })
 
-  const serviceId = serviceProfile?.service_id || null
+  const roleNorm = normalizeProfileRole(profile?.role)
+  const isService = roleNorm === 'service'
+  const serviceId = isAdmin ? adminServiceId || null : serviceProfile?.service_id || null
 
   const load = async () => {
     if (!user?.id) return
@@ -27,26 +32,42 @@ export function ServiceCabinet() {
     try {
       const [{ data: profileRow, error: profileErr }, { data: servicesRows, error: servicesErr }] = await Promise.all([
         supabase.from('service_profiles').select('*').eq('id', user.id).maybeSingle(),
-        supabase.from('services').select('id,name,city').order('name'),
+        supabase.from('services').select('id,name,city,plan_tier,featured_until').order('name'),
       ])
       if (profileErr) throw profileErr
       if (servicesErr) throw servicesErr
       setServiceProfile(profileRow || null)
       setServices(servicesRows || [])
-      if (!profileRow) return
+      if (!isAdmin && !profileRow) return
+
+      if (isAdmin && !adminServiceId && servicesRows?.[0]?.id) {
+        setAdminServiceId(servicesRows[0].id)
+      }
+
+      const effectiveServiceId = isAdmin ? (adminServiceId || servicesRows?.[0]?.id || null) : profileRow.service_id
+      if (!effectiveServiceId) return
 
       const [{ data: slotRows, error: slotErr }, { data: bookingRows, error: bookingErr }] = await Promise.all([
-        supabase.from('service_slots').select('*').eq('service_id', profileRow.service_id).order('slot_start_at'),
+        supabase.from('service_slots').select('*').eq('service_id', effectiveServiceId).order('slot_start_at'),
         supabase
           .from('service_bookings')
           .select('id,status,issue_description,created_at,customer_user_id,customer_car_id,slot_id,service_slots(slot_start_at)')
-          .eq('service_id', profileRow.service_id)
+          .eq('service_id', effectiveServiceId)
           .order('created_at', { ascending: false }),
       ])
       if (slotErr) throw slotErr
       if (bookingErr) throw bookingErr
       setSlots(slotRows || [])
       setBookings(bookingRows || [])
+
+      const { data: featuredRows, error: featuredErr } = await supabase
+        .from('service_featured_requests')
+        .select('id,status,created_at,note,service_id')
+        .eq('service_id', effectiveServiceId)
+        .order('created_at', { ascending: false })
+        .limit(5)
+      if (featuredErr) throw featuredErr
+      setFeaturedRequests(featuredRows || [])
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
     }
@@ -54,7 +75,7 @@ export function ServiceCabinet() {
 
   useEffect(() => {
     void load()
-  }, [user?.id])
+  }, [user?.id, isAdmin, adminServiceId])
 
   const onCreateProfile = async (e) => {
     e.preventDefault()
@@ -100,6 +121,44 @@ export function ServiceCabinet() {
     }
   }
 
+  const onRequestFeatured = async (e) => {
+    e.preventDefault()
+    if (!user?.id || !serviceId || !isService) return
+    setBusy(true)
+    try {
+      const { error: insErr } = await supabase.from('service_featured_requests').insert({
+        service_id: serviceId,
+        requested_by: user.id,
+        note: requestNote.trim() || null,
+      })
+      if (insErr) throw insErr
+      setRequestNote('')
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const onAdminPlanChange = async (nextTier) => {
+    if (!isAdmin || !serviceId) return
+    setBusy(true)
+    try {
+      const payload = {
+        plan_tier: nextTier,
+        featured_until: nextTier === 'featured' ? null : null,
+      }
+      const { error: updErr } = await supabase.from('services').update(payload).eq('id', serviceId)
+      if (updErr) throw updErr
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
   const onToggleSlot = async (slotId, nextAvailable) => {
     setBusy(true)
     try {
@@ -126,17 +185,77 @@ export function ServiceCabinet() {
     }
   }
 
+  const startDirectChat = async (otherUserId) => {
+    if (!otherUserId) return
+    try {
+      const { data: threadId, error: e1 } = await supabase.rpc('chat_get_or_create_direct_thread', { p_other_user_id: otherUserId })
+      if (e1) throw e1
+      if (threadId) window.location.assign(`/chats/${threadId}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    }
+  }
+
   const selectedService = useMemo(() => services.find((s) => s.id === serviceId) || null, [services, serviceId])
 
-  if (!loading && normalizeProfileRole(profile?.role) !== 'service') return <Navigate to="/" replace />
+  if (!loading && !isService && !isAdmin) return <Navigate to="/" replace />
 
   return (
     <div className="page-pad stack-md">
       <h1>{t('serviceCabinet.title')}</h1>
+      <p><Link className="link" to="/chats">{t('nav.chats')}</Link></p>
+      {isAdmin ? (
+        <label className="field">
+          <span className="field-label">{t('serviceCabinet.adminPickService')}</span>
+          <select className="input" value={adminServiceId} onChange={(e) => setAdminServiceId(e.target.value)}>
+            {services.map((s) => (
+              <option key={s.id} value={s.id}>{s.name} ({s.city})</option>
+            ))}
+          </select>
+        </label>
+      ) : null}
       {selectedService ? <p className="muted">{selectedService.name} ({selectedService.city})</p> : null}
+      {selectedService ? (
+        <section className="card pad-lg stack-sm">
+          <h2>{t('serviceCabinet.planTitle')}</h2>
+          <p className="muted small">
+            {selectedService.plan_tier === 'featured' ? t('serviceCabinet.planFeatured') : t('serviceCabinet.planFree')}
+          </p>
+          {isService ? (
+            <form className="stack-form" onSubmit={onRequestFeatured}>
+              <label className="field">
+                <span className="field-label">{t('serviceCabinet.featuredRequestNote')}</span>
+                <textarea className="input services-textarea" rows={2} value={requestNote} onChange={(e) => setRequestNote(e.target.value)} />
+              </label>
+              <button type="submit" className="btn secondary" disabled={busy}>
+                {t('serviceCabinet.requestFeatured')}
+              </button>
+            </form>
+          ) : null}
+          {isAdmin ? (
+            <div className="services-row">
+              <button type="button" className="btn ghost small" disabled={busy || selectedService.plan_tier === 'free'} onClick={() => onAdminPlanChange('free')}>
+                {t('serviceCabinet.setPlanFree')}
+              </button>
+              <button type="button" className="btn ghost small" disabled={busy || selectedService.plan_tier === 'featured'} onClick={() => onAdminPlanChange('featured')}>
+                {t('serviceCabinet.setPlanFeatured')}
+              </button>
+            </div>
+          ) : null}
+          {featuredRequests.length > 0 ? (
+            <div className="stack-xs">
+              {featuredRequests.map((req) => (
+                <p key={req.id} className="muted small">
+                  {new Date(req.created_at).toLocaleString()} - {t(`serviceCabinet.requestStatus.${req.status}`)}
+                </p>
+              ))}
+            </div>
+          ) : null}
+        </section>
+      ) : null}
       {error ? <p className="form-error">{error}</p> : null}
 
-      {!serviceProfile ? (
+      {!isAdmin && !serviceProfile ? (
         <section className="card pad-lg stack-form">
           <h2>{t('serviceCabinet.linkProfileTitle')}</h2>
           <form className="stack-form" onSubmit={onCreateProfile}>
@@ -216,6 +335,11 @@ export function ServiceCabinet() {
                         {t(`serviceBookingStatus.${st}`)}
                       </button>
                     ))}
+                    {booking.customer_user_id ? (
+                      <button type="button" className="btn ghost small" onClick={() => void startDirectChat(booking.customer_user_id)}>
+                        {t('chats.message')}
+                      </button>
+                    ) : null}
                   </div>
                 </article>
               ))}

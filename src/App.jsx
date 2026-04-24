@@ -30,6 +30,8 @@ import { Favorites } from './pages/Favorites'
 import { ApplicationChatPage } from './pages/ApplicationChatPage'
 import { AIManager } from './pages/AIManager'
 import { ServiceCabinet } from './pages/ServiceCabinet'
+import { ChatsInboxPage } from './pages/ChatsInboxPage'
+import { ChatThreadPage } from './pages/ChatThreadPage'
 
 export default function App() {
   return (
@@ -71,6 +73,9 @@ export default function App() {
         <Route path="/zarobki" element={<DriverFinance />} />
         <Route path="/moje-wnioski" element={<DriverMyApplications />} />
         <Route path="/rozmowa-wniosek/:applicationId" element={<ApplicationChatPage />} />
+        <Route path="/chats" element={<ChatsInboxPage />} />
+        <Route path="/chats/:threadId" element={<ChatThreadPage />} />
+        <Route path="/chats/application/:applicationId" element={<ChatThreadPage />} />
       </Route>
       <Route
         element={
@@ -80,6 +85,9 @@ export default function App() {
         }
       >
         <Route path="/service" element={<ServiceCabinet />} />
+        <Route path="/chats" element={<ChatsInboxPage />} />
+        <Route path="/chats/:threadId" element={<ChatThreadPage />} />
+        <Route path="/chats/application/:applicationId" element={<ChatThreadPage />} />
       </Route>
       <Route
         element={
@@ -99,6 +107,9 @@ export default function App() {
         <Route path="/wnioski" element={<OwnerApplications />} />
         <Route path="/zapytania-kierowcow" element={<OwnerEmploymentRequests />} />
         <Route path="/rozmowa-wniosek/:applicationId" element={<ApplicationChatPage />} />
+        <Route path="/chats" element={<ChatsInboxPage />} />
+        <Route path="/chats/:threadId" element={<ChatThreadPage />} />
+        <Route path="/chats/application/:applicationId" element={<ChatThreadPage />} />
         <Route path="/pojazd/:id" element={<CarPageShell nestInAdminLayout />}>
           <Route index element={<CarDetail />} />
         </Route>

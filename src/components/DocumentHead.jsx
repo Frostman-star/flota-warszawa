@@ -19,6 +19,7 @@ const ROUTES = [
   { test: (p) => p === '/marketplace', titleMode: 'suffix', titleKey: 'pageMeta.marketplaceTitle', descKey: 'pageMeta.marketplaceDesc' },
   { test: (p) => p === '/serwisy', titleMode: 'suffix', titleKey: 'pageMeta.servicesTitle', descKey: 'pageMeta.servicesDesc' },
   { test: (p) => p === '/service', titleMode: 'suffix', titleKey: 'pageMeta.serviceCabinetTitle', descKey: 'pageMeta.serviceCabinetDesc' },
+  { test: (p) => p === '/chats' || /^\/chats\/.+$/.test(p), titleMode: 'suffix', titleKey: 'pageMeta.chatsTitle', descKey: 'pageMeta.chatsDesc' },
   { test: (p) => p === '/profil', titleMode: 'suffix', titleKey: 'pageMeta.driverProfileTitle', descKey: 'pageMeta.driverProfileDesc' },
   { test: (p) => p === '/moje-wnioski', titleMode: 'suffix', titleKey: 'pageMeta.driverApplicationsTitle', descKey: 'pageMeta.driverApplicationsDesc' },
   { test: (p) => p === '/wnioski', titleMode: 'suffix', titleKey: 'pageMeta.ownerApplicationsTitle', descKey: 'pageMeta.ownerApplicationsDesc' },

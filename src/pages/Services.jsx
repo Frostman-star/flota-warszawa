@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
@@ -23,6 +24,7 @@ function telHref(phone) {
 export function Services() {
   const { t } = useTranslation()
   const { user } = useAuth()
+  const navigate = useNavigate()
   const [city, setCity] = useState('Warszawa')
   const { services, loading, error, refresh } = useServicesDirectory({ city })
   const [category, setCategory] = useState('all')
@@ -249,6 +251,24 @@ export function Services() {
     }
   }
 
+  const startDirectChatWithService = async (serviceId) => {
+    if (!user?.id || !serviceId) return
+    try {
+      const { data: serviceUserId, error: e1 } = await supabase.rpc('get_service_chat_user_id', { p_service_id: serviceId })
+      if (e1) throw e1
+      if (!serviceUserId) {
+        setToast(t('chats.serviceChatUnavailable'))
+        return
+      }
+      const { data: threadId, error: e2 } = await supabase.rpc('chat_get_or_create_direct_thread', { p_other_user_id: serviceUserId })
+      if (e2) throw e2
+      if (threadId) navigate(`/chats/${threadId}`)
+    } catch (err) {
+      console.error(err)
+      window.alert(err instanceof Error ? err.message : String(err))
+    }
+  }
+
   return (
     <div className="page-pad services-page">
       {toast ? <div className="services-toast" role="status">{toast}</div> : null}
@@ -350,6 +370,11 @@ export function Services() {
                       ✅ {t('services.verified')}
                     </span>
                   ) : null}
+                  {s.plan_tier === 'featured' ? (
+                    <span className="services-verified" title={t('services.featured')}>
+                      ⭐ {t('services.featured')}
+                    </span>
+                  ) : null}
                 </div>
                 <p className="services-card__addr muted small">{s.address}</p>
                 <p className="services-card__rating">
@@ -383,6 +408,9 @@ export function Services() {
                 <div className="services-card__rate-row">
                   <button type="button" className="btn secondary small" onClick={() => void openBookingModal(s)}>
                     {t('services.book')}
+                  </button>
+                  <button type="button" className="btn ghost small" onClick={() => void startDirectChatWithService(s.id)}>
+                    {t('chats.message')}
                   </button>
                   <button type="button" className="btn ghost small" onClick={() => setRateService(s)}>
                     {t('services.rate')}

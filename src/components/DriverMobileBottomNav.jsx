@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Heart, LayoutGrid, Sparkles, UserRound, WalletCards } from 'lucide-react'
+import { Heart, LayoutGrid, MessageCircleMore, Sparkles, UserRound, WalletCards } from 'lucide-react'
 
 export function DriverMobileBottomNav() {
   const { pathname } = useLocation()
@@ -21,6 +21,7 @@ export function DriverMobileBottomNav() {
       {item('/marketplace', Sparkles, t('nav.marketplace'), { exact: true })}
       {item('/obrane', Heart, t('favorites.title'), { exact: true })}
       {item('/zarobki', WalletCards, t('nav.finance'), { exact: true })}
+      {item('/chats', MessageCircleMore, t('nav.chats'), { exact: false })}
       {item('/profil', UserRound, t('nav.profile'), { exact: true })}
       {item('/moje-wnioski', LayoutGrid, t('nav.myApplications'))}
     </nav>
