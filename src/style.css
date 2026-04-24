@@ -7862,7 +7862,7 @@ tr.tier-row-none td:first-child {
   align-items: center;
   gap: 0.48rem;
   border: 1px solid transparent;
-  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
 }
 
 .service-dashboard-nav__icon {
@@ -7888,6 +7888,7 @@ tr.tier-row-none td:first-child {
   background: linear-gradient(90deg, rgba(14, 116, 144, 0.38), rgba(14, 116, 144, 0.1));
   border-color: rgba(56, 189, 248, 0.24);
   transform: translateX(1px);
+  color: #e8f5ff;
 }
 
 .service-dashboard-nav a:focus-visible {
@@ -7970,9 +7971,9 @@ tr.tier-row-none td:first-child {
 
 .service-dashboard-hero {
   display: grid;
-  gap: 0.75rem;
+  gap: 0.68rem;
   grid-template-columns: 1.15fr 1fr 1.05fr;
-  padding: 0.92rem;
+  padding: 0.86rem 0.9rem;
   border-color: rgba(56, 189, 248, 0.25);
   background: linear-gradient(115deg, rgba(10, 20, 44, 0.95), rgba(7, 38, 52, 0.75));
 }
@@ -7982,7 +7983,7 @@ tr.tier-row-none td:first-child {
 }
 
 .service-dashboard-hero h1 {
-  margin: 0.1rem 0 0.2rem;
+  margin: 0.08rem 0 0.14rem;
   font-size: clamp(1.82rem, 2.6vw, 2.75rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
@@ -8003,17 +8004,24 @@ tr.tier-row-none td:first-child {
 
 .service-kpi-grid {
   display: grid;
-  gap: 0.52rem;
+  gap: 0.45rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .service-kpi {
   display: grid;
-  gap: 0.28rem;
+  gap: 0.22rem;
   align-content: start;
   border-color: rgba(56, 189, 248, 0.28);
   background: linear-gradient(180deg, rgba(7, 17, 38, 0.88), rgba(3, 10, 30, 0.9));
-  padding: 0.7rem 0.75rem;
+  padding: 0.62rem 0.68rem;
+  min-height: 92px;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.service-kpi:hover {
+  transform: translateY(-1px);
+  border-color: rgba(103, 232, 249, 0.42);
 }
 
 .service-kpi strong {
@@ -8057,13 +8065,55 @@ tr.tier-row-none td:first-child {
   border-radius: 8px;
   min-height: 6px;
   background: linear-gradient(180deg, rgba(34, 211, 238, 0.95), rgba(14, 116, 144, 0.68));
+  transition: opacity 0.2s ease;
+}
+
+.service-mini-chart__col:hover .service-mini-chart__bar {
+  opacity: 0.9;
 }
 
 .service-status {
-  padding: 0.23rem 0.52rem;
+  padding: 0.21rem 0.5rem;
   border-radius: 999px;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
+  line-height: 1.1;
   border: 1px solid transparent;
+}
+
+.service-bookings-list {
+  gap: 0.52rem;
+}
+
+.service-booking-card {
+  border-color: rgba(56, 189, 248, 0.2);
+  background: linear-gradient(180deg, rgba(7, 17, 38, 0.75), rgba(4, 12, 30, 0.88));
+  min-height: 132px;
+}
+
+.service-booking-card__head {
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.service-booking-card__issue {
+  margin: 0 0 0.22rem;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.service-booking-card__time {
+  margin: 0 0 0.42rem;
+}
+
+.service-booking-card__actions {
+  gap: 0.34rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.service-booking-card__actions .btn.small {
+  min-height: 28px;
+  padding: 0.3rem 0.48rem;
 }
 
 .service-status--pending {
@@ -8169,6 +8219,9 @@ tr.tier-row-none td:first-child {
   }
   .service-dashboard-hero h1 {
     font-size: clamp(1.5rem, 6.2vw, 2rem);
+  }
+  .service-booking-card {
+    min-height: 0;
   }
   .service-kpi-grid {
     grid-template-columns: 1fr;

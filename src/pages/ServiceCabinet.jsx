@@ -440,16 +440,16 @@ export function ServiceCabinet() {
             <h2>{t('serviceCabinet.bookingsTitle')}</h2>
             <Link to="/chats" className="btn ghost small">{t('chats.title')}</Link>
           </div>
-          <div className="stack-sm">
+          <div className="stack-sm service-bookings-list">
             {sortedBookings.map((booking) => (
-              <article key={booking.id} className="card pad-sm">
-                <div className="services-row">
+              <article key={booking.id} className="card pad-sm service-booking-card">
+                <div className="services-row service-booking-card__head">
                   <strong>#{booking.id.slice(0, 6)}</strong>
                   <span className={statusClass(booking.status)}>{t(`serviceBookingStatus.${booking.status}`)}</span>
                 </div>
-                <p>{booking.issue_description}</p>
-                <p className="muted small">{booking.service_slots?.slot_start_at ? new Date(booking.service_slots.slot_start_at).toLocaleString() : t('serviceCabinet.noSlot')}</p>
-                <div className="services-row">
+                <p className="service-booking-card__issue">{booking.issue_description}</p>
+                <p className="muted small service-booking-card__time">{booking.service_slots?.slot_start_at ? new Date(booking.service_slots.slot_start_at).toLocaleString() : t('serviceCabinet.noSlot')}</p>
+                <div className="services-row service-booking-card__actions">
                   {STATUS_OPTIONS.map((st) => (
                     <button key={st} type="button" className="btn ghost small" disabled={busy || st === booking.status} onClick={() => onBookingStatus(booking.id, st)}>
                       {t(`serviceBookingStatus.${st}`)}
