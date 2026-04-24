@@ -29,6 +29,14 @@ export function Services() {
   const [search, setSearch] = useState('')
   const [addOpen, setAddOpen] = useState(false)
   const [rateService, setRateService] = useState(null)
+  const [bookService, setBookService] = useState(null)
+  const [slotOptions, setSlotOptions] = useState([])
+  const [slotLoading, setSlotLoading] = useState(false)
+  const [bookingSubmitting, setBookingSubmitting] = useState(false)
+  const [bookingsLoading, setBookingsLoading] = useState(false)
+  const [myBookings, setMyBookings] = useState([])
+  const [userCars, setUserCars] = useState([])
+  const [bookForm, setBookForm] = useState({ slot_id: '', issue_description: '', customer_car_id: '' })
   const [toast, setToast] = useState(null)
 
   const cityOptions = useMemo(() => {
@@ -147,6 +155,100 @@ export function Services() {
     }
   }
 
+  const loadMyBookings = useCallback(async () => {
+    if (!user?.id) {
+      setMyBookings([])
+      return
+    }
+    setBookingsLoading(true)
+    try {
+      const { data, error: e1 } = await supabase
+        .from('service_bookings')
+        .select('id,status,issue_description,created_at,service_id,services(name),service_slots(slot_start_at)')
+        .eq('customer_user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10)
+      if (e1) throw e1
+      setMyBookings(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setBookingsLoading(false)
+    }
+  }, [user?.id])
+
+  useEffect(() => {
+    void loadMyBookings()
+  }, [loadMyBookings])
+
+  useEffect(() => {
+    if (!user?.id) {
+      setUserCars([])
+      return
+    }
+    let cancelled = false
+    const loadCars = async () => {
+      try {
+        const { data, error: e1 } = await supabase.from('cars').select('id,plate_number').order('plate_number')
+        if (e1) throw e1
+        if (!cancelled) setUserCars(Array.isArray(data) ? data : [])
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    void loadCars()
+    return () => {
+      cancelled = true
+    }
+  }, [user?.id])
+
+  const openBookingModal = async (service) => {
+    setBookService(service)
+    setBookForm({ slot_id: '', issue_description: '', customer_car_id: '' })
+    setSlotLoading(true)
+    try {
+      const { data, error: e1 } = await supabase
+        .from('service_slots')
+        .select('id,slot_start_at,duration_minutes')
+        .eq('service_id', service.id)
+        .eq('is_available', true)
+        .gte('slot_start_at', new Date().toISOString())
+        .order('slot_start_at')
+        .limit(100)
+      if (e1) throw e1
+      setSlotOptions(Array.isArray(data) ? data : [])
+    } catch (err) {
+      console.error(err)
+      setSlotOptions([])
+    } finally {
+      setSlotLoading(false)
+    }
+  }
+
+  const onBookSubmit = async (e) => {
+    e.preventDefault()
+    if (!user?.id || !bookService || !bookForm.slot_id || !bookForm.issue_description.trim()) return
+    setBookingSubmitting(true)
+    try {
+      const { error: e1 } = await supabase.from('service_bookings').insert({
+        service_id: bookService.id,
+        slot_id: bookForm.slot_id,
+        customer_user_id: user.id,
+        customer_car_id: bookForm.customer_car_id || null,
+        issue_description: bookForm.issue_description.trim(),
+      })
+      if (e1) throw e1
+      setBookService(null)
+      setToast(t('services.bookingCreated'))
+      await Promise.all([loadMyBookings(), refresh()])
+    } catch (err) {
+      console.error(err)
+      window.alert(err instanceof Error ? err.message : String(err))
+    } finally {
+      setBookingSubmitting(false)
+    }
+  }
+
   return (
     <div className="page-pad services-page">
       {toast ? <div className="services-toast" role="status">{toast}</div> : null}
@@ -204,6 +306,22 @@ export function Services() {
           aria-label={t('app.search')}
         />
       </div>
+      <section className="card pad-sm stack-sm">
+        <h2 className="services-card__title">{t('services.myBookings')}</h2>
+        {bookingsLoading ? <p className="muted small">{t('app.loading')}</p> : null}
+        {!bookingsLoading && myBookings.length === 0 ? <p className="muted small">{t('services.noBookings')}</p> : null}
+        {!bookingsLoading && myBookings.length > 0 ? (
+          <div className="stack-sm">
+            {myBookings.map((b) => (
+              <article key={b.id} className="card pad-sm">
+                <p><strong>{b.services?.name || t('services.unknownService')}</strong></p>
+                <p className="muted small">{b.service_slots?.slot_start_at ? new Date(b.service_slots.slot_start_at).toLocaleString() : t('services.noSlot')}</p>
+                <p className="muted small">{t(`serviceBookingStatus.${b.status}`)}</p>
+              </article>
+            ))}
+          </div>
+        ) : null}
+      </section>
 
       {loading ? (
         <div className="center-page">
@@ -263,6 +381,9 @@ export function Services() {
                   )}
                 </div>
                 <div className="services-card__rate-row">
+                  <button type="button" className="btn secondary small" onClick={() => void openBookingModal(s)}>
+                    {t('services.book')}
+                  </button>
                   <button type="button" className="btn ghost small" onClick={() => setRateService(s)}>
                     {t('services.rate')}
                   </button>
@@ -383,6 +504,53 @@ export function Services() {
             </label>
             <button type="submit" className="btn primary" disabled={rateSubmitting || rateVal < 1}>
               {rateSubmitting ? t('login.processing') : t('services.submitRate')}
+            </button>
+          </form>
+        ) : null}
+      </Modal>
+      <Modal open={Boolean(bookService)} title={t('services.bookTitle')} onClose={() => !bookingSubmitting && setBookService(null)}>
+        {bookService ? (
+          <form className="stack-form" onSubmit={onBookSubmit}>
+            <p className="muted small">{bookService.name}</p>
+            <label className="field">
+              <span className="field-label">{t('services.pickSlot')}</span>
+              <select
+                className="input"
+                required
+                value={bookForm.slot_id}
+                onChange={(e) => setBookForm((f) => ({ ...f, slot_id: e.target.value }))}
+                disabled={slotLoading}
+              >
+                <option value="">{slotLoading ? t('app.loading') : t('services.pickSlotPlaceholder')}</option>
+                {slotOptions.map((slot) => (
+                  <option key={slot.id} value={slot.id}>
+                    {new Date(slot.slot_start_at).toLocaleString()} ({slot.duration_minutes} min)
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="field">
+              <span className="field-label">{t('services.pickCarOptional')}</span>
+              <select className="input" value={bookForm.customer_car_id} onChange={(e) => setBookForm((f) => ({ ...f, customer_car_id: e.target.value }))}>
+                <option value="">{t('services.noCarSelected')}</option>
+                {userCars.map((car) => (
+                  <option key={car.id} value={car.id}>{car.plate_number}</option>
+                ))}
+              </select>
+            </label>
+            <label className="field">
+              <span className="field-label">{t('services.issueDescription')}</span>
+              <textarea
+                className="input services-textarea"
+                rows={3}
+                required
+                value={bookForm.issue_description}
+                onChange={(e) => setBookForm((f) => ({ ...f, issue_description: e.target.value }))}
+                placeholder={t('services.issuePlaceholder')}
+              />
+            </label>
+            <button type="submit" className="btn primary" disabled={bookingSubmitting || slotLoading || slotOptions.length === 0}>
+              {bookingSubmitting ? t('login.processing') : t('services.submitBooking')}
             </button>
           </form>
         ) : null}

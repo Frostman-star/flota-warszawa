@@ -11,9 +11,10 @@ const PENDING_OWNER_REF_CODE_KEY = 'cario_owner_ref_code'
 /** @param {string | null | undefined} profileRole */
 function postLoginPath(profileRole, fromState) {
   const roleNorm = normalizeProfileRole(profileRole)
-  const fallback = roleNorm === 'driver' ? '/marketplace' : '/panel'
+  const fallback = roleNorm === 'driver' ? '/marketplace' : roleNorm === 'service' ? '/service' : '/panel'
   if (!fromState || fromState === '/login') return fallback
-  if (roleNorm === 'driver' && /^\/(panel|dodaj|flota|alerty|ustawienia)(\/|$)/.test(fromState)) return fallback
+  if (roleNorm === 'driver' && /^\/(panel|dodaj|flota|alerty|ustawienia|service)(\/|$)/.test(fromState)) return fallback
+  if (roleNorm === 'service' && !/^\/service(\/|$)/.test(fromState)) return fallback
   return fromState
 }
 

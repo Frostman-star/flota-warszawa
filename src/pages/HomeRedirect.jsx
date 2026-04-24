@@ -23,6 +23,9 @@ export function HomeRedirect() {
   if (roleNorm === 'driver') {
     return <Navigate to="/marketplace" replace />
   }
+  if (roleNorm === 'service') {
+    return <Navigate to="/service" replace />
+  }
 
   return <Navigate to="/panel" replace />
 }

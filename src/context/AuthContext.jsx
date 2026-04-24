@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { subscribeToPush } from '../lib/push'
 import { normalizeProfileRole } from '../utils/profileRole'
 
-/** @typedef {'admin' | 'driver' | 'owner'} UserRole */
+/** @typedef {'admin' | 'driver' | 'owner' | 'service'} UserRole */
 const PENDING_OWNER_REF_CODE_KEY = 'cario_owner_ref_code'
 
 const AuthContext = createContext(null)
@@ -130,7 +130,7 @@ export function AuthProvider({ children }) {
   }, [loadProfile])
 
   const signUp = useCallback(async (email, password, fullName, signupRole) => {
-    const role = signupRole === 'owner' ? 'owner' : 'driver'
+    const role = signupRole === 'owner' ? 'owner' : signupRole === 'service' ? 'service' : 'driver'
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -164,9 +164,9 @@ export function AuthProvider({ children }) {
     const roleNorm = normalizeProfileRole(profile?.role)
     const hasProfile = Boolean(profile)
     const isDriver = hasProfile && roleNorm === 'driver'
-    // Panel / flota: owner i admin (legacy) — jak w public.is_admin(). Tylko jawny „driver” = marketplace / widok kierowcy.
-    // Gdy profile == null (np. chwilowo po logowaniu), nie traktuj użytkownika jako admin — unika fałszywego widoku właściciela dla kierowcy.
-    const isAdmin = Boolean(session?.user) && hasProfile && roleNorm !== 'driver'
+    const isService = hasProfile && roleNorm === 'service'
+    // Panel / flota: owner i admin (legacy) — jak w public.is_admin().
+    const isAdmin = Boolean(session?.user) && hasProfile && (roleNorm === 'owner' || roleNorm === 'admin')
     return {
       session,
       user: session?.user ?? null,
@@ -174,6 +174,7 @@ export function AuthProvider({ children }) {
       role: profile?.role ?? null,
       isAdmin,
       isDriver,
+      isService,
       loading,
       signIn,
       signUp,

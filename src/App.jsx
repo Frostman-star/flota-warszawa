@@ -3,6 +3,7 @@ import { DocumentHead } from './components/DocumentHead'
 import { AdminLayout } from './layouts/AdminLayout'
 import { CarPageShell } from './layouts/CarPageShell'
 import { DriverLayout } from './layouts/DriverLayout'
+import { ServiceLayout } from './layouts/ServiceLayout'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AddCarWizard } from './pages/AddCarWizard'
 import { AlertsPage } from './pages/AlertsPage'
@@ -28,6 +29,7 @@ import { PublicFleetProfile } from './pages/PublicFleetProfile'
 import { Favorites } from './pages/Favorites'
 import { ApplicationChatPage } from './pages/ApplicationChatPage'
 import { AIManager } from './pages/AIManager'
+import { ServiceCabinet } from './pages/ServiceCabinet'
 
 export default function App() {
   return (
@@ -69,6 +71,15 @@ export default function App() {
         <Route path="/zarobki" element={<DriverFinance />} />
         <Route path="/moje-wnioski" element={<DriverMyApplications />} />
         <Route path="/rozmowa-wniosek/:applicationId" element={<ApplicationChatPage />} />
+      </Route>
+      <Route
+        element={
+          <ProtectedRoute>
+            <ServiceLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/service" element={<ServiceCabinet />} />
       </Route>
       <Route
         element={

@@ -32,6 +32,7 @@ export function AuthCallback() {
       if (!cancelled) {
         if (role === 'owner' || role === 'admin') setTarget('/panel')
         else if (role === 'driver') setTarget('/marketplace')
+        else if (role === 'service') setTarget('/service')
         else setTarget('/wybierz-role')
       }
     }
