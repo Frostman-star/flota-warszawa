@@ -7819,8 +7819,8 @@ tr.tier-row-none td:first-child {
 
 .service-dashboard {
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: 248px minmax(0, 1fr);
+  gap: 0.9rem;
   padding: 1rem;
   background: radial-gradient(1200px 700px at 80% -10%, rgba(56, 189, 248, 0.12), transparent 65%),
     radial-gradient(900px 500px at -5% 10%, rgba(37, 99, 235, 0.13), transparent 60%),
@@ -7832,7 +7832,7 @@ tr.tier-row-none td:first-child {
   position: sticky;
   top: 0.8rem;
   height: fit-content;
-  padding: 0.8rem;
+  padding: 0.72rem;
   border-color: rgba(56, 189, 248, 0.25);
   background: linear-gradient(180deg, rgba(7, 17, 38, 0.95), rgba(7, 17, 38, 0.78));
 }
@@ -7842,29 +7842,126 @@ tr.tier-row-none td:first-child {
   align-items: center;
   gap: 0.45rem;
   margin-bottom: 0.7rem;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.17);
+  padding-bottom: 0.62rem;
 }
 
 .service-dashboard-nav {
   display: grid;
-  gap: 0.25rem;
+  gap: 0.2rem;
 }
 
 .service-dashboard-nav a {
   color: #d9e8ff;
   text-decoration: none;
-  padding: 0.5rem 0.6rem;
+  padding: 0.52rem 0.62rem;
   border-radius: 10px;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+  border: 1px solid transparent;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.service-dashboard-nav__icon {
+  opacity: 0.9;
+  display: inline-flex;
+}
+
+.service-dashboard-nav__badge {
+  margin-left: auto;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #dbeafe;
+  background: rgba(14, 165, 233, 0.35);
 }
 
 .service-dashboard-nav a.is-active,
 .service-dashboard-nav a:hover {
-  background: linear-gradient(90deg, rgba(14, 116, 144, 0.35), rgba(14, 116, 144, 0.12));
+  background: linear-gradient(90deg, rgba(14, 116, 144, 0.38), rgba(14, 116, 144, 0.1));
+  border-color: rgba(56, 189, 248, 0.24);
+  transform: translateX(1px);
+}
+
+.service-dashboard-nav a:focus-visible {
+  outline: none;
+  border-color: rgba(125, 211, 252, 0.7);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.28);
 }
 
 .service-dashboard-main {
   display: grid;
   gap: 1rem;
+}
+
+.service-dashboard-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.7rem;
+  padding: 0.62rem 0.78rem;
+  border-color: rgba(56, 189, 248, 0.25);
+  background: rgba(5, 15, 36, 0.84);
+}
+
+.service-dashboard-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.service-dashboard-topbar .lang-flag {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
+.service-topbar-alert {
+  min-width: 34px;
+  height: 34px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+}
+
+.service-dashboard-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: rgba(3, 10, 28, 0.72);
+}
+
+.service-dashboard-account__meta {
+  display: grid;
+  gap: 0.05rem;
+  text-align: right;
+}
+
+.service-dashboard-account__meta strong {
+  font-size: 0.78rem;
+}
+
+.service-dashboard-profile-chip {
+  width: 1.95rem;
+  height: 1.95rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(14, 116, 144, 0.22);
+  color: #e0f2fe;
+  font-size: 0.78rem;
+  font-weight: 700;
 }
 
 .service-section-head h2 {
@@ -7873,35 +7970,55 @@ tr.tier-row-none td:first-child {
 
 .service-dashboard-hero {
   display: grid;
-  gap: 0.8rem;
-  grid-template-columns: 1.2fr 1fr;
-  padding: 1rem;
+  gap: 0.75rem;
+  grid-template-columns: 1.15fr 1fr 1.05fr;
+  padding: 0.92rem;
   border-color: rgba(56, 189, 248, 0.25);
   background: linear-gradient(115deg, rgba(10, 20, 44, 0.95), rgba(7, 38, 52, 0.75));
 }
 
+.service-dashboard-hero__copy {
+  align-self: center;
+}
+
 .service-dashboard-hero h1 {
-  margin: 0;
-  font-size: clamp(1.65rem, 2.4vw, 2.4rem);
-  line-height: 1.15;
+  margin: 0.1rem 0 0.2rem;
+  font-size: clamp(1.82rem, 2.6vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.service-dashboard-hero h1 span {
+  color: #3bc8ff;
+}
+
+.service-dashboard-hero__visual {
+  min-height: 176px;
+  border-radius: 14px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: linear-gradient(110deg, rgba(6, 31, 52, 0.24), rgba(3, 9, 28, 0.7)),
+    url('/images/car-placeholder.png') center/cover no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.32);
 }
 
 .service-kpi-grid {
   display: grid;
-  gap: 0.6rem;
+  gap: 0.52rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .service-kpi {
   display: grid;
-  gap: 0.35rem;
+  gap: 0.28rem;
   align-content: start;
   border-color: rgba(56, 189, 248, 0.28);
-  background: rgba(7, 17, 38, 0.68);
+  background: linear-gradient(180deg, rgba(7, 17, 38, 0.88), rgba(3, 10, 30, 0.9));
+  padding: 0.7rem 0.75rem;
 }
 
 .service-kpi strong {
-  font-size: 1.3rem;
+  font-size: 1.36rem;
+  color: #22d3ee;
 }
 
 .service-kpi span {
@@ -7982,7 +8099,7 @@ tr.tier-row-none td:first-child {
 .service-dashboard-bottom {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .service-rating-main {
@@ -7990,15 +8107,37 @@ tr.tier-row-none td:first-child {
   margin: 0.1rem 0 0.4rem;
 }
 
+.service-dashboard-help {
+  margin-top: 0.72rem;
+  padding: 0.6rem;
+  border-color: rgba(56, 189, 248, 0.25);
+  background: rgba(5, 15, 36, 0.72);
+  display: grid;
+  gap: 0.45rem;
+  border-radius: 12px;
+}
+
+.service-dashboard-help__title {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
 @media (max-width: 980px) {
   .service-dashboard {
     grid-template-columns: 1fr;
+    padding: 0.8rem;
   }
   .service-dashboard-sidebar {
     position: static;
   }
+  .service-dashboard-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .service-dashboard-hero {
     grid-template-columns: 1fr;
+  }
+  .service-dashboard-account {
+    display: none;
   }
   .service-slots-days {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -8009,6 +8148,28 @@ tr.tier-row-none td:first-child {
 }
 
 @media (max-width: 640px) {
+  .service-dashboard {
+    gap: 0.75rem;
+    padding: 0.65rem;
+  }
+  .service-dashboard-nav {
+    grid-template-columns: 1fr;
+  }
+  .service-dashboard-topbar {
+    flex-wrap: wrap;
+  }
+  .service-dashboard-topbar__actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .service-dashboard-topbar .lang-flag,
+  .service-topbar-alert {
+    min-width: 32px;
+    height: 32px;
+  }
+  .service-dashboard-hero h1 {
+    font-size: clamp(1.5rem, 6.2vw, 2rem);
+  }
   .service-kpi-grid {
     grid-template-columns: 1fr;
   }

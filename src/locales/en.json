@@ -295,10 +295,13 @@
     "contactSupport": "Contact support",
     "openDirectory": "Open services directory",
     "newRequestsLabel": "New requests",
+    "greeting": "Good day, welcome back",
     "menu": {
       "home": "Home",
       "bookings": "Repair requests",
       "slots": "My free slots",
+      "clients": "Clients",
+      "clientCars": "Client cars",
       "reviews": "Reviews and rating",
       "pricing": "Plans and pricing",
       "stats": "Statistics",

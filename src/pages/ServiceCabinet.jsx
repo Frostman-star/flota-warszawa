@@ -1,10 +1,26 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BarChart3, CalendarDays, MessageCircleMore, Star, Wrench } from 'lucide-react'
+import {
+  BarChart3,
+  Bell,
+  CalendarDays,
+  Car,
+  ChevronDown,
+  ClipboardList,
+  Home,
+  LifeBuoy,
+  MessageCircleMore,
+  Settings,
+  Star,
+  User,
+  Users,
+  Wrench,
+} from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import { normalizeProfileRole } from '../utils/profileRole'
+import { LANG_OPTIONS } from '../i18n'
 
 const STATUS_OPTIONS = ['pending', 'confirmed', 'in_progress', 'done', 'canceled']
 
@@ -25,7 +41,7 @@ function statusClass(status) {
 }
 
 export function ServiceCabinet() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user, profile, loading, isAdmin } = useAuth()
   const [serviceProfile, setServiceProfile] = useState(null)
   const [services, setServices] = useState([])
@@ -35,6 +51,7 @@ export function ServiceCabinet() {
   const [featuredRequests, setFeaturedRequests] = useState([])
   const [adminServiceId, setAdminServiceId] = useState('')
   const [requestNote, setRequestNote] = useState('')
+  const [activeSection, setActiveSection] = useState('service-home')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
   const [slotForm, setSlotForm] = useState({ slot_start_at: '', duration_minutes: 60 })
@@ -97,6 +114,16 @@ export function ServiceCabinet() {
   useEffect(() => {
     void load()
   }, [user?.id, isAdmin, adminServiceId])
+
+  useEffect(() => {
+    const syncHash = () => {
+      const hash = window.location.hash.replace('#', '')
+      if (hash) setActiveSection(hash)
+    }
+    syncHash()
+    window.addEventListener('hashchange', syncHash)
+    return () => window.removeEventListener('hashchange', syncHash)
+  }, [])
 
   const onCreateProfile = async (e) => {
     e.preventDefault()
@@ -214,6 +241,7 @@ export function ServiceCabinet() {
   }
 
   const selectedService = useMemo(() => services.find((s) => s.id === serviceId) || null, [services, serviceId])
+  const langCode = (i18n.resolvedLanguage || i18n.language || 'en').split('-')[0]
   const slotsByDay = useMemo(() => {
     const grouped = new Map()
     for (const slot of slots) {
@@ -251,6 +279,18 @@ export function ServiceCabinet() {
     const max = Math.max(1, ...days.map((d) => d.count))
     return { points: days, max }
   }, [bookings])
+  const sidebarItems = [
+    { key: 'home', target: 'service-home', icon: Home, label: t('serviceCabinet.menu.home') },
+    { key: 'bookings', target: 'service-bookings', icon: ClipboardList, label: t('serviceCabinet.menu.bookings'), badge: pendingCount > 0 ? pendingCount : null },
+    { key: 'slots', target: 'service-slots', icon: CalendarDays, label: t('serviceCabinet.menu.slots') },
+    { key: 'clients', target: 'service-bookings', icon: Users, label: t('serviceCabinet.menu.clients') },
+    { key: 'cars', target: 'service-slots', icon: Car, label: t('serviceCabinet.menu.clientCars') },
+    { key: 'pricing', target: 'service-pricing', icon: Wrench, label: t('serviceCabinet.menu.pricing') },
+    { key: 'stats', target: 'service-stats', icon: BarChart3, label: t('serviceCabinet.menu.stats') },
+    { key: 'reviews', target: 'service-rating', icon: Star, label: t('serviceCabinet.menu.reviews') },
+    { key: 'settings', target: 'service-pricing', icon: Settings, label: t('serviceCabinet.menu.settings') },
+    { key: 'profile', target: 'service-profile', icon: User, label: t('serviceCabinet.menu.profile') },
+  ]
 
   if (!loading && !isService && !isAdmin) return <Navigate to="/" replace />
 
@@ -287,19 +327,65 @@ export function ServiceCabinet() {
           <strong>{selectedService?.name || t('serviceCabinet.title')}</strong>
         </div>
         <nav className="service-dashboard-nav">
-          <a className="is-active" href="#service-home">{t('serviceCabinet.menu.home')}</a>
-          <a href="#service-bookings">{t('serviceCabinet.menu.bookings')}</a>
-          <a href="#service-slots">{t('serviceCabinet.menu.slots')}</a>
-          <a href="#service-rating">{t('serviceCabinet.menu.reviews')}</a>
-          <a href="#service-pricing">{t('serviceCabinet.menu.pricing')}</a>
-          <a href="#service-stats">{t('serviceCabinet.menu.stats')}</a>
-          <a href="#service-profile">{t('serviceCabinet.menu.profile')}</a>
-          <Link to="/chats">{t('nav.chats')}</Link>
-          <a href="#service-settings">{t('serviceCabinet.menu.settings')}</a>
+          {sidebarItems.map((item, idx) => (
+            <a key={item.key} className={activeSection === item.target || (idx === 0 && !activeSection) ? 'is-active' : ''} href={`#${item.target}`}>
+              <span className="service-dashboard-nav__icon" aria-hidden>
+                <item.icon size={15} />
+              </span>
+              <span>{item.label}</span>
+              {item.badge ? <span className="service-dashboard-nav__badge">{item.badge > 9 ? '9+' : item.badge}</span> : null}
+            </a>
+          ))}
+          <Link to="/chats">
+            <span className="service-dashboard-nav__icon" aria-hidden>
+              <MessageCircleMore size={15} />
+            </span>
+            <span>{t('nav.chats')}</span>
+          </Link>
         </nav>
+        <div className="service-dashboard-help card">
+          <p className="service-dashboard-help__title">{t('serviceCabinet.helpTitle')}</p>
+          <p className="muted small">{t('serviceCabinet.helpLead')}</p>
+          <Link className="btn ghost small" to="/chats">
+            <LifeBuoy size={14} /> {t('serviceCabinet.contactSupport')}
+          </Link>
+        </div>
       </aside>
 
       <main className="service-dashboard-main">
+        <section className="service-dashboard-topbar card">
+          <div>
+            <p className="muted tiny">{t('serviceCabinet.greeting')}</p>
+            <strong>{selectedService?.name || t('serviceCabinet.title')}</strong>
+          </div>
+          <div className="service-dashboard-topbar__actions">
+            <div className="lang-switch">
+              {LANG_OPTIONS.map((l) => (
+                <button
+                  key={l.code}
+                  type="button"
+                  className={`lang-flag${langCode === l.code ? ' active' : ''}`}
+                  onClick={() => i18n.changeLanguage(l.code)}
+                >
+                  {l.flag}
+                </button>
+              ))}
+            </div>
+            <button type="button" className="service-topbar-alert btn ghost small" aria-label="Notifications">
+              <Bell size={14} />
+            </button>
+            <div className="service-dashboard-account">
+              <div className="service-dashboard-account__meta">
+                <strong>{selectedService?.name || t('serviceCabinet.title')}</strong>
+                <span className="muted tiny">{selectedService?.city || ''}</span>
+              </div>
+              <ChevronDown size={14} />
+            </div>
+            <div className="service-dashboard-profile-chip">
+              <span>{(profile?.full_name || profile?.email || 'Service').slice(0, 2).toUpperCase()}</span>
+            </div>
+          </div>
+        </section>
         {isAdmin ? (
           <label className="field">
             <span className="field-label">{t('serviceCabinet.adminPickService')}</span>
@@ -309,9 +395,11 @@ export function ServiceCabinet() {
           </label>
         ) : null}
         <section id="service-home" className="service-dashboard-hero card">
-          <div>
+          <div className="service-dashboard-hero__copy">
             <p className="muted small">{selectedService?.city}</p>
-            <h1>{t('serviceCabinet.title')}</h1>
+            <h1>
+              {t('serviceCabinet.title')} <span>Cario</span>
+            </h1>
             <p className="muted">{selectedService?.plan_tier === 'featured' ? t('serviceCabinet.planFeatured') : t('serviceCabinet.planFree')}</p>
           </div>
           <div className="service-kpi-grid">
@@ -319,6 +407,7 @@ export function ServiceCabinet() {
             <article className="service-kpi card"><BarChart3 size={16} /><strong>{todayCount}</strong><span>{t('serviceCabinet.todayLabel')}</span></article>
             <article className="service-kpi card"><Star size={16} /><strong>{positiveRate}%</strong><span>{t('serviceCabinet.positiveShare')}</span></article>
           </div>
+          <div className="service-dashboard-hero__visual" aria-hidden />
         </section>
 
         <section id="service-slots" className="card pad-lg">
@@ -423,11 +512,11 @@ export function ServiceCabinet() {
             </div>
           </article>
           <article className="card pad-lg" id="service-pricing">
-            <h2>{t('serviceCabinet.helpTitle')}</h2>
-            <p className="muted">{t('serviceCabinet.helpLead')}</p>
+            <h2>{t('serviceCabinet.planTitle')}</h2>
+            <p className="muted">{selectedService?.plan_tier === 'featured' ? t('serviceCabinet.planFeatured') : t('serviceCabinet.planFree')}</p>
             <div className="services-row" id="service-settings">
-              <Link className="btn ghost small" to="/chats">{t('serviceCabinet.contactSupport')}</Link>
-              <Link className="btn secondary small" to="/serwisy">{t('serviceCabinet.openDirectory')}</Link>
+              <Link className="btn ghost small" to="/serwisy">{t('serviceCabinet.openDirectory')}</Link>
+              <Link className="btn secondary small" to="/chats">{t('chats.open')}</Link>
             </div>
           </article>
         </section>

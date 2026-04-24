@@ -295,10 +295,13 @@
     "contactSupport": "Napisz do wsparcia",
     "openDirectory": "Otwórz katalog serwisów",
     "newRequestsLabel": "Nowe zgłoszenia",
+    "greeting": "Dzień dobry, witamy ponownie",
     "menu": {
       "home": "Główna",
       "bookings": "Zgłoszenia napraw",
       "slots": "Moje wolne terminy",
+      "clients": "Klienci",
+      "clientCars": "Auta klientów",
       "reviews": "Opinie i ocena",
       "pricing": "Plan i cennik",
       "stats": "Statystyka",
