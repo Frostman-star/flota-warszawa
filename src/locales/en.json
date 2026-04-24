@@ -57,6 +57,7 @@
     "pickRole": "Choose your account type first:",
     "owner": "I am a fleet owner",
     "driver": "I am a driver",
+    "service": "Car service",
     "changeType": "← Change account type",
     "fullName": "Full name",
     "email": "E-mail",

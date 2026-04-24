@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Car, CircleUserRound } from 'lucide-react'
+import { Car, CircleUserRound, Wrench } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { normalizeProfileRole } from '../utils/profileRole'
 import { supabase } from '../lib/supabase'
@@ -43,7 +43,7 @@ export function Login() {
     const roleQ = searchParams.get('role')
     const refCode = searchParams.get('ref')
     if (searchParams.get('mode') === 'register') setMode('register')
-    if (roleQ === 'driver' || roleQ === 'owner') setRegisterRole(roleQ)
+    if (roleQ === 'driver' || roleQ === 'owner' || roleQ === 'service') setRegisterRole(roleQ)
     if (typeof window !== 'undefined' && refCode) {
       window.localStorage.setItem(PENDING_OWNER_REF_CODE_KEY, String(refCode).trim().toLowerCase())
     }
@@ -164,6 +164,19 @@ export function Login() {
                   <CircleUserRound />
                 </span>
                 <span className="big-action-text">{t('login.driver')}</span>
+              </button>
+              <button
+                type="button"
+                className={['big-action', registerRole === 'service' ? 'big-action-primary is-role-selected' : '']
+                  .filter(Boolean)
+                  .join(' ')}
+                aria-pressed={registerRole === 'service'}
+                onClick={() => setRegisterRole('service')}
+              >
+                <span className="big-action-emoji" aria-hidden>
+                  <Wrench />
+                </span>
+                <span className="big-action-text">{t('login.service')}</span>
               </button>
             </div>
           </div>
