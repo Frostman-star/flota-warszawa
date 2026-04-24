@@ -7816,3 +7816,203 @@ tr.tier-row-none td:first-child {
     font-size: 1.7rem;
   }
 }
+
+.service-dashboard {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  background: radial-gradient(1200px 700px at 80% -10%, rgba(56, 189, 248, 0.12), transparent 65%),
+    radial-gradient(900px 500px at -5% 10%, rgba(37, 99, 235, 0.13), transparent 60%),
+    #040d1f;
+  border-radius: 18px;
+}
+
+.service-dashboard-sidebar {
+  position: sticky;
+  top: 0.8rem;
+  height: fit-content;
+  padding: 0.8rem;
+  border-color: rgba(56, 189, 248, 0.25);
+  background: linear-gradient(180deg, rgba(7, 17, 38, 0.95), rgba(7, 17, 38, 0.78));
+}
+
+.service-dashboard-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.7rem;
+}
+
+.service-dashboard-nav {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.service-dashboard-nav a {
+  color: #d9e8ff;
+  text-decoration: none;
+  padding: 0.5rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+}
+
+.service-dashboard-nav a.is-active,
+.service-dashboard-nav a:hover {
+  background: linear-gradient(90deg, rgba(14, 116, 144, 0.35), rgba(14, 116, 144, 0.12));
+}
+
+.service-dashboard-main {
+  display: grid;
+  gap: 1rem;
+}
+
+.service-section-head h2 {
+  margin: 0;
+}
+
+.service-dashboard-hero {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: 1.2fr 1fr;
+  padding: 1rem;
+  border-color: rgba(56, 189, 248, 0.25);
+  background: linear-gradient(115deg, rgba(10, 20, 44, 0.95), rgba(7, 38, 52, 0.75));
+}
+
+.service-dashboard-hero h1 {
+  margin: 0;
+  font-size: clamp(1.65rem, 2.4vw, 2.4rem);
+  line-height: 1.15;
+}
+
+.service-kpi-grid {
+  display: grid;
+  gap: 0.6rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.service-kpi {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  border-color: rgba(56, 189, 248, 0.28);
+  background: rgba(7, 17, 38, 0.68);
+}
+
+.service-kpi strong {
+  font-size: 1.3rem;
+}
+
+.service-kpi span {
+  color: #b9d0ef;
+  font-size: 0.85rem;
+}
+
+.service-slots-days {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.service-slots-day {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.service-mini-chart {
+  height: 180px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  gap: 0.45rem;
+}
+
+.service-mini-chart__col {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 0.35rem;
+}
+
+.service-mini-chart__bar {
+  align-self: end;
+  border-radius: 8px;
+  min-height: 6px;
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.95), rgba(14, 116, 144, 0.68));
+}
+
+.service-status {
+  padding: 0.23rem 0.52rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  border: 1px solid transparent;
+}
+
+.service-status--pending {
+  color: #fde68a;
+  background: rgba(120, 53, 15, 0.35);
+  border-color: rgba(245, 158, 11, 0.45);
+}
+
+.service-status--confirmed {
+  color: #93c5fd;
+  background: rgba(30, 58, 138, 0.35);
+  border-color: rgba(59, 130, 246, 0.45);
+}
+
+.service-status--progress {
+  color: #67e8f9;
+  background: rgba(14, 116, 144, 0.28);
+  border-color: rgba(34, 211, 238, 0.45);
+}
+
+.service-status--done {
+  color: #86efac;
+  background: rgba(20, 83, 45, 0.36);
+  border-color: rgba(34, 197, 94, 0.45);
+}
+
+.service-status--canceled {
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.36);
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.service-dashboard-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.service-rating-main {
+  font-size: 2rem;
+  margin: 0.1rem 0 0.4rem;
+}
+
+@media (max-width: 980px) {
+  .service-dashboard {
+    grid-template-columns: 1fr;
+  }
+  .service-dashboard-sidebar {
+    position: static;
+  }
+  .service-dashboard-hero {
+    grid-template-columns: 1fr;
+  }
+  .service-slots-days {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .service-dashboard-bottom {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .service-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .service-slots-days {
+    grid-template-columns: 1fr;
+  }
+}
