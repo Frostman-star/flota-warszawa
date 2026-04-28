@@ -20,6 +20,7 @@ export function ChatThreadPage() {
   const [error, setError] = useState(null)
   const [sending, setSending] = useState(false)
   const listEndRef = useRef(null)
+  const seenBusyRef = useRef(false)
 
   const idOk = useMemo(() => (applicationId ? isUuid(applicationId) : isUuid(threadId)), [applicationId, threadId])
 
@@ -31,6 +32,20 @@ export function ChatThreadPage() {
     setThreadId(resolved)
     return resolved
   }, [applicationId, threadId])
+
+  const markThreadSeen = useCallback(async (targetThreadId) => {
+    if (!user?.id || !targetThreadId || seenBusyRef.current) return
+    seenBusyRef.current = true
+    try {
+      await supabase
+        .from('chat_thread_participants')
+        .update({ last_seen_at: new Date().toISOString() })
+        .eq('thread_id', targetThreadId)
+        .eq('user_id', user.id)
+    } finally {
+      seenBusyRef.current = false
+    }
+  }, [user?.id])
 
   const loadMessages = useCallback(async () => {
     if (!user?.id) return
@@ -46,18 +61,14 @@ export function ChatThreadPage() {
         .order('created_at', { ascending: true })
       if (e1) throw e1
       setMessages(Array.isArray(data) ? data : [])
-      await supabase
-        .from('chat_thread_participants')
-        .update({ last_seen_at: new Date().toISOString() })
-        .eq('thread_id', effectiveThreadId)
-        .eq('user_id', user.id)
+      await markThreadSeen(effectiveThreadId)
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err))
       setMessages([])
     } finally {
       setLoading(false)
     }
-  }, [resolveThread, user?.id])
+  }, [markThreadSeen, resolveThread, user?.id])
 
   useEffect(() => {
     void loadMessages()
@@ -74,13 +85,16 @@ export function ChatThreadPage() {
           const row = payload.new
           if (!row?.id) return
           setMessages((prev) => (prev.some((m) => m.id === row.id) ? prev : [...prev, row]))
+          if (String(row.sender_id) !== String(user?.id)) {
+            void markThreadSeen(threadId)
+          }
         }
       )
       .subscribe()
     return () => {
       void supabase.removeChannel(channel)
     }
-  }, [threadId])
+  }, [markThreadSeen, threadId, user?.id])
 
   useEffect(() => {
     listEndRef.current?.scrollIntoView({ behavior: 'smooth' })

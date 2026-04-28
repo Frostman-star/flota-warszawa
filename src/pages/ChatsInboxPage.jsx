@@ -30,6 +30,21 @@ export function ChatsInboxPage() {
     void load()
   }, [load])
 
+  useEffect(() => {
+    const onFocus = () => void load()
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void load()
+    }
+    window.addEventListener('focus', onFocus)
+    window.addEventListener('pageshow', onFocus)
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => {
+      window.removeEventListener('focus', onFocus)
+      window.removeEventListener('pageshow', onFocus)
+      document.removeEventListener('visibilitychange', onVisibility)
+    }
+  }, [load])
+
   return (
     <div className="page-simple">
       <h1>{t('chats.title')}</h1>
