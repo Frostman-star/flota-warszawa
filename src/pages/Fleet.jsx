@@ -9,6 +9,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner'
 import { useDrivers } from '../hooks/useDrivers'
 import { useAuth } from '../context/AuthContext'
 import { localeTag } from '../utils/localeTag'
+import { buildAttentionMap } from '../utils/chatAttention'
 
 /** @typedef {{ pendingApps: number; pendingEmployment: number; chatAttention: number; chatFirstAppId: string | null }} CarAttention */
 
@@ -60,20 +61,7 @@ export function Fleet() {
         setAttentionByCarId(m)
         return
       }
-      const m = /** @type {Record<string, CarAttention>} */ ({})
-      for (const id of ids) {
-        m[String(id)] = { pendingApps: 0, pendingEmployment: 0, chatAttention: 0, chatFirstAppId: null }
-      }
-      for (const row of data ?? []) {
-        const id = String(row.car_id)
-        m[id] = {
-          pendingApps: Number(row.pending_apps ?? 0),
-          pendingEmployment: Number(row.pending_employment ?? 0),
-          chatAttention: Number(row.chat_attention ?? 0),
-          chatFirstAppId: row.chat_first_app_id != null ? String(row.chat_first_app_id) : null,
-        }
-      }
-      setAttentionByCarId(m)
+      setAttentionByCarId(buildAttentionMap(ids, data ?? []))
     })()
     return () => {
       cancelled = true

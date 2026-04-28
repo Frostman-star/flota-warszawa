@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 import { useOwnerPendingEmploymentRequestCount } from '../hooks/useOwnerPendingEmploymentRequestCount'
 import { supabase } from '../lib/supabase'
+import { sumChatAttention } from '../utils/chatAttention'
 
 function countCriticalSoon(cars) {
   let n = 0
@@ -54,8 +55,7 @@ export function PanelHome() {
           setChatAttentionTotal(0)
           return
         }
-        const total = (data ?? []).reduce((acc, row) => acc + Number(row.chat_attention ?? 0), 0)
-        setChatAttentionTotal(total)
+        setChatAttentionTotal(sumChatAttention(data ?? []))
       })
     return () => {
       cancelled = true
