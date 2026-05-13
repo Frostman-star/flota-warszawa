@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, ClipboardList, MessageCircleMore, Plus, Shapes, ShoppingCart, Wrench, Handshake } from 'lucide-react'
+import { AlertTriangle, ClipboardList, MessageCircleMore, Shapes, ShoppingCart, Wrench, Handshake } from 'lucide-react'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { daysUntil } from '../utils/documents'
@@ -124,7 +124,6 @@ export function PanelHome() {
 
       <section className="panel-hero-cta card pad-lg" aria-label={t('panel.addCar')}>
         <div className="panel-hero-cta-glow" aria-hidden />
-        <div className="panel-hero-cta-icon" aria-hidden><Plus size={28} strokeWidth={2.2} /></div>
         <div className="panel-hero-cta-actions">
           <Link to="/dodaj" className="btn panel-hero-cta-btn">
             {t('panel.addCar')}
