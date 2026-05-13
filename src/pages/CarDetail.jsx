@@ -1,6 +1,21 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import {
+  Bot,
+  Camera,
+  Car as CarIcon,
+  ClipboardCheck,
+  Lightbulb,
+  Mic,
+  Paperclip,
+  RefreshCcw,
+  Settings,
+  ShieldCheck,
+  UserRound,
+  WalletCards,
+  Wrench,
+} from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { carPath } from '../lib/carPaths'
 import { useAuth } from '../context/AuthContext'
@@ -466,7 +481,7 @@ export function CarDetail() {
               <img src={String(car.primary_photo_url || car.marketplace_photo_url)} alt="" className="car-mobile-hero-img" />
             ) : (
               <div className="car-mobile-hero-placeholder" aria-hidden>
-                🚗
+                <CarIcon size={70} strokeWidth={1.5} />
               </div>
             )}
             <span className={`car-mobile-status-dot ${carNeedsCheck ? 'is-alert' : 'is-ok'}`}>
@@ -475,7 +490,11 @@ export function CarDetail() {
             <span className="car-mobile-price-badge">
               {weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł{t('carDetail.perWeek')}
             </span>
-            {photoCount > 0 ? <span className="car-mobile-photo-badge">📸 {photoCount}</span> : null}
+            {photoCount > 0 ? (
+              <span className="car-mobile-photo-badge">
+                <Camera size={14} /> {photoCount}
+              </span>
+            ) : null}
             <div className="car-mobile-hero-overlay">
               <strong>{car.plate_number}</strong>
               <span>{[car.model, car.year].filter(Boolean).join(' · ') || '—'}</span>
@@ -484,19 +503,19 @@ export function CarDetail() {
 
           <nav className="car-mobile-status-bar" aria-label={t('carDetailMobile.statusBar')}>
             <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('insurance')}>
-              <span>🛡️ {t('carDetailMobile.insurance')}</span>
+              <span className="car-mobile-pill-label"><ShieldCheck size={15} /> {t('carDetailMobile.insurance')}</span>
               <strong className={previewClass(insuranceDate)}>{previewDate(insuranceDate)}</strong>
             </button>
             <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('inspection')}>
-              <span>📋 {t('carDetailMobile.inspection')}</span>
+              <span className="car-mobile-pill-label"><ClipboardCheck size={15} /> {t('carDetailMobile.inspection')}</span>
               <strong className={previewClass(inspectionDate)}>{previewDate(inspectionDate)}</strong>
             </button>
             <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('service')}>
-              <span>🔧 {t('carDetailMobile.service')}</span>
+              <span className="car-mobile-pill-label"><Wrench size={15} /> {t('carDetailMobile.service')}</span>
               <strong className={previewClass(serviceDate, true)}>{previewDate(serviceDate, true)}</strong>
             </button>
             <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('driver')}>
-              <span>👤 {t('carDetailMobile.driver')}</span>
+              <span className="car-mobile-pill-label"><UserRound size={15} /> {t('carDetailMobile.driver')}</span>
               <strong>{driverName || t('carDetailMobile.noDriver')}</strong>
             </button>
           </nav>
@@ -505,15 +524,15 @@ export function CarDetail() {
             <h2>{t('carDetailMobile.actionTitle')}</h2>
             <div className="car-mobile-action-grid">
               {[
-                ['insurance', '🛡️', t('carDetailMobile.insurance'), previewDate(insuranceDate)],
-                ['inspection', '📋', t('carDetailMobile.inspection'), inspectionDate || t('carDetailMobile.noDate')],
-                ['service', '🔧', t('carDetailMobile.service'), serviceDate || t('carDetailMobile.noDate')],
-                ['driver', '👤', t('carDetailMobile.driver'), driverName || t('carDetailMobile.assign')],
-                ['photos', '📸', t('carDetailMobile.photos'), t('carDetailMobile.photoProgress', { done: requiredPhotoCount, total: VEHICLE_PHOTO_REQUIRED.length })],
-                ['rent', '💰', t('carDetailMobile.rent'), `${weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł`],
-                ['protocol', '🔄', t('carDetailMobile.protocol'), t('handover.newProtocol')],
-                ['rest', '⚙️', t('carDetailMobile.rest'), t('carDetailMobile.moreData')],
-              ].map(([key, icon, label, preview]) => (
+                ['insurance', ShieldCheck, t('carDetailMobile.insurance'), previewDate(insuranceDate)],
+                ['inspection', ClipboardCheck, t('carDetailMobile.inspection'), inspectionDate || t('carDetailMobile.noDate')],
+                ['service', Wrench, t('carDetailMobile.service'), serviceDate || t('carDetailMobile.noDate')],
+                ['driver', UserRound, t('carDetailMobile.driver'), driverName || t('carDetailMobile.assign')],
+                ['photos', Camera, t('carDetailMobile.photos'), t('carDetailMobile.photoProgress', { done: requiredPhotoCount, total: VEHICLE_PHOTO_REQUIRED.length })],
+                ['rent', WalletCards, t('carDetailMobile.rent'), `${weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł`],
+                ['protocol', RefreshCcw, t('carDetailMobile.protocol'), t('handover.newProtocol')],
+                ['rest', Settings, t('carDetailMobile.rest'), t('carDetailMobile.moreData')],
+              ].map(([key, Icon, label, preview]) => (
                 <button
                   key={key}
                   type="button"
@@ -526,7 +545,7 @@ export function CarDetail() {
                     setActiveSheet(key)
                   }}
                 >
-                  <span className="car-mobile-action-icon">{icon}</span>
+                  <span className="car-mobile-action-icon"><Icon size={25} strokeWidth={2.1} /></span>
                   <strong>{label}</strong>
                   <small className={String(preview).toLowerCase().includes(t('carDetailMobile.expired').toLowerCase()) ? 'is-danger' : ''}>{preview}</small>
                 </button>
@@ -537,13 +556,13 @@ export function CarDetail() {
           <section className={`car-mobile-ai-bar ${isPro ? 'is-pro' : 'is-locked'}`}>
             {isPro ? (
               <Link className="car-mobile-ai-input" to={`/ai-manager?carId=${car.id}`} state={{ carId: car.id }}>
-                <span>🤖 {t('carDetailMobile.aiPlaceholder')}</span>
-                <span aria-hidden>📎</span>
-                <span aria-hidden>🎤</span>
+                <span><Bot size={17} /> {t('carDetailMobile.aiPlaceholder')}</span>
+                <Paperclip size={17} aria-hidden />
+                <Mic size={17} aria-hidden />
               </Link>
             ) : (
               <>
-                <p>💡 {t('carDetailMobile.aiLocked')}</p>
+                <p><Lightbulb size={17} /> {t('carDetailMobile.aiLocked')}</p>
                 <Link className="link" to="/ustawienia#plan">
                   {t('carDetailMobile.learnMore')}
                 </Link>

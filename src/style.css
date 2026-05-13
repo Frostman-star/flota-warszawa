@@ -5889,6 +5889,7 @@ tr.tier-row-none td:first-child {
   }
 
   .car-detail-desktop-gallery,
+  .car-detail-public-head,
   .car-detail-section--photos,
   .car-detail-actions {
     display: none;
@@ -5968,6 +5969,9 @@ tr.tier-row-none td:first-child {
     color: #e0f2fe;
     background: rgba(15, 23, 42, 0.72);
     border: 1px solid rgba(125, 211, 252, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.28rem;
   }
 
   .car-mobile-status-bar {
@@ -5996,6 +6000,16 @@ tr.tier-row-none td:first-child {
   .car-mobile-action-btn small {
     color: var(--muted);
     font-size: 0.75rem;
+  }
+
+  .car-mobile-pill-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .car-mobile-pill-label svg {
+    color: #67e8f9;
   }
 
   .car-mobile-tone-red,
@@ -6042,8 +6056,15 @@ tr.tier-row-none td:first-child {
   }
 
   .car-mobile-action-icon {
-    font-size: 1.75rem;
-    line-height: 1;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: inline-grid;
+    place-items: center;
+    color: #67e8f9;
+    background: rgba(8, 47, 73, 0.42);
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.28);
   }
 
   .car-mobile-action-btn strong {
@@ -6065,6 +6086,13 @@ tr.tier-row-none td:first-child {
     gap: 0.55rem;
     color: var(--text);
     text-decoration: none;
+  }
+
+  .car-mobile-ai-input span:first-child,
+  .car-mobile-ai-bar p {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
   }
 
   .car-mobile-ai-bar p {
