@@ -159,7 +159,7 @@ export function Fleet() {
                 <FleetDocDots car={car} />
               </Link>
               <div className="car-tile-actions">
-                <Link className="btn btn-tile ghost" to={carPath(String(car.id), isAdmin)}>
+                <Link className="btn btn-tile ghost car-tile-edit-link" to={`${carPath(String(car.id), isAdmin)}#mobile-edit`}>
                   {t('fleet.edit')}
                 </Link>
                 <button type="button" className="btn btn-tile danger" onClick={() => handleDelete(car)}>{t('fleet.delete')}</button>

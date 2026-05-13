@@ -86,6 +86,7 @@ export function CarDetail() {
   const { entries, loading: histLoading, refresh: refreshHist } = useCarHistory(car?.id ?? null, { enabled: isOwner })
 
   const photosSectionRef = useRef(null)
+  const mobileActionsRef = useRef(null)
 
   const [mileageVal, setMileageVal] = useState('')
   const [mileBusy, setMileBusy] = useState(false)
@@ -98,6 +99,7 @@ export function CarDetail() {
   const [pendingApps, setPendingApps] = useState([])
   const [pendingAppsLoading, setPendingAppsLoading] = useState(false)
   const [activeSheet, setActiveSheet] = useState(null)
+  const [mobileEditFocus, setMobileEditFocus] = useState(false)
   const [mobileSaving, setMobileSaving] = useState(false)
   const [mobileForm, setMobileForm] = useState(null)
   const { photos: vehiclePhotos } = useVehiclePhotos(car?.id)
@@ -149,6 +151,22 @@ export function CarDetail() {
       marketplace_listed: Boolean(car.marketplace_listed ?? car.show_in_marketplace),
     })
   }, [car?.id, car?.updated_at])
+
+  useEffect(() => {
+    if (!isOwner || !car?.id || window.location.hash !== '#mobile-edit') return undefined
+    if (!window.matchMedia('(max-width: 760px)').matches) return undefined
+
+    const scrollTimer = window.setTimeout(() => {
+      mobileActionsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      setMobileEditFocus(true)
+    }, 120)
+    const focusTimer = window.setTimeout(() => setMobileEditFocus(false), 2600)
+
+    return () => {
+      window.clearTimeout(scrollTimer)
+      window.clearTimeout(focusTimer)
+    }
+  }, [isOwner, car?.id])
 
   useEffect(() => {
     if (!isOwner || !car?.id || !user?.id) {
@@ -520,7 +538,11 @@ export function CarDetail() {
             </button>
           </nav>
 
-          <section className="car-mobile-actions card">
+          <section
+            id="mobile-edit"
+            ref={mobileActionsRef}
+            className={`car-mobile-actions card ${mobileEditFocus ? 'is-focus' : ''}`}
+          >
             <h2>{t('carDetailMobile.actionTitle')}</h2>
             <div className="car-mobile-action-grid">
               {[
