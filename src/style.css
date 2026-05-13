@@ -2412,6 +2412,9 @@ tr.tier-row-none td:first-child {
   font-size: 0.95rem;
 }
 .btn.btn-tile.car-tile-edit-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #dff7ff;
   border-color: rgba(34, 211, 238, 0.38);
   background:
@@ -6040,10 +6043,7 @@ tr.tier-row-none td:first-child {
   }
 
   .car-mobile-actions {
-    position: sticky;
-    top: 0.55rem;
-    z-index: 4;
-    scroll-margin-top: 0.8rem;
+    scroll-margin-top: 1rem;
     padding: 0.85rem;
     border-color: rgba(56, 189, 248, 0.2);
     background: rgba(15, 23, 42, 0.68);
