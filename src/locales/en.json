@@ -153,6 +153,7 @@
     "market": "Marketplace (beta)",
     "addCar": "Add car",
     "criticalBody": "{{count}} document(s) need attention within 7 days.",
+    "docsCountPill": "{{count}} of {{total}} documents",
     "newApplicationsCard": "📋 New driver applications: {{count}}",
     "newApplicationsHint": "Drivers are applying to your marketplace cars.",
     "newApplicationsBadge": "New",

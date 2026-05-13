@@ -1,29 +1,15 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, ClipboardList, MessageCircleMore, Shapes, ShoppingCart, Wrench, Handshake } from 'lucide-react'
+import { AlertTriangle, ArrowRight, ClipboardList, FileText, MessageCircleMore, Shapes, ShoppingCart, Wrench, Handshake } from 'lucide-react'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
-import { daysUntil } from '../utils/documents'
-import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { localeTag } from '../utils/localeTag'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
 import { useOwnerPendingEmploymentRequestCount } from '../hooks/useOwnerPendingEmploymentRequestCount'
 import { supabase } from '../lib/supabase'
 import { sumChatAttention } from '../utils/chatAttention'
-
-function countCriticalSoon(cars) {
-  let n = 0
-  for (const car of cars) {
-    const ins = effectiveInsuranceExpiryIso(car)
-    for (const date of [ins, car.przeglad_expiry]) {
-      const d = daysUntil(typeof date === 'string' ? date : null)
-      if (d !== null && d <= 7) n += 1
-    }
-  }
-  return n
-}
 
 export function PanelHome() {
   const { t, i18n } = useTranslation()
@@ -35,8 +21,13 @@ export function PanelHome() {
   const [chatAttentionTotal, setChatAttentionTotal] = useState(0)
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const weekly = computeWeeklyRentTotal(cars)
-  const toCheck = buildAlertRows(cars).length
-  const critical = countCriticalSoon(cars)
+  const alertRows = buildAlertRows(cars)
+  const toCheck = alertRows.length
+  const criticalRows = alertRows.filter((row) => Number(row.days) <= 7)
+  const critical = criticalRows.length
+  const hasExpiredCritical = criticalRows.some((row) => Number(row.days) < 0)
+  const alertTone = hasExpiredCritical ? 'danger' : 'warning'
+  const trackedDocsTotal = Math.max(cars.length * 2, critical)
   const publicProfileUrl = user?.id ? `${window.location.origin}/flota/${user.id}` : ''
 
   useEffect(() => {
@@ -108,10 +99,24 @@ export function PanelHome() {
   return (
     <div className="page-simple panel-home-shell">
       {critical > 0 ? (
-        <div className="urgent-banner" role="alert">
-          <strong>{t('panel.title')}</strong>
-          <p>{t('panel.criticalBody', { count: critical })}</p>
-          <Link to="/alerty" className="btn btn-huge light">{t('panel.seeAlerts')}</Link>
+        <div className={`urgent-banner urgent-banner--${alertTone}`} role="alert">
+          <div className="urgent-banner-copy">
+            <span className="urgent-banner-icon" aria-hidden>
+              <AlertTriangle size={28} strokeWidth={2.4} />
+            </span>
+            <div className="urgent-banner-text">
+              <strong>{t('panel.title')}</strong>
+              <p>{t('panel.criticalBody', { count: critical })}</p>
+              <span className="urgent-banner-pill">
+                <FileText size={15} strokeWidth={2.2} />
+                {t('panel.docsCountPill', { count: critical, total: trackedDocsTotal })}
+              </span>
+            </div>
+          </div>
+          <Link to="/alerty" className="urgent-banner-cta">
+            {t('panel.seeAlerts')}
+            <ArrowRight size={17} strokeWidth={2.2} />
+          </Link>
         </div>
       ) : null}
 

@@ -1610,22 +1610,121 @@ tr.tier-row-none td:first-child {
 }
 
 .urgent-banner {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.35), rgba(127, 29, 29, 0.5));
-  border: 1px solid #7f1d1d;
+  --urgent-accent: #fbbf24;
+  --urgent-accent-soft: rgba(251, 191, 36, 0.18);
+  position: relative;
+  overflow: hidden;
+  min-height: 172px;
+  display: grid;
+  align-content: end;
+  gap: 0.95rem;
+  background:
+    linear-gradient(90deg, rgba(2, 6, 23, 0.96) 0%, rgba(2, 10, 22, 0.86) 43%, rgba(2, 6, 23, 0.4) 100%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.08), rgba(2, 6, 23, 0.68)),
+    url('/images/panel-doc-alert-bg.png') center / cover no-repeat;
+  border: 1px solid color-mix(in srgb, var(--urgent-accent) 42%, rgba(148, 163, 184, 0.24));
   border-radius: var(--radius);
-  padding: 1rem 1.1rem;
+  padding: 1.05rem;
   margin-bottom: 1.25rem;
+  box-shadow: 0 20px 60px rgba(2, 6, 23, 0.34), 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
+
+.urgent-banner::before {
+  content: '';
+  position: absolute;
+  inset: -35% 45% auto -22%;
+  height: 95%;
+  background: radial-gradient(closest-side, var(--urgent-accent-soft), transparent 72%);
+  pointer-events: none;
+}
+
+.urgent-banner--danger {
+  --urgent-accent: #f87171;
+  --urgent-accent-soft: rgba(248, 113, 113, 0.2);
+}
+
+.urgent-banner--ok {
+  --urgent-accent: #34d399;
+  --urgent-accent-soft: rgba(52, 211, 153, 0.18);
+}
+
+.urgent-banner-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.urgent-banner-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--urgent-accent);
+  border: 1px solid color-mix(in srgb, var(--urgent-accent) 62%, transparent);
+  background: color-mix(in srgb, var(--urgent-accent) 12%, rgba(15, 23, 42, 0.82));
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--urgent-accent) 8%, transparent);
+}
+
 .urgent-banner strong {
   display: block;
-  font-size: 1.15rem;
+  font-size: clamp(1.12rem, 5vw, 1.42rem);
   margin-bottom: 0.35rem;
+  line-height: 1.12;
 }
 .urgent-banner p {
-  margin: 0 0 0.85rem;
-  color: #fecaca;
+  margin: 0 0 0.7rem;
+  max-width: 16rem;
+  color: #cbd5e1;
   font-size: 0.95rem;
   line-height: 1.45;
+}
+
+.urgent-banner-pill {
+  width: max-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-height: 36px;
+  padding: 0.35rem 0.72rem;
+  border-radius: 12px;
+  color: #f8fafc;
+  border: 1px solid color-mix(in srgb, var(--urgent-accent) 34%, rgba(148, 163, 184, 0.2));
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(10px);
+}
+
+.urgent-banner-pill svg {
+  color: var(--urgent-accent);
+}
+
+.urgent-banner-cta {
+  position: relative;
+  z-index: 1;
+  min-height: 44px;
+  width: max-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.52rem;
+  padding: 0.58rem 0.9rem;
+  border-radius: 14px;
+  color: #fff7ed;
+  font-weight: 800;
+  text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--urgent-accent) 72%, rgba(255, 255, 255, 0.16));
+  background: color-mix(in srgb, var(--urgent-accent) 13%, rgba(2, 6, 23, 0.64));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--urgent-accent) 10%, transparent);
+}
+
+.urgent-banner-cta:hover {
+  filter: brightness(1.08);
+  text-decoration: none;
 }
 
 .hero-summary {

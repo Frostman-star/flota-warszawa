@@ -153,6 +153,7 @@
     "market": "Marketplace (beta)",
     "addCar": "Dodaj auto",
     "criticalBody": "{{count}} dokumentów wymaga uwagi w ciągu 7 dni.",
+    "docsCountPill": "{{count}} z {{total}} dokumentów",
     "newApplicationsCard": "📋 Nowe zgłoszenia: {{count}}",
     "newApplicationsHint": "Kierowcy aplikują na Twoje auta z marketplace.",
     "newApplicationsBadge": "Nowe",

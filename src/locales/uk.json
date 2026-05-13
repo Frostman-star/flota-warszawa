@@ -153,6 +153,7 @@
     "market": "Marketplace (бета)",
     "addCar": "Додати авто",
     "criticalBody": "{{count}} документів потребують уваги протягом 7 днів.",
+    "docsCountPill": "{{count}} з {{total}} документів",
     "newApplicationsCard": "📋 Нові заявки водіїв: {{count}}",
     "newApplicationsHint": "Водії подають заявки на ваші авто з маркетплейсу.",
     "newApplicationsBadge": "Нові",
