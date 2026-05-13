@@ -1,7 +1,7 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, ArrowRight, ClipboardList, FileText, MessageCircleMore, Shapes, ShoppingCart, Wrench, Handshake } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Car, ClipboardList, DollarSign, FileText, MessageCircleMore, Shapes, ShoppingCart, Wrench, Handshake } from 'lucide-react'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { buildAlertRows, computeWeeklyRentTotal } from '../utils/fleetMetrics'
 import { localeTag } from '../utils/localeTag'
@@ -27,6 +27,7 @@ export function PanelHome() {
   const critical = criticalRows.length
   const hasExpiredCritical = criticalRows.some((row) => Number(row.days) < 0)
   const alertTone = hasExpiredCritical ? 'danger' : 'warning'
+  const docsTone = critical > 0 ? alertTone : toCheck > 0 ? 'warning' : 'ok'
   const trackedDocsTotal = Math.max(cars.length * 2, critical)
   const publicProfileUrl = user?.id ? `${window.location.origin}/flota/${user.id}` : ''
 
@@ -121,9 +122,49 @@ export function PanelHome() {
       ) : null}
 
       <section className="hero-summary" aria-label={t('panel.summary')}>
-        <div className="hero-stat"><span className="hero-stat-num">{cars.length}</span><span className="hero-stat-label">{t('panel.cars')}</span></div>
-        <div className="hero-stat"><span className="hero-stat-num">{weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł</span><span className="hero-stat-label">{t('panel.weekly')}</span></div>
-        <div className="hero-stat"><span className="hero-stat-num">{toCheck}</span><span className="hero-stat-label">{t('panel.toCheck')}</span></div>
+        <article className="hero-stat hero-stat--fleet">
+          <div className="hero-stat-content">
+            <span className="hero-stat-icon" aria-hidden><Car size={22} strokeWidth={2.1} /></span>
+            <span className="hero-stat-num">{cars.length}</span>
+            <span className="hero-stat-label">{t('panel.cars')}</span>
+            <Link to="/flota" className="hero-stat-link">
+              {t('panel.myCars')}
+              <ArrowRight size={16} strokeWidth={2.2} />
+            </Link>
+          </div>
+          <div className="hero-stat-cars" aria-hidden>
+            <span />
+            <span />
+            <span />
+          </div>
+        </article>
+
+        <article className="hero-stat hero-stat--weekly">
+          <div className="hero-stat-content">
+            <span className="hero-stat-icon" aria-hidden><DollarSign size={22} strokeWidth={2.1} /></span>
+            <span className="hero-stat-num">{weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł</span>
+            <span className="hero-stat-label">{t('panel.weekly')}</span>
+          </div>
+          <div className="hero-stat-chart" aria-hidden>
+            <span />
+          </div>
+        </article>
+
+        <article className={`hero-stat hero-stat--docs hero-stat--${docsTone}`}>
+          <div className="hero-stat-content">
+            <span className="hero-stat-icon" aria-hidden><FileText size={22} strokeWidth={2.1} /></span>
+            <span className="hero-stat-num">{toCheck}</span>
+            <span className="hero-stat-label">{t('panel.toCheck')}</span>
+            <Link to="/alerty" className="hero-stat-link">
+              {t('panel.seeAlerts')}
+              <ArrowRight size={16} strokeWidth={2.2} />
+            </Link>
+          </div>
+          <div className="hero-stat-docs-art" aria-hidden>
+            <span className="hero-stat-doc" />
+            <span className="hero-stat-calendar" />
+          </div>
+        </article>
       </section>
       {location.state?.toast ? <p className="form-info">{String(location.state.toast)}</p> : null}
 

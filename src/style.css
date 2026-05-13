@@ -1763,30 +1763,254 @@ tr.tier-row-none td:first-child {
 .hero-summary {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.75rem;
+  gap: 0.9rem;
   margin-bottom: 1.25rem;
 }
 @media (min-width: 480px) {
   .hero-summary {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero-stat--fleet {
+    grid-column: 1 / -1;
   }
 }
 .hero-stat {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem;
-  text-align: center;
+  --hero-accent: #38bdf8;
+  --hero-accent-soft: rgba(56, 189, 248, 0.16);
+  position: relative;
+  min-height: 178px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 34%, rgba(148, 163, 184, 0.22));
+  border-radius: 18px;
+  padding: 1.05rem;
+  text-align: left;
+  background:
+    radial-gradient(105% 120% at 82% 18%, var(--hero-accent-soft), transparent 52%),
+    linear-gradient(145deg, rgba(5, 12, 26, 0.98), rgba(15, 23, 42, 0.94));
+  box-shadow: 0 18px 48px rgba(2, 6, 23, 0.34), inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.hero-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(90deg, transparent, #000 35%, #000 100%);
+  pointer-events: none;
+}
+
+.hero-stat-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: start;
+  gap: 0.18rem;
+}
+
+.hero-stat-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0.5rem;
+  border-radius: 14px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--hero-accent);
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 44%, rgba(148, 163, 184, 0.18));
+  background: color-mix(in srgb, var(--hero-accent) 10%, rgba(2, 6, 23, 0.64));
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--hero-accent) 6%, transparent);
 }
 .hero-stat-num {
   display: block;
-  font-size: 1.35rem;
-  font-weight: 700;
-  line-height: 1.2;
+  font-size: clamp(2.05rem, 8vw, 2.85rem);
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 .hero-stat-label {
-  font-size: 0.82rem;
+  max-width: 11rem;
+  font-size: 0.95rem;
   color: var(--muted);
+  line-height: 1.25;
+}
+
+.hero-stat-link {
+  width: max-content;
+  max-width: 100%;
+  min-height: 38px;
+  margin-top: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+  padding: 0.44rem 0.76rem;
+  border-radius: 12px;
+  color: color-mix(in srgb, var(--hero-accent) 70%, white);
+  font-weight: 800;
+  font-size: 0.88rem;
+  text-decoration: none;
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 48%, rgba(148, 163, 184, 0.16));
+  background: rgba(2, 6, 23, 0.42);
+  backdrop-filter: blur(8px);
+}
+
+.hero-stat-link:hover {
+  filter: brightness(1.08);
+  text-decoration: none;
+}
+
+.hero-stat--fleet {
+  min-height: 205px;
+}
+
+.hero-stat-cars {
+  position: absolute;
+  inset: 1.5rem 0.75rem 0.9rem 35%;
+  z-index: 1;
+  opacity: 0.82;
+}
+
+.hero-stat-cars span {
+  position: absolute;
+  bottom: 1.15rem;
+  width: 46%;
+  height: 42%;
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 54%, transparent);
+  border-bottom-width: 2px;
+  border-radius: 52% 52% 18% 18% / 42% 42% 20% 20%;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--hero-accent) 20%, transparent);
+}
+
+.hero-stat-cars span::before,
+.hero-stat-cars span::after {
+  content: '';
+  position: absolute;
+  bottom: -0.35rem;
+  width: 19%;
+  height: 26%;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 44%, transparent);
+  background: rgba(2, 6, 23, 0.72);
+}
+
+.hero-stat-cars span::before {
+  left: 14%;
+}
+
+.hero-stat-cars span::after {
+  right: 14%;
+}
+
+.hero-stat-cars span:nth-child(1) {
+  left: 0;
+  transform: scale(0.72) translateY(0.55rem);
+  opacity: 0.34;
+}
+
+.hero-stat-cars span:nth-child(2) {
+  left: 24%;
+  transform: scale(1.05);
+}
+
+.hero-stat-cars span:nth-child(3) {
+  right: 0;
+  transform: scale(0.72) translateY(0.55rem);
+  opacity: 0.34;
+}
+
+.hero-stat--weekly {
+  --hero-accent: #34d399;
+  --hero-accent-soft: rgba(16, 185, 129, 0.18);
+}
+
+.hero-stat-chart {
+  position: absolute;
+  inset: auto 0.9rem 1.1rem 35%;
+  height: 56%;
+  z-index: 1;
+  opacity: 0.8;
+  background:
+    linear-gradient(180deg, transparent 24%, color-mix(in srgb, var(--hero-accent) 8%, transparent) 100%),
+    repeating-linear-gradient(90deg, transparent 0 29px, color-mix(in srgb, var(--hero-accent) 11%, transparent) 30px 31px);
+  clip-path: polygon(0 80%, 18% 64%, 33% 70%, 47% 38%, 62% 52%, 79% 20%, 100% 8%, 100% 100%, 0 100%);
+}
+
+.hero-stat-chart span {
+  position: absolute;
+  inset: 0;
+  border-top: 2px solid var(--hero-accent);
+  filter: drop-shadow(0 0 12px color-mix(in srgb, var(--hero-accent) 55%, transparent));
+  clip-path: polygon(0 80%, 18% 64%, 33% 70%, 47% 38%, 62% 52%, 79% 20%, 100% 8%, 100% 14%, 79% 26%, 62% 58%, 47% 44%, 33% 76%, 18% 70%, 0 86%);
+}
+
+.hero-stat--docs {
+  --hero-accent: #f59e0b;
+  --hero-accent-soft: rgba(245, 158, 11, 0.18);
+}
+
+.hero-stat--danger {
+  --hero-accent: #f87171;
+  --hero-accent-soft: rgba(248, 113, 113, 0.18);
+}
+
+.hero-stat--ok {
+  --hero-accent: #34d399;
+  --hero-accent-soft: rgba(52, 211, 153, 0.16);
+}
+
+.hero-stat-docs-art {
+  position: absolute;
+  right: 0.95rem;
+  bottom: 1rem;
+  z-index: 1;
+  width: 42%;
+  max-width: 160px;
+  height: 68%;
+  opacity: 0.72;
+}
+
+.hero-stat-doc {
+  position: absolute;
+  right: 1.25rem;
+  top: 0.2rem;
+  width: 58%;
+  height: 72%;
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 48%, transparent);
+  border-radius: 10px;
+  box-shadow: 0 0 22px color-mix(in srgb, var(--hero-accent) 13%, transparent);
+}
+
+.hero-stat-doc::before {
+  content: '';
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  top: 28%;
+  height: 1px;
+  background: currentColor;
+  color: color-mix(in srgb, var(--hero-accent) 62%, transparent);
+  box-shadow: 0 18px 0 currentColor, 0 36px 0 currentColor;
+}
+
+.hero-stat-calendar {
+  position: absolute;
+  left: 0;
+  bottom: 0.15rem;
+  width: 58%;
+  height: 45%;
+  border: 1px solid color-mix(in srgb, var(--hero-accent) 48%, transparent);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 28% 42%, color-mix(in srgb, var(--hero-accent) 72%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 52% 42%, color-mix(in srgb, var(--hero-accent) 72%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 76% 42%, color-mix(in srgb, var(--hero-accent) 72%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 28% 68%, color-mix(in srgb, var(--hero-accent) 72%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 52% 68%, color-mix(in srgb, var(--hero-accent) 72%, transparent) 0 2px, transparent 3px),
+    radial-gradient(circle at 76% 68%, color-mix(in srgb, var(--hero-accent) 72%, transparent) 0 2px, transparent 3px);
 }
 
 .big-actions {
