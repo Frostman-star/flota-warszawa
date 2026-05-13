@@ -1636,6 +1636,7 @@ tr.tier-row-none td:first-child {
   height: 95%;
   background: radial-gradient(closest-side, var(--urgent-accent-soft), transparent 72%);
   pointer-events: none;
+  animation: urgentBannerGlow 4.6s ease-in-out infinite;
 }
 
 .urgent-banner--danger {
@@ -1667,6 +1668,7 @@ tr.tier-row-none td:first-child {
   border: 1px solid color-mix(in srgb, var(--urgent-accent) 62%, transparent);
   background: color-mix(in srgb, var(--urgent-accent) 12%, rgba(15, 23, 42, 0.82));
   box-shadow: 0 0 0 7px color-mix(in srgb, var(--urgent-accent) 8%, transparent);
+  animation: urgentIconPulse 3.8s ease-in-out infinite;
 }
 
 .urgent-banner strong {
@@ -1725,6 +1727,37 @@ tr.tier-row-none td:first-child {
 .urgent-banner-cta:hover {
   filter: brightness(1.08);
   text-decoration: none;
+}
+
+@keyframes urgentBannerGlow {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.94;
+    transform: scale(1.035);
+  }
+}
+
+@keyframes urgentIconPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--urgent-accent) 8%, transparent);
+  }
+  50% {
+    transform: scale(1.025);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--urgent-accent) 13%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .urgent-banner::before,
+  .urgent-banner-icon {
+    animation: none;
+  }
 }
 
 .hero-summary {
