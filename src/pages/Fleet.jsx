@@ -3,10 +3,8 @@ import { Link, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { carPath } from '../lib/carPaths'
-import { CarFormModal } from '../components/CarFormModal'
 import { FleetDocDots } from '../components/FleetDocDots'
 import { LoadingSpinner } from '../components/LoadingSpinner'
-import { useDrivers } from '../hooks/useDrivers'
 import { useAuth } from '../context/AuthContext'
 import { localeTag } from '../utils/localeTag'
 import { buildAttentionMap } from '../utils/chatAttention'
@@ -18,9 +16,6 @@ export function Fleet() {
   const lc = localeTag(i18n.resolvedLanguage ?? i18n.language)
   const { cars, loading, error, refresh } = useOutletContext()
   const { isAdmin, user } = useAuth()
-  const { drivers } = useDrivers(isAdmin, user?.id)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editing, setEditing] = useState(null)
   const [q, setQ] = useState('')
   /** @type {[Record<string, CarAttention>, import('react').Dispatch<import('react').SetStateAction<Record<string, CarAttention>>>]} */
   const [attentionByCarId, setAttentionByCarId] = useState({})
@@ -164,14 +159,15 @@ export function Fleet() {
                 <FleetDocDots car={car} />
               </Link>
               <div className="car-tile-actions">
-                <button type="button" className="btn btn-tile ghost" onClick={() => { setEditing(car); setModalOpen(true) }}>{t('fleet.edit')}</button>
+                <Link className="btn btn-tile ghost" to={carPath(String(car.id), isAdmin)}>
+                  {t('fleet.edit')}
+                </Link>
                 <button type="button" className="btn btn-tile danger" onClick={() => handleDelete(car)}>{t('fleet.delete')}</button>
               </div>
             </article>
           )
         })}
       </div>
-      <CarFormModal open={modalOpen} onClose={() => setModalOpen(false)} car={editing} drivers={drivers} onSaved={() => refresh?.()} />
     </div>
   )
 }
