@@ -125,7 +125,6 @@ export function PanelHome() {
       <section className="panel-hero-cta card pad-lg" aria-label={t('panel.addCar')}>
         <div className="panel-hero-cta-glow" aria-hidden />
         <div className="panel-hero-cta-icon" aria-hidden><Plus size={28} strokeWidth={2.2} /></div>
-        <h2 className="panel-hero-cta-title">{t('panel.addCar')}</h2>
         <div className="panel-hero-cta-actions">
           <Link to="/dodaj" className="btn panel-hero-cta-btn">
             {t('panel.addCar')}
