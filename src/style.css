@@ -5790,6 +5790,294 @@ tr.tier-row-none td:first-child {
   background: transparent;
 }
 
+.car-mobile-redesign {
+  display: none;
+}
+
+.car-mobile-sheet-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+}
+
+.car-mobile-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(2, 6, 23, 0.72);
+}
+
+.car-mobile-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: #1e293b;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -24px 70px rgba(0, 0, 0, 0.45);
+  animation: carSheetIn 0.22s ease-out;
+}
+
+@keyframes carSheetIn {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.car-mobile-sheet-handle {
+  width: 46px;
+  height: 5px;
+  padding: 0;
+  margin: 0.65rem auto 0.35rem;
+  border: 0;
+  border-radius: 999px;
+  background: #64748b;
+}
+
+.car-mobile-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0 1rem 0.7rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.car-mobile-sheet-head h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.car-mobile-sheet-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text);
+}
+
+.car-mobile-sheet-body {
+  overflow: auto;
+  padding: 1rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.car-mobile-sheet-footer {
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.car-mobile-save {
+  width: 100%;
+  min-height: 52px;
+}
+
+@media (max-width: 760px) {
+  .car-mobile-redesign {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .car-detail-desktop-gallery,
+  .car-detail-section--photos,
+  .car-detail-actions {
+    display: none;
+  }
+
+  .car-mobile-hero {
+    position: relative;
+    min-height: 250px;
+    overflow: hidden;
+    border-radius: 22px;
+    border: 1px solid rgba(56, 189, 248, 0.24);
+    background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(8, 47, 73, 0.55));
+    box-shadow: 0 18px 50px rgba(2, 6, 23, 0.38);
+  }
+
+  .car-mobile-hero-img,
+  .car-mobile-hero-placeholder {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: grid;
+    place-items: center;
+    font-size: 4rem;
+  }
+
+  .car-mobile-hero-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1rem;
+    display: grid;
+    gap: 0.15rem;
+    background: linear-gradient(180deg, transparent, rgba(2, 6, 23, 0.9));
+  }
+
+  .car-mobile-hero-overlay strong {
+    font-size: 1.65rem;
+    letter-spacing: 0.04em;
+  }
+
+  .car-mobile-price-badge,
+  .car-mobile-status-dot,
+  .car-mobile-photo-badge {
+    position: absolute;
+    z-index: 2;
+    border-radius: 999px;
+    padding: 0.38rem 0.62rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    backdrop-filter: blur(10px);
+  }
+
+  .car-mobile-price-badge {
+    top: 0.75rem;
+    right: 0.75rem;
+    color: #bbf7d0;
+    background: rgba(22, 101, 52, 0.7);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+  }
+
+  .car-mobile-status-dot {
+    top: 0.75rem;
+    left: 0.75rem;
+    color: #dcfce7;
+    background: rgba(22, 101, 52, 0.7);
+  }
+
+  .car-mobile-status-dot.is-alert {
+    color: #fecaca;
+    background: rgba(127, 29, 29, 0.76);
+  }
+
+  .car-mobile-photo-badge {
+    right: 0.75rem;
+    bottom: 5.2rem;
+    color: #e0f2fe;
+    background: rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(125, 211, 252, 0.3);
+  }
+
+  .car-mobile-status-bar {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(150px, 1fr);
+    gap: 0.55rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    scrollbar-width: none;
+  }
+
+  .car-mobile-status-pill {
+    min-height: 68px;
+    text-align: left;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 16px;
+    background: rgba(15, 23, 42, 0.72);
+    color: var(--text);
+    padding: 0.65rem 0.7rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .car-mobile-status-pill span,
+  .car-mobile-action-btn small {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+
+  .car-mobile-tone-red,
+  .car-mobile-action-btn small.is-danger {
+    color: #fca5a5;
+  }
+
+  .car-mobile-tone-orange,
+  .car-mobile-tone-yellow {
+    color: #fde68a;
+  }
+
+  .car-mobile-tone-green {
+    color: #86efac;
+  }
+
+  .car-mobile-actions {
+    padding: 0.85rem;
+    border-color: rgba(56, 189, 248, 0.2);
+    background: rgba(15, 23, 42, 0.68);
+  }
+
+  .car-mobile-actions h2 {
+    margin: 0 0 0.7rem;
+    font-size: 1.08rem;
+  }
+
+  .car-mobile-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .car-mobile-action-btn {
+    min-height: 84px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 16px;
+    background: rgba(2, 6, 23, 0.38);
+    color: var(--text);
+    padding: 0.7rem 0.55rem;
+    display: grid;
+    justify-items: center;
+    gap: 0.2rem;
+  }
+
+  .car-mobile-action-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .car-mobile-action-btn strong {
+    font-size: 0.78rem;
+  }
+
+  .car-mobile-ai-bar {
+    border: 1px solid rgba(56, 189, 248, 0.22);
+    border-radius: 18px;
+    padding: 0.75rem;
+    background: rgba(8, 47, 73, 0.28);
+  }
+
+  .car-mobile-ai-input {
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.55rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .car-mobile-ai-bar p {
+    margin: 0 0 0.35rem;
+  }
+
+  .car-mobile-chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+}
+
 /* Marketplace listing photos — cyber / split layout (embed in car detail) */
 .car-detail-section--photos-cyber {
   background:

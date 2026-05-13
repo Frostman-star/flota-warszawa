@@ -13,21 +13,51 @@ import { CarStatusBadge } from '../components/CarStatusBadge'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { NoteModal } from '../components/NoteModal'
 import { HandoverSection } from '../components/HandoverSection'
+import { CarDetailMobileBottomSheet } from '../components/CarDetailMobileBottomSheet'
 import { useDrivers } from '../hooks/useDrivers'
+import { useVehiclePhotos } from '../hooks/useVehiclePhotos'
 import { effectiveInsuranceExpiryIso } from '../utils/carInsurance'
 import { expiryStatusLabel, serviceStatusLabel } from '../utils/docLabels'
 import { localeTag } from '../utils/localeTag'
-import { formatAppsReadable, formatPartnerNamesFromCar } from '../utils/partnerApps'
+import { TAXI_APP_ORDER, formatPartnerNamesFromCar, normalizeAppsAvailable, normalizePartnerNames } from '../utils/partnerApps'
+import { shouldUseLegacyAssignedDriverColumn, toLegacyCarWritePayload } from '../utils/carDriverSchema'
 import { MarketplaceVehiclePhotos } from '../components/MarketplaceVehiclePhotos'
 import { MarketplaceCarPhotoGallery } from '../components/MarketplaceCarPhotoGallery'
 import { AppPlatformPills } from '../components/AppPlatformPills'
 import { fuelIcon, transmissionIcon, normalizeMarketplaceFeatures } from '../utils/marketplaceDisplay'
+import { VEHICLE_PHOTO_REQUIRED } from '../utils/vehiclePhotoAngles'
+
+const KNOWN_PARTNER_CHIPS = ['Promin', 'Qiwi', 'Spark', 'Fleet Partner']
+
+function normalizePartnerNamesPayload(list) {
+  const out = []
+  const seen = new Set()
+  for (const x of Array.isArray(list) ? list : []) {
+    const value = String(x).trim()
+    if (!value) continue
+    const key = value.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push(value)
+  }
+  return out
+}
+
+function daysUntilDate(isoDate) {
+  if (!isoDate) return null
+  const d = new Date(String(isoDate))
+  if (Number.isNaN(d.getTime())) return null
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  const target = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime()
+  return Math.ceil((target - today) / 86400000)
+}
 
 export function CarDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { t, i18n } = useTranslation()
-  const { isAdmin, user } = useAuth()
+  const { isAdmin, user, profile } = useAuth()
   const { drivers } = useDrivers(isAdmin, user?.id)
   const { carId: assignedCarId } = useDriverCar(!isAdmin ? user?.id : null)
 
@@ -52,10 +82,15 @@ export function CarDetail() {
   const [deleteBusy, setDeleteBusy] = useState(false)
   const [pendingApps, setPendingApps] = useState([])
   const [pendingAppsLoading, setPendingAppsLoading] = useState(false)
+  const [activeSheet, setActiveSheet] = useState(null)
+  const [mobileSaving, setMobileSaving] = useState(false)
+  const [mobileForm, setMobileForm] = useState(null)
+  const { photos: vehiclePhotos } = useVehiclePhotos(car?.id)
 
   useEffect(() => {
     if (!car) {
       setListingForm(null)
+      setMobileForm(null)
       return
     }
     setListingForm({
@@ -73,6 +108,30 @@ export function CarDetail() {
       min_rental_months: String(car.min_rental_months ?? '1'),
       owner_phone: String(car.owner_phone ?? ''),
       owner_telegram: String(car.owner_telegram ?? ''),
+    })
+    setMobileForm({
+      insurance_expiry: (() => {
+        const raw = car.insurance_expiry ? String(car.insurance_expiry) : ''
+        if (raw) return raw
+        const eff = effectiveInsuranceExpiryIso(car)
+        return eff ? String(eff) : ''
+      })(),
+      insurance_cost: String(car.insurance_cost ?? (Number(car.oc_cost ?? 0) + Number(car.ac_cost ?? 0) || '0')),
+      przeglad_expiry: car.przeglad_expiry ? String(car.przeglad_expiry) : '',
+      last_service_date: car.last_service_date ? String(car.last_service_date) : '',
+      service_cost: String(car.service_cost ?? '0'),
+      service_note: '',
+      driver_id: car.driver_id ? String(car.driver_id) : '',
+      weekly_rent_pln: String(car.weekly_rent_pln ?? '0'),
+      partner_names: normalizePartnerNames(car.partner_names, car.partner_name),
+      apps_available: normalizeAppsAvailable(car.apps_available),
+      registration_city: String(car.registration_city ?? '').trim() || 'Warszawa',
+      mileage_km: String(car.mileage_km ?? '0'),
+      year: car.year != null ? String(car.year) : '',
+      color_label: String(car.color_label ?? ''),
+      fines_count: String(car.fines_count ?? '0'),
+      notes: String(car.notes ?? ''),
+      marketplace_listed: Boolean(car.marketplace_listed ?? car.show_in_marketplace),
     })
   }, [car?.id, car?.updated_at])
 
@@ -199,6 +258,83 @@ export function CarDetail() {
     await refresh()
   }
 
+  async function saveCarPatch(patch) {
+    if (!isOwner || !user?.id) return
+    setMobileSaving(true)
+    setFormErr(null)
+    try {
+      let up = supabase.from('cars').update(patch).eq('id', car.id).eq('owner_id', user.id)
+      let { error: upErr } = await up
+      if (upErr && shouldUseLegacyAssignedDriverColumn(upErr)) {
+        ;({ error: upErr } = await supabase
+          .from('cars')
+          .update(toLegacyCarWritePayload(patch))
+          .eq('id', car.id)
+          .eq('owner_id', user.id))
+      }
+      if (upErr) throw upErr
+      await refresh()
+      setActiveSheet(null)
+    } catch (e) {
+      setFormErr(e.message ?? t('errors.generic'))
+    } finally {
+      setMobileSaving(false)
+    }
+  }
+
+  async function saveMobileSheet(sheet) {
+    if (!mobileForm) return
+    if (sheet === 'insurance') {
+      const value = mobileForm.insurance_expiry || null
+      return saveCarPatch({
+        insurance_expiry: value,
+        oc_expiry: value,
+        ac_expiry: value,
+        insurance_cost: Number(mobileForm.insurance_cost) || 0,
+      })
+    }
+    if (sheet === 'inspection') return saveCarPatch({ przeglad_expiry: mobileForm.przeglad_expiry || null })
+    if (sheet === 'service') {
+      const note = String(mobileForm.service_note || '').trim()
+      const nextNotes = note ? `${String(car.notes || '').trim() ? `${String(car.notes).trim()}\n\n` : ''}${note}` : car.notes
+      return saveCarPatch({
+        last_service_date: mobileForm.last_service_date || null,
+        service_cost: Number(mobileForm.service_cost) || 0,
+        notes: nextNotes ?? '',
+      })
+    }
+    if (sheet === 'driver') {
+      return saveCarPatch({
+        driver_id: mobileForm.driver_id || null,
+        driver_label: '',
+        marketplace_listed: mobileForm.driver_id ? false : Boolean(car.marketplace_listed),
+        show_in_marketplace: mobileForm.driver_id ? false : Boolean(car.show_in_marketplace),
+        marketplace_status: mobileForm.driver_id ? 'zajete' : car.marketplace_status,
+      })
+    }
+    if (sheet === 'rent') {
+      return saveCarPatch({
+        weekly_rent_pln: Number(mobileForm.weekly_rent_pln) || 0,
+        partner_names: normalizePartnerNamesPayload(mobileForm.partner_names),
+        partner_name: null,
+        apps_available: normalizeAppsAvailable(mobileForm.apps_available),
+        registration_city: String(mobileForm.registration_city || '').trim() || 'Warszawa',
+      })
+    }
+    if (sheet === 'rest') {
+      return saveCarPatch({
+        mileage_km: Number(mobileForm.mileage_km) || 0,
+        year: mobileForm.year ? Number(mobileForm.year) : null,
+        color_label: String(mobileForm.color_label || '').trim(),
+        fines_count: Number(mobileForm.fines_count) || 0,
+        notes: String(mobileForm.notes || ''),
+        marketplace_listed: Boolean(mobileForm.marketplace_listed),
+        show_in_marketplace: Boolean(mobileForm.marketplace_listed),
+        marketplace_status: mobileForm.marketplace_listed ? 'dostepne' : 'zajete',
+      })
+    }
+  }
+
   async function saveListingBlock() {
     if (!listingForm) return
     setListingBusy(true)
@@ -254,6 +390,62 @@ export function CarDetail() {
   const partnerChips = (Array.isArray(car.partner_names) ? car.partner_names : []).map((x) => String(x).trim()).filter(Boolean)
 
   const weekly = Number(car.weekly_rent_pln ?? 0)
+  const isPro = profile?.role === 'admin' || (profile?.role === 'owner' && profile?.plan_tier === 'pro')
+  const photoCount = vehiclePhotos.length
+  const requiredPhotoCount = VEHICLE_PHOTO_REQUIRED.filter((def) => vehiclePhotos.some((p) => String(p.angle_key) === def.key)).length
+  const insuranceDate = effectiveInsuranceExpiryIso(car)
+  const inspectionDate = car.przeglad_expiry
+  const serviceDate = car.last_service_date
+  const driverName = String(car.driver_name || '').trim()
+  const carNeedsCheck = docRows.some(({ date, service }) => {
+    const st = service ? serviceStatusLabel(typeof date === 'string' ? date : null) : expiryStatusLabel(typeof date === 'string' ? date : null)
+    return st.tone === 'red' || st.tone === 'orange'
+  })
+
+  function previewDate(isoDate, service = false) {
+    if (!isoDate) return t('carDetailMobile.noDate')
+    const days = daysUntilDate(isoDate)
+    if (days == null) return String(isoDate)
+    if (days < 0) return t('carDetailMobile.expired')
+    if (days === 0) return t('docDays.today')
+    const suffix = service ? t('carDetailMobile.agoOrDue') : ''
+    return `${days} ${t('carDetailMobile.daysShort')}${suffix}`
+  }
+
+  function previewClass(isoDate, service = false) {
+    const st = service ? serviceStatusLabel(typeof isoDate === 'string' ? isoDate : null) : expiryStatusLabel(typeof isoDate === 'string' ? isoDate : null)
+    return `car-mobile-tone-${st.tone}`
+  }
+
+  function setMobileField(name, value) {
+    setMobileForm((prev) => (prev ? { ...prev, [name]: value } : prev))
+  }
+
+  function toggleMobileApp(key) {
+    setMobileForm((prev) => {
+      if (!prev) return prev
+      const cur = normalizeAppsAvailable(prev.apps_available)
+      const next = cur.includes(key) ? cur.filter((x) => x !== key) : [...cur, key]
+      return { ...prev, apps_available: next }
+    })
+  }
+
+  function toggleMobilePartner(name) {
+    setMobileForm((prev) => {
+      if (!prev) return prev
+      const cur = normalizePartnerNamesPayload(prev.partner_names)
+      const exists = cur.some((x) => x.toLowerCase() === name.toLowerCase())
+      return { ...prev, partner_names: exists ? cur.filter((x) => x.toLowerCase() !== name.toLowerCase()) : [...cur, name] }
+    })
+  }
+
+  function mobileSaveFooter(sheet) {
+    return (
+      <button type="button" className="btn primary car-mobile-save" disabled={mobileSaving} onClick={() => void saveMobileSheet(sheet)}>
+        {mobileSaving ? t('carForm.saving') : t('carDetailMobile.save')}
+      </button>
+    )
+  }
 
   return (
     <div className="page-simple car-detail-page">
@@ -267,14 +459,110 @@ export function CarDetail() {
 
       {formErr ? <p className="form-error">{formErr}</p> : null}
 
+      {isOwner ? (
+        <section className="car-mobile-redesign" aria-label={t('carDetailMobile.aria')}>
+          <article className="car-mobile-hero">
+            {car.primary_photo_url || car.marketplace_photo_url ? (
+              <img src={String(car.primary_photo_url || car.marketplace_photo_url)} alt="" className="car-mobile-hero-img" />
+            ) : (
+              <div className="car-mobile-hero-placeholder" aria-hidden>
+                🚗
+              </div>
+            )}
+            <span className={`car-mobile-status-dot ${carNeedsCheck ? 'is-alert' : 'is-ok'}`}>
+              {carNeedsCheck ? t('carDetailMobile.check') : t('carDetailMobile.ok')}
+            </span>
+            <span className="car-mobile-price-badge">
+              {weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł{t('carDetail.perWeek')}
+            </span>
+            {photoCount > 0 ? <span className="car-mobile-photo-badge">📸 {photoCount}</span> : null}
+            <div className="car-mobile-hero-overlay">
+              <strong>{car.plate_number}</strong>
+              <span>{[car.model, car.year].filter(Boolean).join(' · ') || '—'}</span>
+            </div>
+          </article>
+
+          <nav className="car-mobile-status-bar" aria-label={t('carDetailMobile.statusBar')}>
+            <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('insurance')}>
+              <span>🛡️ {t('carDetailMobile.insurance')}</span>
+              <strong className={previewClass(insuranceDate)}>{previewDate(insuranceDate)}</strong>
+            </button>
+            <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('inspection')}>
+              <span>📋 {t('carDetailMobile.inspection')}</span>
+              <strong className={previewClass(inspectionDate)}>{previewDate(inspectionDate)}</strong>
+            </button>
+            <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('service')}>
+              <span>🔧 {t('carDetailMobile.service')}</span>
+              <strong className={previewClass(serviceDate, true)}>{previewDate(serviceDate, true)}</strong>
+            </button>
+            <button type="button" className="car-mobile-status-pill" onClick={() => setActiveSheet('driver')}>
+              <span>👤 {t('carDetailMobile.driver')}</span>
+              <strong>{driverName || t('carDetailMobile.noDriver')}</strong>
+            </button>
+          </nav>
+
+          <section className="car-mobile-actions card">
+            <h2>{t('carDetailMobile.actionTitle')}</h2>
+            <div className="car-mobile-action-grid">
+              {[
+                ['insurance', '🛡️', t('carDetailMobile.insurance'), previewDate(insuranceDate)],
+                ['inspection', '📋', t('carDetailMobile.inspection'), inspectionDate || t('carDetailMobile.noDate')],
+                ['service', '🔧', t('carDetailMobile.service'), serviceDate || t('carDetailMobile.noDate')],
+                ['driver', '👤', t('carDetailMobile.driver'), driverName || t('carDetailMobile.assign')],
+                ['photos', '📸', t('carDetailMobile.photos'), t('carDetailMobile.photoProgress', { done: requiredPhotoCount, total: VEHICLE_PHOTO_REQUIRED.length })],
+                ['rent', '💰', t('carDetailMobile.rent'), `${weekly.toLocaleString(lc, { maximumFractionDigits: 0 })} zł`],
+                ['protocol', '🔄', t('carDetailMobile.protocol'), t('handover.newProtocol')],
+                ['rest', '⚙️', t('carDetailMobile.rest'), t('carDetailMobile.moreData')],
+              ].map(([key, icon, label, preview]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className="car-mobile-action-btn"
+                  onClick={() => {
+                    if (key === 'protocol') {
+                      document.getElementById('car-handover')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                      return
+                    }
+                    setActiveSheet(key)
+                  }}
+                >
+                  <span className="car-mobile-action-icon">{icon}</span>
+                  <strong>{label}</strong>
+                  <small className={String(preview).toLowerCase().includes(t('carDetailMobile.expired').toLowerCase()) ? 'is-danger' : ''}>{preview}</small>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className={`car-mobile-ai-bar ${isPro ? 'is-pro' : 'is-locked'}`}>
+            {isPro ? (
+              <Link className="car-mobile-ai-input" to={`/ai-manager?carId=${car.id}`} state={{ carId: car.id }}>
+                <span>🤖 {t('carDetailMobile.aiPlaceholder')}</span>
+                <span aria-hidden>📎</span>
+                <span aria-hidden>🎤</span>
+              </Link>
+            ) : (
+              <>
+                <p>💡 {t('carDetailMobile.aiLocked')}</p>
+                <Link className="link" to="/ustawienia#plan">
+                  {t('carDetailMobile.learnMore')}
+                </Link>
+              </>
+            )}
+          </section>
+        </section>
+      ) : null}
+
       <section className="car-detail-section car-detail-section--public card pad-lg">
         <h2 className="car-detail-section-title">{t('carDetail.sectionPublicTitle')}</h2>
         <p className="muted small car-detail-section-note">{t('carDetail.sectionPublicNote')}</p>
 
-        <MarketplaceCarPhotoGallery
-          carId={String(car.id)}
-          primaryFallback={String(car.primary_photo_url || car.marketplace_photo_url || '')}
-        />
+        <div className="car-detail-desktop-gallery">
+          <MarketplaceCarPhotoGallery
+            carId={String(car.id)}
+            primaryFallback={String(car.primary_photo_url || car.marketplace_photo_url || '')}
+          />
+        </div>
 
         <header className="car-detail-public-head">
           <p className="car-detail-plate">{car.plate_number}</p>
@@ -533,6 +821,161 @@ export function CarDetail() {
               {t('carDetail.addNote')}
             </button>
           </div>
+        </>
+      ) : null}
+
+      {isOwner && mobileForm ? (
+        <>
+          <CarDetailMobileBottomSheet
+            open={activeSheet === 'insurance'}
+            title={t('carDetailMobile.sheetInsurance')}
+            closeLabel={t('app.close')}
+            onClose={() => setActiveSheet(null)}
+            footer={mobileSaveFooter('insurance')}
+          >
+            <label className="field">
+              <span className="field-label">{t('carDetailMobile.validUntil')}</span>
+              <input className="input input-xl" type="date" value={mobileForm.insurance_expiry} onChange={(e) => setMobileField('insurance_expiry', e.target.value)} />
+            </label>
+            <label className="field">
+              <span className="field-label">{t('carDetailMobile.monthlyCost')}</span>
+              <input className="input input-xl" type="number" min={0} step={1} value={mobileForm.insurance_cost} onChange={(e) => setMobileField('insurance_cost', e.target.value)} />
+            </label>
+            {isPro ? <Link className="btn ghost" to={`/ai-manager?carId=${car.id}`} state={{ carId: car.id }}>+ {t('carDetailMobile.photoPolicy')}</Link> : null}
+          </CarDetailMobileBottomSheet>
+
+          <CarDetailMobileBottomSheet
+            open={activeSheet === 'inspection'}
+            title={t('carDetailMobile.sheetInspection')}
+            closeLabel={t('app.close')}
+            onClose={() => setActiveSheet(null)}
+            footer={mobileSaveFooter('inspection')}
+          >
+            <label className="field">
+              <span className="field-label">{t('carDetailMobile.nextInspection')}</span>
+              <input className="input input-xl" type="date" value={mobileForm.przeglad_expiry} onChange={(e) => setMobileField('przeglad_expiry', e.target.value)} />
+            </label>
+          </CarDetailMobileBottomSheet>
+
+          <CarDetailMobileBottomSheet
+            open={activeSheet === 'service'}
+            title={t('carDetailMobile.sheetService')}
+            closeLabel={t('app.close')}
+            onClose={() => setActiveSheet(null)}
+            footer={mobileSaveFooter('service')}
+          >
+            <label className="field">
+              <span className="field-label">{t('carDetailMobile.serviceDate')}</span>
+              <input className="input input-xl" type="date" value={mobileForm.last_service_date} onChange={(e) => setMobileField('last_service_date', e.target.value)} />
+            </label>
+            <label className="field">
+              <span className="field-label">{t('carDetailMobile.serviceCost')}</span>
+              <input className="input input-xl" type="number" min={0} step={1} value={mobileForm.service_cost} onChange={(e) => setMobileField('service_cost', e.target.value)} />
+            </label>
+            <label className="field">
+              <span className="field-label">{t('carDetailMobile.workDescription')}</span>
+              <textarea className="input" rows={3} value={mobileForm.service_note} onChange={(e) => setMobileField('service_note', e.target.value)} />
+            </label>
+          </CarDetailMobileBottomSheet>
+
+          <CarDetailMobileBottomSheet
+            open={activeSheet === 'driver'}
+            title={t('carDetailMobile.sheetDriver')}
+            closeLabel={t('app.close')}
+            onClose={() => setActiveSheet(null)}
+            footer={mobileSaveFooter('driver')}
+          >
+            <p className="muted small">{t('carDetailMobile.currentDriver')}: <strong>{driverName || t('carDetailMobile.noDriver')}</strong></p>
+            <label className="field">
+              <span className="field-label">{t('carForm.driverSelect')}</span>
+              <select className="input input-xl" value={mobileForm.driver_id} onChange={(e) => setMobileField('driver_id', e.target.value)}>
+                <option value="">{t('carForm.driverNone')}</option>
+                {drivers.map((d) => {
+                  const busyElsewhere = Boolean(d.assigned_to_car_id && String(d.assigned_to_car_id) !== String(car.id))
+                  const label = `${d.full_name || '—'}${d.email ? ` · ${d.email}` : ''}${busyElsewhere ? ` ${t('carForm.driverBusySuffix')}` : ''}`
+                  return (
+                    <option key={d.id} value={d.id} disabled={busyElsewhere}>
+                      {label}
+                    </option>
+                  )
+                })}
+              </select>
+            </label>
+            <Link className="btn ghost" to="/marketplace">{t('carDetailMobile.findDriver')}</Link>
+          </CarDetailMobileBottomSheet>
+
+          <CarDetailMobileBottomSheet
+            open={activeSheet === 'photos'}
+            title={t('carDetailMobile.sheetPhotos')}
+            closeLabel={t('app.close')}
+            onClose={() => setActiveSheet(null)}
+          >
+            <p className="muted small">{t('carDetailMobile.photoProgress', { done: requiredPhotoCount, total: VEHICLE_PHOTO_REQUIRED.length })}</p>
+            {user?.id ? <MarketplaceVehiclePhotos car={car} userId={user.id} embed onUpdated={() => refresh()} /> : null}
+          </CarDetailMobileBottomSheet>
+
+          <CarDetailMobileBottomSheet
+            open={activeSheet === 'rent'}
+            title={t('carDetailMobile.sheetRent')}
+            closeLabel={t('app.close')}
+            onClose={() => setActiveSheet(null)}
+            footer={mobileSaveFooter('rent')}
+          >
+            <label className="field">
+              <span className="field-label">{t('carForm.rent')}</span>
+              <input className="input input-xl" type="number" min={0} step={1} value={mobileForm.weekly_rent_pln} onChange={(e) => setMobileField('weekly_rent_pln', e.target.value)} />
+            </label>
+            <div className="field">
+              <span className="field-label">{t('legalPartner.fleetPartners')}</span>
+              <div className="car-mobile-chip-grid">
+                {KNOWN_PARTNER_CHIPS.map((name) => {
+                  const active = normalizePartnerNamesPayload(mobileForm.partner_names).some((x) => x.toLowerCase() === name.toLowerCase())
+                  return (
+                    <button key={name} type="button" className={`chip ${active ? 'active' : ''}`} onClick={() => toggleMobilePartner(name)}>
+                      {name}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+            <div className="field">
+              <span className="field-label">{t('carForm.appsAvailableLabel')}</span>
+              <div className="market-feature-grid">
+                {TAXI_APP_ORDER.map((key) => (
+                  <label key={key} className="checkbox-line market-feature-check">
+                    <input type="checkbox" checked={normalizeAppsAvailable(mobileForm.apps_available).includes(key)} onChange={() => toggleMobileApp(key)} />
+                    <span>{t(`taxiApp.${key}`)}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <label className="field">
+              <span className="field-label">{t('carForm.registrationCityLabel')}</span>
+              <input className="input input-xl" value={mobileForm.registration_city} onChange={(e) => setMobileField('registration_city', e.target.value)} />
+            </label>
+          </CarDetailMobileBottomSheet>
+
+          <CarDetailMobileBottomSheet
+            open={activeSheet === 'rest'}
+            title={t('carDetailMobile.sheetRest')}
+            closeLabel={t('app.close')}
+            onClose={() => setActiveSheet(null)}
+            footer={mobileSaveFooter('rest')}
+          >
+            <label className="field"><span className="field-label">{t('carForm.mileage')}</span><input className="input input-xl" type="number" min={0} value={mobileForm.mileage_km} onChange={(e) => setMobileField('mileage_km', e.target.value)} /></label>
+            <label className="field"><span className="field-label">{t('carForm.year')}</span><input className="input input-xl" type="number" min={1970} value={mobileForm.year} onChange={(e) => setMobileField('year', e.target.value)} /></label>
+            <label className="field"><span className="field-label">{t('carForm.color')}</span><input className="input input-xl" value={mobileForm.color_label} onChange={(e) => setMobileField('color_label', e.target.value)} /></label>
+            <label className="field"><span className="field-label">{t('carForm.fines')}</span><input className="input input-xl" type="number" min={0} value={mobileForm.fines_count} onChange={(e) => setMobileField('fines_count', e.target.value)} /></label>
+            <label className="field"><span className="field-label">{t('carForm.notes')}</span><textarea className="input" rows={4} value={mobileForm.notes} onChange={(e) => setMobileField('notes', e.target.value)} /></label>
+            <label className="toggle-switch toggle-switch--block">
+              <input type="checkbox" checked={Boolean(mobileForm.marketplace_listed)} disabled={hasDriver && !mobileForm.marketplace_listed} onChange={(e) => setMobileField('marketplace_listed', e.target.checked)} />
+              <span className="toggle-switch-ui" aria-hidden />
+              <span className="toggle-switch-text">{t('carDetail.listedToggle')}</span>
+            </label>
+            <button type="button" className="btn danger" disabled={deleteBusy} onClick={() => void handleDeleteCar()}>
+              {deleteBusy ? t('app.loading') : t('carDetail.deleteCarCta')}
+            </button>
+          </CarDetailMobileBottomSheet>
         </>
       ) : null}
 
