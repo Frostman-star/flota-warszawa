@@ -122,7 +122,7 @@ export function ChatThreadPage() {
 
   return (
     <div className="page-simple app-chat-page">
-      <p className="muted small"><Link to="/chats" className="link">← {t('chats.title')}</Link></p>
+      <p className="muted small"><Link to="/chats?segment=drivers" className="link">← {t('chats.title')}</Link></p>
       <h1>{t('chats.threadTitle')}</h1>
       {loading ? <LoadingSpinner /> : null}
       {error ? <p className="form-error">{error}</p> : null}

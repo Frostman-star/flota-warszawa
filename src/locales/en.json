@@ -242,8 +242,32 @@
   },
   "chats": {
     "title": "Chats",
-    "lead": "Conversations with drivers, owners, and services.",
+    "lead": "Conversations with drivers, fleets, services, and partners.",
     "empty": "No chats yet.",
+    "emptyHint": "New threads will appear here after the first message or application.",
+    "sidebarAria": "Chat categories",
+    "sidebarCaption": "Categories",
+    "segmentNavAria": "Filter by contact type",
+    "threadCount": "Threads: {{count}}",
+    "segmentEmptyHint": "Pick another category on the left or wait for a new message.",
+    "segment": {
+      "services": "Services",
+      "fleets": "Fleets",
+      "drivers": "Drivers",
+      "partners": "Partners"
+    },
+    "segmentLead": {
+      "services": "Workshops and service accounts.",
+      "fleets": "Fleet owners and platform administration.",
+      "drivers": "Applications and direct chats with drivers.",
+      "partners": "Other business contacts (category extensions)."
+    },
+    "segmentEmpty": {
+      "services": "No chats in this category yet.",
+      "fleets": "No chats in this category yet.",
+      "drivers": "No chats in this category yet.",
+      "partners": "No chats in the Partners category yet."
+    },
     "unknownPeer": "Chat",
     "unread": "Unread: {{count}}",
     "noMessages": "No messages yet.",

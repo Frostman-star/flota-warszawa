@@ -242,8 +242,32 @@
   },
   "chats": {
     "title": "Czaty",
-    "lead": "Rozmowy z kierowcami, właścicielami i serwisami.",
+    "lead": "Rozmowy z kierowcami, flotami, serwisami i partnerami.",
     "empty": "Brak czatów.",
+    "emptyHint": "Nowe wątki pojawią się tutaj po pierwszej wiadomości lub zgłoszeniu.",
+    "sidebarAria": "Kategorie czatów",
+    "sidebarCaption": "Kategorie",
+    "segmentNavAria": "Filtr typu kontaktu",
+    "threadCount": "Wątków: {{count}}",
+    "segmentEmptyHint": "Wybierz inną kategorię po lewej lub poczekaj na nową wiadomość.",
+    "segment": {
+      "services": "Serwisy",
+      "fleets": "Floty",
+      "drivers": "Kierowcy",
+      "partners": "Partnerzy"
+    },
+    "segmentLead": {
+      "services": "Warsztaty i konta serwisowe.",
+      "fleets": "Właściciele flot i administracja platformy.",
+      "drivers": "Wnioski i bezpośrednie czaty z kierowcami.",
+      "partners": "Inne kontakty biznesowe (rozszerzenia kategorii)."
+    },
+    "segmentEmpty": {
+      "services": "Brak czatów w tej kategorii.",
+      "fleets": "Brak czatów w tej kategorii.",
+      "drivers": "Brak czatów w tej kategorii.",
+      "partners": "Brak czatów w kategorii Partnerzy."
+    },
     "unknownPeer": "Czat",
     "unread": "Nieprzeczytane: {{count}}",
     "noMessages": "Brak wiadomości.",
