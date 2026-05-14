@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
+import { CHATS_INBOX_HREF } from '../lib/chatPaths'
 
 function isUuid(s) {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(s || ''))
@@ -118,11 +119,15 @@ export function ChatThreadPage() {
     await loadMessages()
   }
 
-  if (!idOk) return <Navigate to="/chats" replace />
+  if (!idOk) return <Navigate to={CHATS_INBOX_HREF} replace />
 
   return (
     <div className="page-simple app-chat-page">
-      <p className="muted small"><Link to="/chats?segment=drivers" className="link">← {t('chats.title')}</Link></p>
+      <p className="muted small">
+        <Link to={CHATS_INBOX_HREF} className="link">
+          ← {t('chats.title')}
+        </Link>
+      </p>
       <h1>{t('chats.threadTitle')}</h1>
       {loading ? <LoadingSpinner /> : null}
       {error ? <p className="form-error">{error}</p> : null}

@@ -1199,6 +1199,7 @@
     "filterCar": "Filtr: auto {{plate}}.",
     "filterCarChat": "Filtr: auto {{plate}} — priorytet czatu (odpowiedz kierowcy).",
     "clearCarFilter": "Pokaż wszystkie auta",
+    "filterChatReplies": "Filtr: wymagana odpowiedź w czacie",
     "chatFocusHint": "Karty z etykietą poniżej to wątki, gdzie ostatnia wiadomość jest od kierowcy.",
     "emptyFiltered": "Brak pozycji dla wybranego auta.",
     "chatAwaitingReply": "Odpowiedz w czacie"

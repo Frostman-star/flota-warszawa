@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ClipboardList, MessageCircleMore } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
 import { LoadingSpinner } from '../components/LoadingSpinner'
 import { DriverProfileCard } from '../components/DriverProfileCard'
+import { CHATS_INBOX_HREF } from '../lib/chatPaths'
 
 export function OwnerApplications() {
   const { t } = useTranslation()
+  const { pathname } = useLocation()
   const { user } = useAuth()
   const [searchParams] = useSearchParams()
   const carFilter = searchParams.get('carId')
@@ -149,6 +151,7 @@ export function OwnerApplications() {
     [filteredRows, carFilter, chatReplyIds]
   )
   const openChatPlain = t('ownerApplications.openChatPlain')
+  const onChatsRoute = pathname === '/chats' || pathname.startsWith('/chats/')
 
   useEffect(() => {
     if (!filteredRows.length) {
@@ -244,32 +247,32 @@ export function OwnerApplications() {
       {focusChat && carFilter ? <p className="muted small owner-apps-chat-focus-hint">{t('ownerApplications.chatFocusHint')}</p> : null}
 
       <section className="card pad-lg owner-apps-inbox-strip" aria-label={t('ownerApplications.title')}>
-        <div className="owner-apps-inbox-stat owner-apps-inbox-stat--icon">
+        <Link to="/wnioski" className="owner-apps-inbox-stat owner-apps-inbox-stat--icon owner-apps-inbox-stat--link">
           <span className="owner-apps-inbox-stat-icon" aria-hidden>
             <ClipboardList size={17} strokeWidth={2.1} />
           </span>
           <strong>{pendingCount}</strong>
           <span className="muted small">{t('driverApplications.statusPending')}</span>
-        </div>
-        <div className="owner-apps-inbox-stat owner-apps-inbox-stat--icon">
+        </Link>
+        <Link to={CHATS_INBOX_HREF} className="owner-apps-inbox-stat owner-apps-inbox-stat--icon owner-apps-inbox-stat--link">
           <span className="owner-apps-inbox-stat-icon" aria-hidden>
             <MessageCircleMore size={17} strokeWidth={2.1} />
           </span>
           <strong>{replyNeededCount}</strong>
           <span className="muted small">{t('ownerApplications.chatAwaitingReply')}</span>
-        </div>
+        </Link>
         <div className="owner-apps-inbox-actions">
           <Link className={`btn small ${focusChat ? 'primary' : 'ghost'}`} to="/wnioski?focus=chat">
+            <span className="owner-apps-tab-icon" aria-hidden>
+              <ClipboardList size={16} strokeWidth={2.1} />
+            </span>
+            <span>{t('ownerApplications.filterChatReplies')}</span>
+          </Link>
+          <Link className={`btn small ${onChatsRoute ? 'primary' : 'ghost'}`} to={CHATS_INBOX_HREF}>
             <span className="owner-apps-tab-icon" aria-hidden>
               <MessageCircleMore size={16} strokeWidth={2.1} />
             </span>
             <span>{openChatPlain}</span>
-          </Link>
-          <Link className={`btn small ${focusChat ? 'ghost' : 'primary'}`} to="/wnioski">
-            <span className="owner-apps-tab-icon" aria-hidden>
-              <ClipboardList size={16} strokeWidth={2.1} />
-            </span>
-            <span>{t('ownerApplications.title')}</span>
           </Link>
         </div>
       </section>

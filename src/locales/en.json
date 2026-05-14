@@ -1199,6 +1199,7 @@
     "filterCar": "Filter: car {{plate}}.",
     "filterCarChat": "Filter: car {{plate}} — chat priority (reply to the driver).",
     "clearCarFilter": "Show all cars",
+    "filterChatReplies": "Filter: reply needed in chat",
     "chatFocusHint": "Cards labelled below are threads where the last message is from the driver.",
     "emptyFiltered": "Nothing for the selected car.",
     "chatAwaitingReply": "Reply in chat"

@@ -1199,7 +1199,7 @@ code {
 .mob-nav-menu-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 61;
+  z-index: 100;
   border: none;
   background: rgba(2, 6, 23, 0.45);
 }
@@ -1209,7 +1209,7 @@ code {
   left: 0.75rem;
   right: 0.75rem;
   bottom: calc(4.6rem + env(safe-area-inset-bottom, 0px));
-  z-index: 62;
+  z-index: 101;
   border-color: rgba(148, 163, 184, 0.28);
   box-shadow: 0 20px 40px rgba(2, 6, 23, 0.45);
   max-height: min(70vh, 520px);
@@ -1757,8 +1757,26 @@ tr.tier-row-none td:first-child {
 .chats-thread-row {
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 0.65rem 0.75rem;
+  padding: 0;
   background: rgba(15, 23, 42, 0.45);
+  overflow: hidden;
+}
+
+.chats-thread-row__hit {
+  display: block;
+  padding: 0.65rem 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+  transition: background 0.15s ease;
+}
+
+.chats-thread-row__hit:hover {
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.chats-thread-row__hit:focus-visible {
+  box-shadow: inset 0 0 0 2px rgba(14, 165, 233, 0.55);
 }
 
 .chats-thread-row__top {
@@ -1785,7 +1803,8 @@ tr.tier-row-none td:first-child {
 }
 
 .chats-thread-row__actions {
-  margin-top: 0.45rem;
+  margin-top: 0;
+  padding: 0 0.75rem 0.65rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
@@ -4365,6 +4384,19 @@ tr.tier-row-none td:first-child {
 .owner-apps-inbox-stat--icon {
   align-items: flex-start;
   gap: 0.15rem;
+}
+.owner-apps-inbox-stat--link {
+  text-decoration: none;
+  color: inherit;
+  border-radius: 12px;
+  outline: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+.owner-apps-inbox-stat--link:hover {
+  background: rgba(14, 165, 233, 0.1);
+}
+.owner-apps-inbox-stat--link:focus-visible {
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.55);
 }
 .owner-apps-inbox-stat-icon {
   width: 1.85rem;

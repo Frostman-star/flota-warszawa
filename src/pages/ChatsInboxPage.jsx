@@ -174,24 +174,23 @@ export function ChatsInboxPage() {
             <ul className="chats-thread-list">
               {filtered.map((row) => (
                 <li key={row.thread_id} className="chats-thread-row">
-                  <div className="chats-thread-row__top">
-                    <strong className="chats-thread-row__name">{row.peer_full_name || t('chats.unknownPeer')}</strong>
-                    {Number(row.unread_count || 0) > 0 ? (
-                      <span className="status-pill status-pill--pending">{t('chats.unread', { count: Number(row.unread_count) })}</span>
-                    ) : null}
-                  </div>
-                  <p className="muted small chats-thread-row__preview">{row.last_message_body || t('chats.noMessages')}</p>
-                  <p className="muted tiny">{row.last_message_at ? new Date(row.last_message_at).toLocaleString() : ''}</p>
-                  <div className="chats-thread-row__actions">
-                    <Link className="btn ghost small" to={`/chats/${row.thread_id}`}>
-                      {t('chats.open')}
-                    </Link>
-                    {row.thread_type === 'application' && row.application_id ? (
+                  <Link to={`/chats/${row.thread_id}`} className="chats-thread-row__hit">
+                    <div className="chats-thread-row__top">
+                      <strong className="chats-thread-row__name">{row.peer_full_name || t('chats.unknownPeer')}</strong>
+                      {Number(row.unread_count || 0) > 0 ? (
+                        <span className="status-pill status-pill--pending">{t('chats.unread', { count: Number(row.unread_count) })}</span>
+                      ) : null}
+                    </div>
+                    <p className="muted small chats-thread-row__preview">{row.last_message_body || t('chats.noMessages')}</p>
+                    <p className="muted tiny">{row.last_message_at ? new Date(row.last_message_at).toLocaleString() : ''}</p>
+                  </Link>
+                  {row.thread_type === 'application' && row.application_id ? (
+                    <div className="chats-thread-row__actions">
                       <Link className="btn ghost small" to={`/chats/application/${row.application_id}`}>
                         {t('chats.openApplicationThread')}
                       </Link>
-                    ) : null}
-                  </div>
+                    </div>
+                  ) : null}
                 </li>
               ))}
             </ul>

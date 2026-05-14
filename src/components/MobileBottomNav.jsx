@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Bell, Bot, Car, ClipboardList, LayoutGrid, Lock, Menu, MessageCircleMore, Plus, Settings, Sparkles, Wrench } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useOwnerPendingApplicationCount } from '../hooks/useOwnerPendingApplicationCount'
+import { CHATS_INBOX_HREF } from '../lib/chatPaths'
 
 export function MobileBottomNav() {
   const { pathname } = useLocation()
@@ -18,7 +19,8 @@ export function MobileBottomNav() {
   }, [pathname])
 
   const item = (to, Icon, label, opts = {}) => {
-    const active = opts.exact ? pathname === to : pathname === to || pathname.startsWith(`${to}/`)
+    const pathOnly = String(to).split('?')[0]
+    const active = opts.exact ? pathname === pathOnly : pathname === pathOnly || pathname.startsWith(`${pathOnly}/`)
     return (
       <Link to={to} className={`mob-nav-item${active ? ' active' : ''}`}>
         <span className="mob-nav-item-icon" aria-hidden><Icon size={18} strokeWidth={2.1} /></span>
@@ -101,7 +103,7 @@ export function MobileBottomNav() {
                 <span className="mob-nav-item-icon" aria-hidden><Wrench size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.services')}</span>
               </Link>
-              <Link to="/chats" className={`mob-nav-menu-link${pathname.startsWith('/chats') ? ' active' : ''}`}>
+              <Link to={CHATS_INBOX_HREF} className={`mob-nav-menu-link${pathname.startsWith('/chats') ? ' active' : ''}`}>
                 <span className="mob-nav-item-icon" aria-hidden><MessageCircleMore size={18} strokeWidth={2.1} /></span>
                 <span>{t('nav.chats')}</span>
               </Link>

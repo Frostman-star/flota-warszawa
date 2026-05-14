@@ -21,6 +21,7 @@ import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
 import { normalizeProfileRole } from '../utils/profileRole'
 import { LANG_OPTIONS } from '../i18n'
+import { CHATS_INBOX_HREF } from '../lib/chatPaths'
 
 const STATUS_OPTIONS = ['pending', 'confirmed', 'in_progress', 'done', 'canceled']
 
@@ -336,7 +337,7 @@ export function ServiceCabinet() {
               {item.badge ? <span className="service-dashboard-nav__badge">{item.badge > 9 ? '9+' : item.badge}</span> : null}
             </a>
           ))}
-          <Link to="/chats">
+          <Link to={CHATS_INBOX_HREF}>
             <span className="service-dashboard-nav__icon" aria-hidden>
               <MessageCircleMore size={15} />
             </span>
@@ -346,7 +347,7 @@ export function ServiceCabinet() {
         <div className="service-dashboard-help card">
           <p className="service-dashboard-help__title">{t('serviceCabinet.helpTitle')}</p>
           <p className="muted small">{t('serviceCabinet.helpLead')}</p>
-          <Link className="btn ghost small" to="/chats">
+          <Link className="btn ghost small" to={CHATS_INBOX_HREF}>
             <LifeBuoy size={14} /> {t('serviceCabinet.contactSupport')}
           </Link>
         </div>
@@ -438,7 +439,7 @@ export function ServiceCabinet() {
         <section id="service-bookings" className="card pad-lg">
           <div className="services-row service-section-head">
             <h2>{t('serviceCabinet.bookingsTitle')}</h2>
-            <Link to="/chats" className="btn ghost small">{t('chats.title')}</Link>
+            <Link to={CHATS_INBOX_HREF} className="btn ghost small">{t('chats.title')}</Link>
           </div>
           <div className="stack-sm service-bookings-list">
             {sortedBookings.map((booking) => (
@@ -516,7 +517,7 @@ export function ServiceCabinet() {
             <p className="muted">{selectedService?.plan_tier === 'featured' ? t('serviceCabinet.planFeatured') : t('serviceCabinet.planFree')}</p>
             <div className="services-row" id="service-settings">
               <Link className="btn ghost small" to="/serwisy">{t('serviceCabinet.openDirectory')}</Link>
-              <Link className="btn secondary small" to="/chats">{t('chats.open')}</Link>
+              <Link className="btn secondary small" to={CHATS_INBOX_HREF}>{t('chats.open')}</Link>
             </div>
           </article>
         </section>

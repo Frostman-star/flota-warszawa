@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { AlertTriangle, Car, Handshake, LayoutGrid, Plus, Settings, ShoppingCart, Wrench, BarChart3, Bot, Lock, MessageCircleMore } from 'lucide-react'
+import { CHATS_INBOX_HREF } from '../lib/chatPaths'
 
 function navCls({ isActive }) {
   const base = 'desktop-sidebar__link'
@@ -20,7 +21,7 @@ export function DesktopOwnerSidebar() {
     { to: '/dodaj', end: true, label: t('panel.addCar'), Icon: Plus },
     { to: '/alerty', end: true, label: t('nav.alerts'), Icon: AlertTriangle },
     { to: '/statystyki', end: true, label: t('nav.statistics'), Icon: BarChart3 },
-    { to: '/chats', end: false, label: t('nav.chats'), Icon: MessageCircleMore },
+    { key: 'chats', to: CHATS_INBOX_HREF, end: false, label: t('nav.chats'), Icon: MessageCircleMore },
     { to: '/ai-manager', end: true, label: t('nav.aiManager'), Icon: Bot, pro: true, locked: aiLocked },
     { to: '/marketplace', end: true, label: t('nav.marketplace'), Icon: ShoppingCart },
     { to: '/serwisy', end: true, label: t('nav.services'), Icon: Wrench },
@@ -42,7 +43,7 @@ export function DesktopOwnerSidebar() {
       </div>
       <nav className="desktop-sidebar__nav" aria-label={t('panel.quick')}>
         {links.map((l) => (
-          <NavLink key={l.to} to={l.to} end={l.end} className={navCls}>
+          <NavLink key={l.key ?? l.to} to={l.to} end={l.end} className={navCls}>
             <span className="desktop-sidebar__link-icon" aria-hidden>
               <l.Icon size={15} strokeWidth={2.1} />
             </span>
