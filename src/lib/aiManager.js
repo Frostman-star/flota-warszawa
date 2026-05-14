@@ -84,6 +84,83 @@ export function extractTrailingAction(text) {
   }
 }
 
+/**
+ * Parses trailing `VEHICLE_CARDS:[{"id":"..."},...]` from assistant text (not shown in UI).
+ * @param {string} text
+ * @returns {{ cleanText: string, vehicleIds: string[] }}
+ */
+export function extractVehicleCards(text) {
+  if (!text || typeof text !== 'string') return { cleanText: text ?? '', vehicleIds: [] }
+  const normalized = text.replace(/\u201c|\u201d/g, '"')
+  const match = normalized.match(/VEHICLE_CARDS:\s*(\[[\s\S]*\])\s*$/i)
+  if (!match) return { cleanText: text.trim(), vehicleIds: [] }
+  let vehicleIds = []
+  try {
+    const arr = JSON.parse(match[1])
+    if (Array.isArray(arr)) {
+      vehicleIds = arr
+        .map((row) => (row && typeof row === 'object' && typeof row.id === 'string' ? row.id : null))
+        .filter(Boolean)
+    }
+  } catch {
+    vehicleIds = []
+  }
+  const cleanText = normalized.slice(0, match.index).trim()
+  return { cleanText, vehicleIds }
+}
+
+/**
+ * Parses trailing `DRIVER_CARDS:[{"id":"..."},...]` (profile / auth user id of the driver).
+ * @param {string} text
+ * @returns {{ cleanText: string, driverIds: string[] }}
+ */
+export function extractDriverCards(text) {
+  if (!text || typeof text !== 'string') return { cleanText: text ?? '', driverIds: [] }
+  const normalized = text.replace(/\u201c|\u201d/g, '"')
+  const match = normalized.match(/DRIVER_CARDS:\s*(\[[\s\S]*\])\s*$/i)
+  if (!match) return { cleanText: text.trim(), driverIds: [] }
+  let driverIds = []
+  try {
+    const arr = JSON.parse(match[1])
+    if (Array.isArray(arr)) {
+      driverIds = arr
+        .map((row) => (row && typeof row === 'object' && typeof row.id === 'string' ? row.id : null))
+        .filter(Boolean)
+    }
+  } catch {
+    driverIds = []
+  }
+  const cleanText = normalized.slice(0, match.index).trim()
+  return { cleanText, driverIds }
+}
+
+/**
+ * Strips any trailing VEHICLE_CARDS / DRIVER_CARDS blocks from the end of the assistant message (repeat until stable).
+ * @param {string} text
+ * @returns {{ cleanText: string, vehicleIds: string[], driverIds: string[] }}
+ */
+export function stripVehicleAndDriverCardSuffixes(text) {
+  let t = typeof text === 'string' ? text.replace(/\u201c|\u201d/g, '"') : ''
+  const vehicleIds = []
+  const driverIds = []
+  for (let i = 0; i < 8; i++) {
+    const d = extractDriverCards(t)
+    if (d.driverIds.length) {
+      driverIds.push(...d.driverIds)
+      t = d.cleanText
+      continue
+    }
+    const v = extractVehicleCards(t)
+    if (v.vehicleIds.length) {
+      vehicleIds.push(...v.vehicleIds)
+      t = v.cleanText
+      continue
+    }
+    break
+  }
+  return { cleanText: t.trim(), vehicleIds, driverIds }
+}
+
 export function toBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

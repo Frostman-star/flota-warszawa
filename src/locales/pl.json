@@ -674,6 +674,39 @@
       "showStats": "Pokaż statystyki",
       "addDriver": "Dodaj kierowcę"
     },
+    "typing": "AI pisze…",
+    "quickChips": {
+      "urgentDocs": "🔴 Pilne dokumenty",
+      "noDriver": "🚗 Bez kierowcy",
+      "fleetStats": "📊 Statystyki",
+      "addCar": "➕ Dodaj auto"
+    },
+    "quickChipMessages": {
+      "urgentDocs": "Pokaż wszystkie auta, u których dokumenty kończą się w ciągu najbliższych 30 dni",
+      "noDriver": "Które auta obecnie nie mają przypisanego kierowcy?",
+      "fleetStats": "Pokaż statystyki rentowności mojej floty",
+      "addCar": "Chcę dodać nowe auto do floty — poprowadź mnie krok po kroku"
+    },
+    "vehicleCard": {
+      "openAria": "Otwórz pojazd {{plate}}",
+      "noDriver": "Bez kierowcy",
+      "noDocDates": "Brak dat dokumentów",
+      "docUntil": "do",
+      "daysLeft": "{{count}} d.",
+      "today": "dziś",
+      "overdue": "po terminie {{count}} d.",
+      "docLine": {
+        "insurance": "🛡️ OC/AC",
+        "inspection": "📋 Przegląd"
+      }
+    },
+    "driverCard": {
+      "unknownName": "Kierowca",
+      "chat": "Czat",
+      "opening": "…",
+      "tapHint": "Dotknij, aby otworzyć czat 1:1",
+      "openChatAria": "Otwórz czat z {{name}}"
+    },
     "errors": {
       "generic": "Nie udało się wykonać zapytania AI.",
       "notRecognized": "🤔 Nie udało się rozpoznać dokumentu. Spróbuj zrobić wyraźniejsze zdjęcie albo wpisz dane ręcznie.",
@@ -682,6 +715,8 @@
       "selectVehicle": "Wybierz pojazd przed zapisaniem dokumentu.",
       "unsupportedDocumentSave": "Ten typ dokumentu nie ma automatycznego mapowania pól. Użyj trybu edycji i zapisz ręcznie.",
       "invalidDocumentField": "AI zwróciło niedozwolone pole dokumentu.",
+      "driverNotInFleet": "Ten kierowca nie należy do Twojej floty — czat niedostępny.",
+      "driverChatFailed": "Nie udało się otworzyć czatu z kierowcą.",
       "voiceUnsupported": "Ten browser nie wspiera rozpoznawania mowy.",
       "voiceFailed": "Nie udało się rozpoznać mowy.",
       "voiceNoSpeech": "Nie słyszę głosu. Spróbuj ponownie.",

@@ -3,7 +3,7 @@ import i18next from 'i18next'
 import { supabase } from '../lib/supabase'
 import { normalizeCarRow, shouldUseLegacyAssignedDriverColumn } from '../utils/carDriverSchema'
 
-const CAR_EMBED = 'driver_profile:profiles ( full_name )'
+const CAR_EMBED = 'driver_profile:profiles ( full_name, avatar_url )'
 
 const CAR_SELECT_NEW = `
         id,

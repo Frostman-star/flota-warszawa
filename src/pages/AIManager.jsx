@@ -1,26 +1,40 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Bot, Check, Loader2, Lock, Mic, Paperclip, Pencil, PlusCircle, SendHorizontal, Settings, Sparkles } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../context/AuthContext'
-import { analyzeDocument, buildAlertsFromCars, callClaudeMessages, compressImage, extractClaudeText, extractTrailingAction } from '../lib/aiManager'
+import { AiManagerDriverCard } from '../components/AiManagerDriverCard'
+import { AiManagerVehicleCard } from '../components/AiManagerVehicleCard'
+import { carPath } from '../lib/carPaths'
+import {
+  analyzeDocument,
+  buildAlertsFromCars,
+  callClaudeMessages,
+  compressImage,
+  extractClaudeText,
+  extractTrailingAction,
+  stripVehicleAndDriverCardSuffixes,
+} from '../lib/aiManager'
 
-const QUICK_ACTION_KEYS = ['addVehicle', 'checkDocs', 'showStats', 'addDriver']
+const QUICK_CHIP_KEYS = ['urgentDocs', 'noDriver', 'fleetStats', 'addCar']
 const VOICE_AUTO_SEND_KEY = 'ai_voice_auto_send'
 const VOICE_LANG_MODE_KEY = 'ai_voice_lang_mode'
 const VOICE_LANG_MANUAL_KEY = 'ai_voice_lang_manual'
 const VOICE_TIP_SEEN_KEY = 'ai_voice_tooltip_seen'
 const VOICE_LANGS = ['uk', 'pl', 'en', 'ru']
 
-function makeSystemPrompt({ vehicles, alerts, language }) {
-  const languageHint = language === 'uk' ? 'українська' : 'polski'
+function makeSystemPrompt({ vehicles, alerts, drivers, language }) {
+  const languageHint =
+    language === 'uk' ? 'українська' : language === 'en' ? 'English' : language === 'ru' ? 'русский' : 'polski'
   return `Jesteś pomocnikiem zarządzania flotą taksówek w aplikacji Cario. Pomagasz właścicielom flot zarządzać pojazdami, dokumentami i kierowcami przez rozmowę.
 
 Masz dostęp do następujących danych użytkownika:
 
 - Lista pojazdów: ${JSON.stringify(vehicles)}
 - Liczba pojazdów: ${vehicles.length}
+- Kierowcy przypisani do floty (id = profiles.id / auth user id): ${JSON.stringify(drivers)}
+- Liczba kierowców: ${drivers.length}
 - Alerty dokumentów: ${JSON.stringify(alerts)}
 
 Możesz wykonywać następujące akcje poprzez JSON w swojej odpowiedzi:
@@ -33,7 +47,29 @@ Możesz wykonywać następujące akcje poprzez JSON w swojej odpowiedzi:
 Zawsze odpowiadaj w języku użytkownika (${languageHint}).
 Bądź pomocny, krótki i konkretny.
 Jeśli wykonujesz akcję, najpierw potwierdź co zrobisz, potem wykonaj.
-Format odpowiedzi: tekst dla użytkownika, opcjonalnie JSON akcji na końcu.`
+Format odpowiedzi: tekst dla użytkownika, opcjonalnie JSON akcji na końcu.
+
+Karty pojazdów w czacie:
+Gdy użytkownik pyta o konkretne pojazdy (terminy dokumentów, brak kierowcy, wyszukiwanie, kryteria, statystyki per auto itd.), znajdź pasujące ID w liście pojazdów i NA KOŃCU wiadomości dodaj DOKŁADNIE ten blok (ASCII, podwójne cudzysłowy), bez markdown:
+VEHICLE_CARDS:[{"id":"uuid-pojazdu"}]
+Dla wielu pojazdów: VEHICLE_CARDS:[{"id":"uuid1"},{"id":"uuid2"}]
+ZAWSZE dodaj VEHICLE_CARDS gdy w odpowiedzi są konkretne pojazdy z floty.
+NIE dodawaj VEHICLE_CARDS przy powitaniach, ogólnych pytaniach bez listy aut ani gdy żaden pojazd nie jest istotny.
+
+When the user asks about specific vehicles, find them in the vehicles data and include their IDs at the very end using this exact format:
+VEHICLE_CARDS:[{"id":"vehicle-uuid-here"}]
+For multiple vehicles: VEHICLE_CARDS:[{"id":"uuid1"},{"id":"uuid2"}]
+Do NOT include VEHICLE_CARDS for general questions, greetings, or when no specific vehicles are relevant.
+
+Karty kierowców (czat 1:1):
+Gdy użytkownik pyta o konkretnych kierowców (kontakt, lista, „napisz do…”, przypisanie do auta itd.), użyj ich id z listy kierowców i NA KOŃCU wiadomości dodaj blok:
+DRIVER_CARDS:[{"id":"uuid-kierowcy"}]
+Wiele osób: DRIVER_CARDS:[{"id":"uuid1"},{"id":"uuid2"}]
+NIE dodawaj DRIVER_CARDS przy powitaniach ani gdy żaden kierowca nie jest istotny.
+
+When the user asks about specific drivers to contact or list, include DRIVER_CARDS at the very end with profile ids from the drivers data:
+DRIVER_CARDS:[{"id":"driver-profile-uuid"}]
+Do NOT include DRIVER_CARDS for general questions or when no drivers are relevant.`
 }
 
 function nowTs() {
@@ -47,6 +83,17 @@ function normalizeMessages(raw) {
       if (!m || (m.role !== 'user' && m.role !== 'assistant')) return false
       if (typeof m.content === 'string') return true
       return m.kind === 'doc_card' && m.card && typeof m.card === 'object'
+    })
+    .map((m) => {
+      if (m.role !== 'assistant' || m.kind === 'doc_card' || typeof m.content !== 'string') return m
+      const s = stripVehicleAndDriverCardSuffixes(m.content)
+      if (!s.vehicleIds.length && !s.driverIds.length) return m
+      return {
+        ...m,
+        content: s.cleanText,
+        vehicleCardIds: s.vehicleIds.length ? s.vehicleIds : m.vehicleCardIds ?? [],
+        driverCardIds: s.driverIds.length ? s.driverIds : m.driverCardIds ?? [],
+      }
     })
     .slice(-50)
 }
@@ -68,11 +115,33 @@ function hasUsefulExtraction(doc) {
   return Boolean(doc.expiry_date || doc.policy_number || doc.plate_number || doc.car_make || doc.car_model || doc.owner_name || doc.amount || doc.company_name)
 }
 
+/** @param {{ role?: string; content?: string; vehicleCardIds?: string[]; driverCardIds?: string[]; kind?: string }} m */
+function assistantVehicleIdsForMessage(m) {
+  if (m.role !== 'assistant' || m.kind === 'doc_card') return []
+  if (Array.isArray(m.vehicleCardIds) && m.vehicleCardIds.length) return m.vehicleCardIds
+  const raw = typeof m.content === 'string' ? m.content : ''
+  return stripVehicleAndDriverCardSuffixes(raw).vehicleIds
+}
+
+/** @param {{ role?: string; content?: string; vehicleCardIds?: string[]; driverCardIds?: string[]; kind?: string }} m */
+function assistantDriverIdsForMessage(m) {
+  if (m.role !== 'assistant' || m.kind === 'doc_card') return []
+  if (Array.isArray(m.driverCardIds) && m.driverCardIds.length) return m.driverCardIds
+  const raw = typeof m.content === 'string' ? m.content : ''
+  return stripVehicleAndDriverCardSuffixes(raw).driverIds
+}
+
+/** @param {{ role?: string; content?: string; kind?: string }} m */
+function assistantDisplayText(m) {
+  const raw = typeof m.content === 'string' ? m.content : ''
+  return stripVehicleAndDriverCardSuffixes(raw).cleanText || raw.trim()
+}
+
 export function AIManager() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { cars = [] } = useOutletContext() ?? {}
-  const { user, profile } = useAuth()
+  const { user, profile, isAdmin } = useAuth()
   const [conversationId, setConversationId] = useState(null)
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
@@ -99,6 +168,51 @@ export function AIManager() {
   const localeCode = i18n.resolvedLanguage || i18n.language || 'pl'
   const lang = localeCode.startsWith('uk') ? 'uk' : localeCode.startsWith('en') ? 'en' : localeCode.startsWith('ru') ? 'ru' : 'pl'
   const alerts = useMemo(() => buildAlertsFromCars(cars), [cars])
+  const fleetDriverSummaries = useMemo(() => {
+    const seen = new Map()
+    for (const car of cars) {
+      const did = car.driver_id
+      if (!did) continue
+      if (seen.has(did)) continue
+      const prof = car.driver_profile && typeof car.driver_profile === 'object' ? car.driver_profile : null
+      const name =
+        (prof && typeof prof.full_name === 'string' && prof.full_name.trim()) ||
+        (typeof car.driver_name === 'string' && car.driver_name.trim()) ||
+        ''
+      seen.set(did, {
+        id: did,
+        full_name: name,
+        car_plate: car.plate_number ?? null,
+        car_model: car.model ?? null,
+        avatar_url: prof?.avatar_url ?? null,
+      })
+    }
+    return [...seen.values()]
+  }, [cars])
+  const allowedDriverChatIds = useMemo(() => new Set(fleetDriverSummaries.map((d) => d.id)), [fleetDriverSummaries])
+  const driverSummaryById = useMemo(() => new Map(fleetDriverSummaries.map((d) => [d.id, d])), [fleetDriverSummaries])
+
+  const openDriverDirectChat = useCallback(
+    async (driverId) => {
+      if (!allowedDriverChatIds.has(driverId)) {
+        setError(t('aiManager.errors.driverNotInFleet'))
+        return
+      }
+      setError('')
+      const { data, error: rpcErr } = await supabase.rpc('chat_get_or_create_direct_thread', { p_other_user_id: driverId })
+      if (rpcErr) {
+        setError(rpcErr.message)
+        return
+      }
+      const tid = String(data ?? '').trim()
+      if (!tid) {
+        setError(t('aiManager.errors.driverChatFailed'))
+        return
+      }
+      navigate(`/chats/${tid}`)
+    },
+    [allowedDriverChatIds, navigate, t]
+  )
   const voiceSupported = typeof window !== 'undefined' && Boolean(window.SpeechRecognition || window.webkitSpeechRecognition)
   const voiceLanguage = voiceLangMode === 'manual' ? voiceManualLang : lang
 
@@ -247,7 +361,7 @@ export function AIManager() {
     const next = [...messages, { role: 'user', content, ts: nowTs() }]
     setMessages(next)
     try {
-      const systemPrompt = makeSystemPrompt({ vehicles: cars, alerts, language: lang })
+      const systemPrompt = makeSystemPrompt({ vehicles: cars, alerts, drivers: fleetDriverSummaries, language: lang })
       const conversationHistory = next
         .filter((m) => typeof m.content === 'string')
         .map((m) => ({ role: m.role, content: m.content }))
@@ -259,8 +373,15 @@ export function AIManager() {
         maxTokens: 1000,
       })
       const textResponse = extractClaudeText(payload)
-      const { cleanText, action } = extractTrailingAction(textResponse)
-      const assistantMessage = { role: 'assistant', content: cleanText || t('aiManager.emptyAnswer'), ts: nowTs() }
+      const stripped = stripVehicleAndDriverCardSuffixes(textResponse)
+      const { cleanText, action } = extractTrailingAction(stripped.cleanText)
+      const assistantMessage = {
+        role: 'assistant',
+        content: cleanText || t('aiManager.emptyAnswer'),
+        ...(stripped.vehicleIds.length ? { vehicleCardIds: stripped.vehicleIds } : {}),
+        ...(stripped.driverIds.length ? { driverCardIds: stripped.driverIds } : {}),
+        ts: nowTs(),
+      }
       let afterAssistant = [...next, assistantMessage]
       if (action) {
         try {
@@ -588,7 +709,14 @@ export function AIManager() {
             <div className="ai-msg-avatar" aria-hidden>
               {m.role === 'assistant' ? <Bot size={16} /> : <Sparkles size={16} />}
             </div>
-            <div className="ai-msg-bubble">
+            <div
+              className={`ai-msg-bubble${
+                m.role === 'assistant' &&
+                (assistantVehicleIdsForMessage(m).length || assistantDriverIdsForMessage(m).length)
+                  ? ' ai-msg-bubble--with-cards'
+                  : ''
+              }`}
+            >
               {m.kind === 'doc_card' && m.card ? (
                 <div className="ai-doc-card">
                   <div className="ai-doc-card__head">
@@ -647,20 +775,82 @@ export function AIManager() {
                     </button>
                   </div>
                 </div>
+              ) : m.role === 'assistant' ? (
+                <>
+                  <p>{assistantDisplayText(m)}</p>
+                  {(() => {
+                    const vids = assistantVehicleIdsForMessage(m)
+                    if (!vids.length) return null
+                    const byId = new Map(cars.map((c) => [c.id, c]))
+                    return (
+                      <div className="ai-vehicle-card-stack" role="list">
+                        {vids.map((vid, i) => (
+                          <div key={`${m.ts}-v-${vid}-${i}`} className="ai-vehicle-card-li" role="listitem">
+                            <AiManagerVehicleCard
+                              car={byId.get(vid)}
+                              vehicleId={vid}
+                              animationDelayMs={i * 100}
+                              onOpen={() => navigate(carPath(vid, isAdmin))}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })()}
+                  {(() => {
+                    const dids = assistantDriverIdsForMessage(m)
+                    if (!dids.length) return null
+                    const vCount = assistantVehicleIdsForMessage(m).length
+                    return (
+                      <div className="ai-driver-card-stack" role="list">
+                        {dids.map((did, i) => (
+                          <div key={`${m.ts}-d-${did}-${i}`} className="ai-driver-card-li" role="listitem">
+                            <AiManagerDriverCard
+                              summary={driverSummaryById.get(did) ?? null}
+                              animationDelayMs={vCount * 100 + i * 100}
+                              onOpenChat={() => openDriverDirectChat(did)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })()}
+                </>
               ) : (
                 <p>{m.content}</p>
               )}
             </div>
           </article>
         ))}
+        {busy && !photoBusy ? (
+          <div className="ai-msg ai-msg--assistant ai-msg--typing" aria-live="polite">
+            <div className="ai-msg-avatar" aria-hidden>
+              <Bot size={16} />
+            </div>
+            <div className="ai-msg-bubble ai-msg-bubble--typing">
+              <span className="sr-only">{t('aiManager.typing')}</span>
+              <span className="ai-typing-dots" aria-hidden>
+                <span className="ai-typing-dot" />
+                <span className="ai-typing-dot" />
+                <span className="ai-typing-dot" />
+              </span>
+            </div>
+          </div>
+        ) : null}
         <div ref={bottomRef} />
       </section>
 
       <div className="ai-manager-compose card">
         <div className="chip-row ai-quick-row">
-          {QUICK_ACTION_KEYS.map((k) => (
-            <button key={k} type="button" className="chip" onClick={() => sendMessage(t(`aiManager.quick.${k}`))} disabled={busy || photoBusy}>
-              {t(`aiManager.quick.${k}`)}
+          {QUICK_CHIP_KEYS.map((k) => (
+            <button
+              key={k}
+              type="button"
+              className="chip ai-quick-chip"
+              onClick={() => sendMessage(t(`aiManager.quickChipMessages.${k}`))}
+              disabled={busy || photoBusy}
+            >
+              {t(`aiManager.quickChips.${k}`)}
             </button>
           ))}
         </div>
@@ -723,11 +913,11 @@ export function AIManager() {
       </div>
 
       <input ref={fileRef} type="file" accept="image/*" className="ai-hidden-file" onChange={onPhotoSelected} />
-      {(busy || photoBusy) && (
+      {photoBusy ? (
         <div className="ai-busy-indicator">
-          <PlusCircle size={15} /> {photoBusy ? t('aiManager.photoAnalyzing') : t('aiManager.thinking')}
+          <PlusCircle size={15} /> {t('aiManager.photoAnalyzing')}
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

@@ -674,6 +674,39 @@
       "showStats": "Show statistics",
       "addDriver": "Add driver"
     },
+    "typing": "AI is typing…",
+    "quickChips": {
+      "urgentDocs": "🔴 Urgent documents",
+      "noDriver": "🚗 No driver",
+      "fleetStats": "📊 Statistics",
+      "addCar": "➕ Add vehicle"
+    },
+    "quickChipMessages": {
+      "urgentDocs": "Show all vehicles whose documents expire in the next 30 days",
+      "noDriver": "Which vehicles currently have no assigned driver?",
+      "fleetStats": "Show profitability statistics for my fleet",
+      "addCar": "I want to add a new vehicle to the fleet — guide me through it"
+    },
+    "vehicleCard": {
+      "openAria": "Open vehicle {{plate}}",
+      "noDriver": "No driver",
+      "noDocDates": "No document dates on file",
+      "docUntil": "until",
+      "daysLeft": "{{count}}d",
+      "today": "today",
+      "overdue": "{{count}}d overdue",
+      "docLine": {
+        "insurance": "🛡️ Insurance",
+        "inspection": "📋 Inspection"
+      }
+    },
+    "driverCard": {
+      "unknownName": "Driver",
+      "chat": "Chat",
+      "opening": "…",
+      "tapHint": "Tap to open a 1:1 chat",
+      "openChatAria": "Open chat with {{name}}"
+    },
     "errors": {
       "generic": "Failed to process AI request.",
       "notRecognized": "🤔 Could not recognize the document. Try a clearer photo or enter the data manually.",
@@ -682,6 +715,8 @@
       "selectVehicle": "Select a vehicle before saving the document.",
       "unsupportedDocumentSave": "This document type has no automatic field mapping. Use edit mode and save manually.",
       "invalidDocumentField": "AI returned an unsupported document field.",
+      "driverNotInFleet": "This driver is not in your fleet — chat unavailable.",
+      "driverChatFailed": "Could not open chat with the driver.",
       "voiceUnsupported": "Voice input is not supported in this browser.",
       "voiceFailed": "Could not recognize speech.",
       "voiceNoSpeech": "I cannot hear your voice. Try again.",
